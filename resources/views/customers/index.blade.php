@@ -1,0 +1,142 @@
+@extends('layouts.app')
+
+@section('content')
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Customers</h1>
+        <a href="{{ route('customers.create') }}" class="d-none d-sm-inline-block btn btn-primary shadow-sm">
+            <i class="fas fa-plus fa-sm text-white-50"></i> Add New Customer
+        </a>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-primary">Customer List</h6>
+                <form method="GET" action="{{ route('customers.index') }}" class="d-flex">
+                    <input type="text" name="search" class="form-control form-control-sm me-2"
+                           placeholder="Search by name, email, or phone..."
+                           value="{{ request('search') }}">
+                    <button type="submit" class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    @if(request('search'))
+                        <a href="{{ route('customers.index') }}" class="btn btn-sm btn-outline-secondary ms-2">
+                            <i class="fas fa-times"></i>
+                        </a>
+                    @endif
+                </form>
+            </div>
+        </div>
+        <div class="card-body">
+            @if(request('search'))
+                <div class="alert alert-info">
+                    <i class="fas fa-search"></i> Search results for: <strong>"{{ request('search') }}"</strong>
+                    <a href="{{ route('customers.index') }}" class="float-end">Clear search</a>
+                </div>
+            @endif
+
+            <div class="table-responsive">
+                <table class="table table-bordered" id="customersTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>
+                                <a href="{{ request()->fullUrlWithQuery(['sort' => 'id', 'order' => request('sort') == 'id' && request('order') == 'asc' ? 'desc' : 'asc']) }}"
+                                   class="text-decoration-none text-dark d-flex align-items-center justify-content-between">
+                                    ID
+                                    <div class="d-flex flex-column">
+                                        <i class="fas fa-sort-up {{ request('sort') == 'id' && request('order') == 'asc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
+                                        <i class="fas fa-sort-down {{ request('sort') == 'id' && request('order') == 'desc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
+                                    </div>
+                                </a>
+                            </th>
+                            <th>
+                                <a href="{{ request()->fullUrlWithQuery(['sort' => 'name', 'order' => request('sort') == 'name' && request('order') == 'asc' ? 'desc' : 'asc']) }}"
+                                   class="text-decoration-none text-dark d-flex align-items-center justify-content-between">
+                                    Name
+                                    <div class="d-flex flex-column">
+                                        <i class="fas fa-sort-up {{ request('sort') == 'name' && request('order') == 'asc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
+                                        <i class="fas fa-sort-down {{ request('sort') == 'name' && request('order') == 'desc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
+                                    </div>
+                                </a>
+                            </th>
+                            <th>
+                                <a href="{{ request()->fullUrlWithQuery(['sort' => 'email', 'order' => request('sort') == 'email' && request('order') == 'asc' ? 'desc' : 'asc']) }}"
+                                   class="text-decoration-none text-dark d-flex align-items-center justify-content-between">
+                                    Email
+                                    <div class="d-flex flex-column">
+                                        <i class="fas fa-sort-up {{ request('sort') == 'email' && request('order') == 'asc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
+                                        <i class="fas fa-sort-down {{ request('sort') == 'email' && request('order') == 'desc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
+                                    </div>
+                                </a>
+                            </th>
+                            <th>
+                                <a href="{{ request()->fullUrlWithQuery(['sort' => 'phone', 'order' => request('sort') == 'phone' && request('order') == 'asc' ? 'desc' : 'asc']) }}"
+                                   class="text-decoration-none text-dark d-flex align-items-center justify-content-between">
+                                    Phone
+                                    <div class="d-flex flex-column">
+                                        <i class="fas fa-sort-up {{ request('sort') == 'phone' && request('order') == 'asc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
+                                        <i class="fas fa-sort-down {{ request('sort') == 'phone' && request('order') == 'desc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
+                                    </div>
+                                </a>
+                            </th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($customers ?? [] as $customer)
+                        <tr>
+                            <td>{{ $customer->id }}</td>
+                            <td>{{ $customer->name }}</td>
+                            <td>{{ $customer->email }}</td>
+                            <td>{{ $customer->phone }}</td>
+                            <td>
+                                <a href="{{ route('customers.show', $customer->id) }}" class="btn btn-info btn-sm" title="View">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a href="{{ route('customers.edit', $customer->id) }}" class="btn btn-primary btn-sm" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <form action="{{ route('customers.destroy', $customer->id) }}" method="POST" class="d-inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-sm" title="Delete" onclick="return confirm('Are you sure you want to delete this customer?')">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="5" class="text-center">
+                                @if(request('search'))
+                                    No customers found matching your search criteria.
+                                @else
+                                    No customers found.
+                                @endif
+                            </td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="d-flex justify-content-center mt-4">
+                {{ $customers->links() }}
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
+
+@section('scripts')
+<script>
+    $(document).ready(function() {
+        $('#customersTable').DataTable({
+            "paging": false,
+            "searching": false,
+            "info": false
+        });
+    });
+</script>
+@endsection

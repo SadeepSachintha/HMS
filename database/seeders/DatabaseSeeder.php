@@ -1,0 +1,98 @@
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Seeder;
+use App\Models\RoomType;
+use App\Models\Room;
+use App\Models\Customer;
+
+class DatabaseSeeder extends Seeder
+{
+    /**
+     * Seed the application's database.
+     */
+    public function run(): void
+    {
+        // Create room types
+        $standard = RoomType::create([
+            'name' => 'Standard Room',
+            'description' => 'Comfortable room with basic amenities',
+            'price_per_night' => 100.00,
+            'capacity' => 2
+        ]);
+
+        $deluxe = RoomType::create([
+            'name' => 'Deluxe Room',
+            'description' => 'Spacious room with premium amenities',
+            'price_per_night' => 200.00,
+            'capacity' => 3
+        ]);
+
+        $suite = RoomType::create([
+            'name' => 'Suite',
+            'description' => 'Luxury suite with separate living area',
+            'price_per_night' => 300.00,
+            'capacity' => 4
+        ]);
+
+        // Create 15 rooms (7 Standard, 5 Deluxe, 3 Suite)
+        // Standard rooms (101-107)
+        for ($i = 1; $i <= 7; $i++) {
+            Room::create([
+                'number' => '10' . $i,
+                'room_type_id' => $standard->id,
+                'floor' => 1,
+                'status' => 'available',
+                'is_clean' => true,
+                'notes' => null
+            ]);
+        }
+
+        // Deluxe rooms (201-205)
+        for ($i = 1; $i <= 5; $i++) {
+            Room::create([
+                'number' => '20' . $i,
+                'room_type_id' => $deluxe->id,
+                'floor' => 2,
+                'status' => 'available',
+                'is_clean' => true,
+                'notes' => null
+            ]);
+        }
+
+        // Suites (301-303)
+        for ($i = 1; $i <= 3; $i++) {
+            Room::create([
+                'number' => '30' . $i,
+                'room_type_id' => $suite->id,
+                'floor' => 3,
+                'status' => 'available',
+                'is_clean' => true,
+                'notes' => null
+            ]);
+        }
+
+        // Create sample customers
+        Customer::create([
+            'name' => 'John Doe',
+            'email' => 'john@example.com',
+            'phone' => '1234567890',
+            'address' => '123 Main St'
+        ]);
+
+        Customer::create([
+            'name' => 'Jane Smith',
+            'email' => 'jane@example.com',
+            'phone' => '0987654321',
+            'address' => '456 Oak Ave'
+        ]);
+
+        // Call other seeders
+        $this->call([
+            AdminSeeder::class,
+            CustomerSeeder::class,
+            UserSeeder::class,
+        ]);
+    }
+}
