@@ -73,7 +73,6 @@
                                             </div>
                                         </a>
                                     </th>
-                                    <th>Description</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -83,7 +82,28 @@
                                         <td class="align-middle">{{ $room->number }}</td>
                                         <td class="align-middle">{{ $room->roomType->name ?? 'N/A' }}</td>
                                         <td class="align-middle">{{ $room->floor }}</td>
-                                        <td class="align-middle">{{ $room->notes ?? 'No description available' }}</td>
+                                        <td class="align-middle">
+                                            @if($room->status)
+                                                @switch($room->status)
+                                                    @case('available')
+                                                        <span class="badge bg-success">Available</span>
+                                                        @break
+                                                    @case('occupied')
+                                                        <span class="badge bg-danger">Occupied</span>
+                                                        @break
+                                                    @case('maintenance')
+                                                        <span class="badge bg-warning text-dark">Maintenance</span>
+                                                        @break
+                                                    @case('reserved')
+                                                        <span class="badge bg-info">Reserved</span>
+                                                        @break
+                                                    @default
+                                                        <span class="badge bg-secondary">{{ ucfirst($room->status) }}</span>
+                                                @endswitch
+                                            @else
+                                                <span class="badge bg-secondary">Unknown</span>
+                                            @endif
+                                        </td>
                                         <td class="align-middle">
                                             <div class="d-flex gap-2">
                                                 <a href="{{ route('rooms.edit', $room) }}" class="btn btn-sm btn-primary d-inline-flex align-items-center" title="Edit">
@@ -229,11 +249,31 @@
         const tr = document.createElement('tr');
         tr.setAttribute('data-room-id', room.id);
 
+        // Helper function to get status badge HTML
+        function getStatusBadge(status) {
+            if (!status) {
+                return '<span class="badge bg-secondary">Unknown</span>';
+            }
+
+            switch(status) {
+                case 'available':
+                    return '<span class="badge bg-success">Available</span>';
+                case 'occupied':
+                    return '<span class="badge bg-danger">Occupied</span>';
+                case 'maintenance':
+                    return '<span class="badge bg-warning text-dark">Maintenance</span>';
+                case 'reserved':
+                    return '<span class="badge bg-info">Reserved</span>';
+                default:
+                    return `<span class="badge bg-secondary">${status.charAt(0).toUpperCase() + status.slice(1)}</span>`;
+            }
+        }
+
         tr.innerHTML = `
             <td class="align-middle">${room.number}</td>
-            <td class="align-middle">${room.type}</td>
+            <td class="align-middle">${room.room_type ? room.room_type.name : 'N/A'}</td>
             <td class="align-middle">${room.floor}</td>
-            <td class="align-middle">${room.notes}</td>
+            <td class="align-middle">${getStatusBadge(room.status)}</td>
             <td class="align-middle">
                 <div class="d-flex gap-2">
                     <a href="/rooms/${room.id}/edit" class="btn btn-sm btn-primary d-inline-flex align-items-center" title="Edit">
