@@ -4,9 +4,14 @@
 <div class="container-fluid">
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">{{ $title }}</h1>
-        <a href="{{ route('reports.index') }}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">
-            <i class="fas fa-arrow-left fa-sm text-white-50"></i> Back to Reports
-        </a>
+        <div>
+            <button type="button" class="btn btn-sm btn-success shadow-sm me-2" onclick="exportPdf()">
+                <i class="fas fa-download fa-sm text-white-50"></i> Export PDF
+            </button>
+            <a href="{{ route('reports.index') }}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">
+                <i class="fas fa-arrow-left fa-sm text-white-50"></i> Back to Reports
+            </a>
+        </div>
     </div>
 
     <div class="card shadow mb-4">
@@ -172,4 +177,50 @@
     });
 </script>
 @endif
+
+<script>
+    function exportPdf() {
+        // Create a form with the current report data
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '{{ route("reports.export-pdf") }}';
+
+        // Add CSRF token
+        const csrfToken = document.createElement('input');
+        csrfToken.type = 'hidden';
+        csrfToken.name = '_token';
+        csrfToken.value = '{{ csrf_token() }}';
+        form.appendChild(csrfToken);
+
+        // Add report type
+        const reportType = document.createElement('input');
+        reportType.type = 'hidden';
+        reportType.name = 'report_type';
+        reportType.value = '{{ strtolower(str_replace(" Report", "", $title)) }}';
+        form.appendChild(reportType);
+
+        // Add date range (assuming it's the current period)
+        const dateRange = document.createElement('input');
+        dateRange.type = 'hidden';
+        dateRange.name = 'date_range';
+        dateRange.value = 'custom';
+        form.appendChild(dateRange);
+
+        const startDate = document.createElement('input');
+        startDate.type = 'hidden';
+        startDate.name = 'start_date';
+        startDate.value = '{{ $startDate->format("Y-m-d") }}';
+        form.appendChild(startDate);
+
+        const endDate = document.createElement('input');
+        endDate.type = 'hidden';
+        endDate.name = 'end_date';
+        endDate.value = '{{ $endDate->format("Y-m-d") }}';
+        form.appendChild(endDate);
+
+        document.body.appendChild(form);
+        form.submit();
+        document.body.removeChild(form);
+    }
+</script>
 @endsection

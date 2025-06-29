@@ -88,6 +88,40 @@ class DatabaseSeeder extends Seeder
             'address' => '456 Oak Ave'
         ]);
 
+        // Create sample reservations
+        $rooms = Room::all();
+        $customers = \App\Models\Customer::all();
+
+        for ($i = 0; $i < 5; $i++) {
+            $room = $rooms->random();
+            $customer = $customers->random();
+
+            $checkIn = now()->addDays(rand(1, 30));
+            $checkOut = $checkIn->copy()->addDays(rand(1, 7));
+
+            $reservation = \App\Models\Reservation::create([
+                'customer_id' => $customer->id,
+                'room_id' => $room->id,
+                'check_in_date' => $checkIn,
+                'check_out_date' => $checkOut,
+                'number_of_guests' => rand(1, 4),
+                'status' => ['confirmed', 'pending', 'completed'][rand(0, 2)]
+            ]);
+
+            // Create payment for some reservations
+            if (rand(0, 1)) {
+                \App\Models\Payment::create([
+                    'reservation_id' => $reservation->id,
+                    'amount' => $room->roomType->price_per_night * $checkIn->diffInDays($checkOut),
+                    'payment_date' => now(),
+                    'payment_method' => ['credit_card', 'cash', 'bank_transfer'][rand(0, 2)],
+                    'status' => 'completed',
+                    'transaction_id' => 'TXN' . rand(1000, 9999),
+                    'notes' => 'Sample payment'
+                ]);
+            }
+        }
+
         // Call other seeders
         $this->call([
             AdminSeeder::class,

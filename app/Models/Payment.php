@@ -11,7 +11,7 @@ class Payment extends Model
     use HasFactory;
 
     protected $fillable = [
-        'invoice_id',
+        'reservation_id',
         'amount',
         'payment_date',
         'payment_method',
@@ -21,15 +21,15 @@ class Payment extends Model
     ];
 
     protected $casts = [
-        'payment_date' => 'date',
+        'payment_date' => 'datetime',
         'amount' => 'decimal:2',
     ];
 
     /**
-     * Get the invoice that owns the payment.
+     * Get the reservation that owns the payment.
      */
-    public function invoice(): BelongsTo
+    public function reservation(): BelongsTo
     {
-        return $this->belongsTo(Invoice::class);
+        return $this->belongsTo(Reservation::class);
     }
 }

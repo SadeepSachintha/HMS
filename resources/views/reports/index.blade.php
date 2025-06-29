@@ -6,6 +6,16 @@
         <h1 class="h3 mb-0 text-gray-800">Generate Reports</h1>
     </div>
 
+    @if($errors->any())
+        <div class="alert alert-danger">
+            <ul class="mb-0">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <div class="card shadow mb-4">
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">Report Configuration</h6>
@@ -68,7 +78,18 @@
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary">Generate Report</button>
+                <div class="row">
+                    <div class="col-md-6">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-eye"></i> Generate Report
+                        </button>
+                    </div>
+                    <div class="col-md-6">
+                        <button type="button" class="btn btn-success" onclick="exportPdf()">
+                            <i class="fas fa-download"></i> Export PDF
+                        </button>
+                    </div>
+                </div>
             </form>
         </div>
     </div>
@@ -100,5 +121,37 @@
             endDateInput.min = this.value;
         });
     });
+
+    function exportPdf() {
+        const form = document.querySelector('form');
+        const formData = new FormData(form);
+
+        fetch('{{ route("reports.export-pdf") }}', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                return response.blob();
+            }
+            throw new Error('Network response was not ok');
+        })
+        .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'report.pdf';
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error generating PDF. Please try again.');
+        });
+    }
 </script>
 @endsection

@@ -12,6 +12,8 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\SettingsController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\AlertController;
@@ -70,13 +72,37 @@ Route::resource('staff', StaffController::class);
 Route::resource('payments', PaymentController::class);
 Route::resource('invoices', InvoiceController::class);
 
+// Test route for debugging reports
+Route::get('/test-reports', function() {
+    try {
+        $totalRooms = \App\Models\Room::count();
+        $totalReservations = \App\Models\Reservation::count();
+        $totalPayments = \App\Models\Payment::count();
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'total_rooms' => $totalRooms,
+                'total_reservations' => $totalReservations,
+                'total_payments' => $totalPayments,
+            ]
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'error' => $e->getMessage()
+        ]);
+    }
+});
+
 // Reports Routes
-Route::get('/reports', [App\Http\Controllers\ReportController::class, 'index'])->name('reports.index');
-Route::post('/reports/generate', [App\Http\Controllers\ReportController::class, 'generate'])->name('reports.generate');
+Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+Route::post('/reports/generate', [ReportController::class, 'generate'])->name('reports.generate');
+Route::post('/reports/export-pdf', [ReportController::class, 'exportPdf'])->name('reports.export-pdf');
 
 // Settings Routes
-Route::get('/settings', [App\Http\Controllers\SettingsController::class, 'index'])->name('settings.index');
-Route::put('/settings', [App\Http\Controllers\SettingsController::class, 'update'])->name('settings.update');
+Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
+Route::put('/settings', [SettingsController::class, 'update'])->name('settings.update');
 
 Auth::routes();
 
