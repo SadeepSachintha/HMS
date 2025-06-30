@@ -27,9 +27,9 @@
                         <div class="col-md-4">
                             <div class="text-center mb-4">
                                 <div class="avatar-circle mb-3">
-                                    <span class="initials">{{ substr($staff->user->name, 0, 2) }}</span>
+                                    <span class="initials">{{ substr($staff->name, 0, 2) }}</span>
                                 </div>
-                                <h5>{{ $staff->user->name }}</h5>
+                                <h5>{{ $staff->name }}</h5>
                                 <span class="badge bg-{{ $staff->status === 'active' ? 'success' : ($staff->status === 'inactive' ? 'danger' : 'warning') }}">
                                     {{ ucfirst($staff->status) }}
                                 </span>
@@ -40,11 +40,15 @@
                                 <tbody>
                                     <tr>
                                         <th width="30%">Email:</th>
-                                        <td>{{ $staff->user->email }}</td>
+                                        <td>{{ $staff->email }}</td>
                                     </tr>
                                     <tr>
                                         <th>Phone:</th>
                                         <td>{{ $staff->phone }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Address:</th>
+                                        <td>{{ $staff->address ?? 'Not provided' }}</td>
                                     </tr>
                                     <tr>
                                         <th>Position:</th>
@@ -57,6 +61,10 @@
                                     <tr>
                                         <th>Hire Date:</th>
                                         <td>{{ $staff->hire_date->format('F d, Y') }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Salary:</th>
+                                        <td>{{ $staff->salary ? '$' . number_format($staff->salary, 2) : 'Not specified' }}</td>
                                     </tr>
                                     <tr>
                                         <th>Emergency Contact:</th>

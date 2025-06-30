@@ -127,6 +127,7 @@ class DatabaseSeeder extends Seeder
             AdminSeeder::class,
             CustomerSeeder::class,
             UserSeeder::class,
+            StaffSeeder::class,
         ]);
     }
 }

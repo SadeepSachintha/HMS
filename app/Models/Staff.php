@@ -11,9 +11,12 @@ class Staff extends Model
 
     protected $fillable = [
         'user_id',
+        'name',
+        'email',
+        'phone',
         'position',
         'department',
-        'phone',
+        'address',
         'emergency_contact',
         'hire_date',
         'salary',
@@ -22,6 +25,7 @@ class Staff extends Model
 
     protected $casts = [
         'hire_date' => 'date',
+        'salary' => 'decimal:2',
     ];
 
     /**
@@ -37,8 +41,32 @@ class Staff extends Model
      */
     public function events()
     {
-        return $this->belongsToMany(Event::class)
+        return $this->belongsToMany(Event::class, 'event_staff')
             ->withPivot('role')
             ->withTimestamps();
+    }
+
+    /**
+     * Scope a query to only include active staff.
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('status', 'active');
+    }
+
+    /**
+     * Scope a query to only include inactive staff.
+     */
+    public function scopeInactive($query)
+    {
+        return $query->where('status', 'inactive');
+    }
+
+    /**
+     * Scope a query to only include staff on leave.
+     */
+    public function scopeOnLeave($query)
+    {
+        return $query->where('status', 'on_leave');
     }
 }

@@ -9,10 +9,16 @@
                 <input type="text" name="search" class="form-control form-control-sm me-2"
                        placeholder="Search by name, position, or department..."
                        value="{{ request('search') }}">
+                <select name="status" class="form-select form-select-sm me-2" style="width: auto;">
+                    <option value="">All Status</option>
+                    <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Active</option>
+                    <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>Inactive</option>
+                    <option value="on_leave" {{ request('status') == 'on_leave' ? 'selected' : '' }}>On Leave</option>
+                </select>
                 <button type="submit" class="btn btn-sm btn-outline-primary">
                     <i class="fas fa-search"></i>
                 </button>
-                @if(request('search'))
+                @if(request('search') || request('status'))
                     <a href="{{ route('staff.index') }}" class="btn btn-sm btn-outline-secondary ms-2">
                         <i class="fas fa-times"></i>
                     </a>
@@ -24,10 +30,17 @@
         </div>
     </div>
 
-    @if(request('search'))
+    @if(request('search') || request('status'))
         <div class="alert alert-info">
-            <i class="fas fa-search"></i> Search results for: <strong>"{{ request('search') }}"</strong>
-            <a href="{{ route('staff.index') }}" class="float-end">Clear search</a>
+            <i class="fas fa-search"></i>
+            @if(request('search') && request('status'))
+                Search results for: <strong>"{{ request('search') }}"</strong> with status: <strong>"{{ ucfirst(request('status')) }}"</strong>
+            @elseif(request('search'))
+                Search results for: <strong>"{{ request('search') }}"</strong>
+            @elseif(request('status'))
+                Filtered by status: <strong>"{{ ucfirst(request('status')) }}"</strong>
+            @endif
+            <a href="{{ route('staff.index') }}" class="float-end">Clear filters</a>
         </div>
     @endif
 
@@ -95,7 +108,7 @@
                         @forelse($staff as $member)
                             <tr>
                                 <td>{{ $member->id }}</td>
-                                <td>{{ $member->user->name }}</td>
+                                <td>{{ $member->name }}</td>
                                 <td>{{ $member->position }}</td>
                                 <td>{{ $member->department }}</td>
                                 <td>{{ $member->phone }}</td>
@@ -123,8 +136,8 @@
                         @empty
                             <tr>
                                 <td colspan="7" class="text-center">
-                                    @if(request('search'))
-                                        No staff members found matching your search criteria.
+                                    @if(request('search') || request('status'))
+                                        No staff members found matching your criteria.
                                     @else
                                         No staff members found.
                                     @endif

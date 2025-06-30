@@ -27,6 +27,11 @@ class StaffController extends Controller
             });
         }
 
+        // Filter by status
+        if ($request->has('status') && !empty($request->status)) {
+            $query->where('status', $request->status);
+        }
+
         // Sorting functionality
         $sortBy = $request->get('sort', 'id');
         $sortOrder = $request->get('order', 'desc');
@@ -49,6 +54,9 @@ class StaffController extends Controller
         // Preserve search and sort parameters in pagination
         if ($request->has('search')) {
             $staff->appends(['search' => $request->search]);
+        }
+        if ($request->has('status')) {
+            $staff->appends(['status' => $request->status]);
         }
         if ($request->has('sort')) {
             $staff->appends(['sort' => $request->sort]);
@@ -75,8 +83,12 @@ class StaffController extends Controller
             'department' => 'required|string|max:100',
             'hire_date' => 'required|date',
             'address' => 'required|string',
-            'status' => 'required|in:active,inactive,on_leave'
+            'status' => 'required|in:active,inactive,on_leave',
+            'salary' => 'nullable|numeric|min:0',
+            'emergency_contact' => 'nullable|string|max:255',
         ]);
+
+        $validated['user_id'] = auth()->id();
 
         Staff::create($validated);
 
@@ -104,7 +116,9 @@ class StaffController extends Controller
             'department' => 'required|string|max:100',
             'hire_date' => 'required|date',
             'address' => 'required|string',
-            'status' => 'required|in:active,inactive,on_leave'
+            'status' => 'required|in:active,inactive,on_leave',
+            'salary' => 'nullable|numeric|min:0',
+            'emergency_contact' => 'nullable|string|max:255',
         ]);
 
         $staff->update($validated);

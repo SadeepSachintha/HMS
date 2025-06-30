@@ -14,13 +14,16 @@ return new class extends Migration
         Schema::create('staff', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained();
+            $table->string('name');
+            $table->string('email')->unique();
             $table->string('position');
             $table->string('department');
             $table->string('phone')->nullable();
+            $table->string('address')->nullable();
             $table->string('emergency_contact')->nullable();
             $table->date('hire_date');
             $table->decimal('salary', 10, 2)->nullable();
-            $table->enum('status', ['active', 'on_leave', 'terminated'])->default('active');
+            $table->enum('status', ['active', 'inactive', 'on_leave'])->default('active');
             $table->timestamps();
         });
     }
