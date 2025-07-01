@@ -43,37 +43,43 @@
                             <thead class="table-light">
                                 <tr>
                                     <th>
-                                        <a href="{{ request()->fullUrlWithQuery(['sort' => 'number', 'order' => request('sort') == 'number' && request('order') == 'asc' ? 'desc' : 'asc']) }}"
-                                           class="text-decoration-none text-dark d-flex align-items-center justify-content-between">
-                                            Room Number
-                                            <div class="d-flex flex-column">
-                                                <i class="fas fa-sort-up {{ request('sort') == 'number' && request('order') == 'asc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
-                                                <i class="fas fa-sort-down {{ request('sort') == 'number' && request('order') == 'desc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
-                                            </div>
-                                        </a>
+                                        <div class="d-flex align-items-center" style="height: 100%;">
+                                            <a href="{{ request()->fullUrlWithQuery(['sort' => 'number', 'order' => request('sort') == 'number' && request('order') == 'asc' ? 'desc' : 'asc']) }}"
+                                               class="text-decoration-none text-dark d-flex align-items-center justify-content-between w-100">
+                                                Room Number
+                                                <div class="d-flex flex-column">
+                                                    <i class="fas fa-sort-up {{ request('sort') == 'number' && request('order') == 'asc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
+                                                    <i class="fas fa-sort-down {{ request('sort') == 'number' && request('order') == 'desc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
+                                                </div>
+                                            </a>
+                                        </div>
                                     </th>
-                                    <th>Type</th>
+                                    <th><div class="d-flex align-items-center" style="height: 100%;">Type</div></th>
                                     <th>
-                                        <a href="{{ request()->fullUrlWithQuery(['sort' => 'floor', 'order' => request('sort') == 'floor' && request('order') == 'asc' ? 'desc' : 'asc']) }}"
-                                           class="text-decoration-none text-dark d-flex align-items-center justify-content-between">
-                                            Floor
-                                            <div class="d-flex flex-column">
-                                                <i class="fas fa-sort-up {{ request('sort') == 'floor' && request('order') == 'asc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
-                                                <i class="fas fa-sort-down {{ request('sort') == 'floor' && request('order') == 'desc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
-                                            </div>
-                                        </a>
+                                        <div class="d-flex align-items-center" style="height: 100%;">
+                                            <a href="{{ request()->fullUrlWithQuery(['sort' => 'floor', 'order' => request('sort') == 'floor' && request('order') == 'asc' ? 'desc' : 'asc']) }}"
+                                               class="text-decoration-none text-dark d-flex align-items-center justify-content-between w-100">
+                                                Floor
+                                                <div class="d-flex flex-column">
+                                                    <i class="fas fa-sort-up {{ request('sort') == 'floor' && request('order') == 'asc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
+                                                    <i class="fas fa-sort-down {{ request('sort') == 'floor' && request('order') == 'desc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
+                                                </div>
+                                            </a>
+                                        </div>
                                     </th>
                                     <th>
-                                        <a href="{{ request()->fullUrlWithQuery(['sort' => 'status', 'order' => request('sort') == 'status' && request('order') == 'asc' ? 'desc' : 'asc']) }}"
-                                           class="text-decoration-none text-dark d-flex align-items-center justify-content-between">
-                                            Status
-                                            <div class="d-flex flex-column">
-                                                <i class="fas fa-sort-up {{ request('sort') == 'status' && request('order') == 'asc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
-                                                <i class="fas fa-sort-down {{ request('sort') == 'status' && request('order') == 'desc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
-                                            </div>
-                                        </a>
+                                        <div class="d-flex align-items-center" style="height: 100%;">
+                                            <a href="{{ request()->fullUrlWithQuery(['sort' => 'status', 'order' => request('sort') == 'status' && request('order') == 'asc' ? 'desc' : 'asc']) }}"
+                                               class="text-decoration-none text-dark d-flex align-items-center justify-content-between w-100">
+                                                Status
+                                                <div class="d-flex flex-column">
+                                                    <i class="fas fa-sort-up {{ request('sort') == 'status' && request('order') == 'asc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
+                                                    <i class="fas fa-sort-down {{ request('sort') == 'status' && request('order') == 'desc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
+                                                </div>
+                                            </a>
+                                        </div>
                                     </th>
-                                    <th>Actions</th>
+                                    <th><div class="d-flex align-items-center" style="height: 100%;">Actions</div></th>
                                 </tr>
                             </thead>
                             <tbody>
