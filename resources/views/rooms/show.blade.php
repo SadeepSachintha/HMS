@@ -4,6 +4,9 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
+            <a href="{{ url()->previous() }}" class="btn btn-secondary mb-3">
+                &larr; Back to List
+            </a>
             <div class="card">
                 <div class="card-header">
                     <h2 class="mb-0">Room Details</h2>

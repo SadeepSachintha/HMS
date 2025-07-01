@@ -5,7 +5,7 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <a href="{{ url()->previous() }}" class="btn btn-secondary mb-3">
-                &larr; Back
+                &larr; Back to List
             </a>
             <div class="card">
                 <div class="card-header">
