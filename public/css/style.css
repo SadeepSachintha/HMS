@@ -51,6 +51,7 @@ a {
     color: #fff;
     transition: all 0.3s;
     min-height: 100vh;
+    overflow-y: auto;
 }
 
 .sidebar.active {
