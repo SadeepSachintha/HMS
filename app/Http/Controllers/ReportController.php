@@ -5,8 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Reservation;
 use App\Models\Room;
 use App\Models\Payment;
+use App\Models\RoomType;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use App\Exports\OccupancyReportExport;
+use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ReportController extends Controller
 {
@@ -28,15 +32,17 @@ class ReportController extends Controller
                 'date_range' => 'required|in:today,yesterday,last_7_days,this_month,last_month,custom',
                 'start_date' => 'required_if:date_range,custom|date',
                 'end_date' => 'required_if:date_range,custom|date|after_or_equal:start_date',
+                'room_type_id' => 'nullable|exists:room_types,id',
             ]);
 
             $dateRange = $this->getDateRange($request->date_range, $request->start_date, $request->end_date);
             $startDate = $dateRange['start'];
             $endDate = $dateRange['end'];
+            $roomTypeId = $request->room_type_id;
 
             switch ($request->report_type) {
                 case 'occupancy':
-                    $data = $this->generateOccupancyReport($startDate, $endDate);
+                    $data = $this->generateOccupancyReport($startDate, $endDate, $roomTypeId);
                     $title = 'Occupancy Report';
                     break;
                 case 'revenue':
@@ -51,7 +57,8 @@ class ReportController extends Controller
                     throw new \Exception('Invalid report type');
             }
 
-            return view('reports.show', compact('data', 'title', 'startDate', 'endDate'));
+            $roomTypes = RoomType::all();
+            return view('reports.show', compact('data', 'title', 'startDate', 'endDate', 'roomTypes', 'roomTypeId'));
         } catch (\Exception $e) {
             return back()->withErrors(['error' => 'Error generating report: ' . $e->getMessage()]);
         }
@@ -88,11 +95,27 @@ class ReportController extends Controller
                     throw new \Exception('Invalid report type');
             }
 
-            $pdf = \PDF::loadView('reports.pdf', compact('data', 'title', 'startDate', 'endDate'));
+            $pdf = Pdf::loadView('reports.pdf', compact('data', 'title', 'startDate', 'endDate'));
             return $pdf->download($title . '_' . $startDate->format('Y-m-d') . '_to_' . $endDate->format('Y-m-d') . '.pdf');
         } catch (\Exception $e) {
             return back()->withErrors(['error' => 'Error generating PDF: ' . $e->getMessage()]);
         }
+    }
+
+    public function exportOccupancyExcel(Request $request)
+    {
+        $request->validate([
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+            'room_type_id' => 'nullable|exists:room_types,id',
+        ]);
+        $startDate = Carbon::parse($request->start_date)->startOfDay();
+        $endDate = Carbon::parse($request->end_date)->endOfDay();
+        $roomTypeId = $request->room_type_id;
+        $data = $this->generateOccupancyReport($startDate, $endDate, $roomTypeId);
+        $export = new OccupancyReportExport($data['room_details']->toArray());
+        $fileName = 'Occupancy_Report_' . $startDate->format('Ymd') . '_to_' . $endDate->format('Ymd') . '.xlsx';
+        return Excel::download($export, $fileName);
     }
 
     private function getDateRange($range, $customStart = null, $customEnd = null)
@@ -136,26 +159,56 @@ class ReportController extends Controller
         }
     }
 
-    private function generateOccupancyReport($startDate, $endDate)
+    private function generateOccupancyReport($startDate, $endDate, $roomTypeId = null)
     {
-        $totalRooms = Room::count();
+        $roomQuery = Room::query();
+        if ($roomTypeId) {
+            $roomQuery->where('room_type_id', $roomTypeId);
+        }
+        $totalRooms = $roomQuery->count();
+        $roomIds = $roomQuery->pluck('id');
 
-        // Count rooms that have reservations overlapping with the date range
-        $occupiedRooms = Reservation::where(function($query) use ($startDate, $endDate) {
-            $query->where(function($q) use ($startDate, $endDate) {
-                // Reservations that start within the range
-                $q->whereBetween('check_in_date', [$startDate, $endDate]);
-            })->orWhere(function($q) use ($startDate, $endDate) {
-                // Reservations that end within the range
-                $q->whereBetween('check_out_date', [$startDate, $endDate]);
-            })->orWhere(function($q) use ($startDate, $endDate) {
-                // Reservations that span the entire range
-                $q->where('check_in_date', '<=', $startDate)
-                  ->where('check_out_date', '>=', $endDate);
+        $reservationQuery = Reservation::with(['room', 'room.roomType'])
+            ->whereIn('room_id', $roomIds)
+            ->where(function($query) use ($startDate, $endDate) {
+                $query->where(function($q) use ($startDate, $endDate) {
+                    $q->whereBetween('check_in_date', [$startDate, $endDate]);
+                })->orWhere(function($q) use ($startDate, $endDate) {
+                    $q->whereBetween('check_out_date', [$startDate, $endDate]);
+                })->orWhere(function($q) use ($startDate, $endDate) {
+                    $q->where('check_in_date', '<=', $startDate)
+                      ->where('check_out_date', '>=', $endDate);
+                });
             });
-        })->distinct('room_id')->count('room_id');
+        $reservations = $reservationQuery->get();
 
+        $occupiedRoomIds = $reservations->pluck('room_id')->unique();
+        $occupiedRooms = $occupiedRoomIds->count();
         $occupancyRate = $totalRooms > 0 ? ($occupiedRooms / $totalRooms) * 100 : 0;
+
+        $roomTypes = RoomType::withCount(['rooms as total_rooms' => function($q) use ($roomIds) {
+            $q->whereIn('id', $roomIds);
+        }])->get();
+        $breakdown = $roomTypes->map(function($type) use ($reservations) {
+            $typeRoomIds = $type->rooms->pluck('id');
+            $occupied = $reservations->whereIn('room_id', $typeRoomIds)->pluck('room_id')->unique()->count();
+            return [
+                'room_type' => $type->name,
+                'total_rooms' => $type->total_rooms,
+                'occupied_rooms' => $occupied,
+                'occupancy_rate' => $type->total_rooms > 0 ? round(($occupied / $type->total_rooms) * 100, 2) : 0,
+            ];
+        });
+
+        $roomDetails = $reservations->map(function($reservation) {
+            return [
+                'room_no' => $reservation->room->number ?? '',
+                'room_type' => $reservation->room->roomType->name ?? '',
+                'check_in' => $reservation->check_in_date->format('Y-m-d'),
+                'check_out' => $reservation->check_out_date->format('Y-m-d'),
+                'status' => 'Occupied',
+            ];
+        });
 
         return [
             'total_rooms' => $totalRooms,
@@ -165,6 +218,8 @@ class ReportController extends Controller
                 'start' => $startDate->format('Y-m-d'),
                 'end' => $endDate->format('Y-m-d'),
             ],
+            'breakdown' => $breakdown,
+            'room_details' => $roomDetails,
         ];
     }
 

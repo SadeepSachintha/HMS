@@ -99,6 +99,7 @@ Route::get('/test-reports', function() {
 Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
 Route::post('/reports/generate', [ReportController::class, 'generate'])->name('reports.generate');
 Route::post('/reports/export-pdf', [ReportController::class, 'exportPdf'])->name('reports.export-pdf');
+Route::get('/reports/occupancy/export-excel', [ReportController::class, 'exportOccupancyExcel'])->name('reports.occupancy.export-excel');
 
 // Settings Routes
 Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
