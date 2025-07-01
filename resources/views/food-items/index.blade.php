@@ -105,17 +105,8 @@
                                 <tbody>
                                     @forelse($foodItems as $item)
                                         <tr>
-                                            <td class="align-middle">
-                                                @if ($item->image_path)
-                                                    <img src="{{ asset('storage/' . $item->image_path) }}"
-                                                        alt="{{ $item->name }}" class="img-thumbnail"
-                                                        style="max-width: 50px;">
-                                                @else
-                                                    <span class="text-muted">No image</span>
-                                                @endif
-                                            </td>
                                             <td class="align-middle">{{ $item->name }}</td>
-                                            <td class="align-middle">{{ $item->category }}</td>
+                                            <td class="align-middle">{{ ucfirst(str_replace('_', ' ', $item->category)) }}</td>
                                             <td class="align-middle">${{ number_format($item->price, 2) }}</td>
                                             <td class="align-middle">
                                                 <span class="badge {{ $item->is_available ? 'bg-success' : 'bg-danger' }}">

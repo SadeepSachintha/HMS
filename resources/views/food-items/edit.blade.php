@@ -116,6 +116,7 @@
                                 </div>
 
                                 <div class="mb-3">
+                                    <input type="hidden" name="is_available" value="0">
                                     <div class="form-check">
                                         <input type="checkbox"
                                                class="form-check-input @error('is_available') is-invalid @enderror"
