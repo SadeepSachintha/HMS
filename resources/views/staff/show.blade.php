@@ -4,6 +4,9 @@
 <div class="container-fluid">
     <div class="row justify-content-center">
         <div class="col-md-8">
+            <a href="{{ url()->previous() }}" class="btn btn-secondary mb-3">
+                &larr; Back
+            </a>
             <div class="card">
                 <div class="card-header">
                     <div class="d-flex justify-content-between align-items-center">
@@ -26,9 +29,6 @@
                     <div class="row">
                         <div class="col-md-4">
                             <div class="text-center mb-4">
-                                <div class="avatar-circle mb-3">
-                                    <span class="initials">{{ substr($staff->name, 0, 2) }}</span>
-                                </div>
                                 <h5>{{ $staff->name }}</h5>
                                 <span class="badge bg-{{ $staff->status === 'active' ? 'success' : ($staff->status === 'inactive' ? 'danger' : 'warning') }}">
                                     {{ ucfirst($staff->status) }}

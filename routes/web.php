@@ -65,6 +65,10 @@ Route::resource('food-items', FoodItemController::class);
 Route::resource('events', EventController::class);
 Route::get('/events/calendar', [EventController::class, 'calendar'])->name('events.calendar');
 
+// Event staff assignment routes
+Route::post('/events/{event}/staff/assign', [App\Http\Controllers\EventController::class, 'assignStaff'])->name('events.staff.assign');
+Route::delete('/events/{event}/staff/{staff}/remove', [App\Http\Controllers\EventController::class, 'removeStaff'])->name('events.staff.remove');
+
 // Staff Routes
 Route::resource('staff', StaffController::class);
 

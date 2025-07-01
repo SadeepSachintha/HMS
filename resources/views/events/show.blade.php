@@ -4,6 +4,9 @@
 <div class="container-fluid">
     <div class="row justify-content-center">
         <div class="col-md-8">
+            <a href="{{ url()->previous() }}" class="btn btn-secondary mb-3">
+                &larr; Back
+            </a>
             <div class="card">
                 <div class="card-header">
                     <div class="d-flex justify-content-between align-items-center">
@@ -155,7 +158,7 @@
                         <select class="form-select" id="staff_id" name="staff_id" required>
                             <option value="">Select Staff Member</option>
                             @foreach($availableStaff as $staff)
-                                <option value="{{ $staff->id }}">{{ $staff->user->name }} ({{ $staff->position }})</option>
+                                <option value="{{ $staff->id }}">{{ $staff->name }} ({{ $staff->position }})</option>
                             @endforeach
                         </select>
                     </div>

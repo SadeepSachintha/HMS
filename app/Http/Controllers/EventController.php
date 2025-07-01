@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use App\Models\Customer;
 use Illuminate\Http\Request;
 
 class EventController extends Controller
@@ -61,7 +62,8 @@ class EventController extends Controller
 
     public function create()
     {
-        return view('events.create');
+        $customers = Customer::all();
+        return view('events.create', compact('customers'));
     }
 
     public function store(Request $request)
@@ -69,11 +71,14 @@ class EventController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after:start_date',
+            'start_time' => 'required|date',
+            'end_time' => 'required|date|after:start_time',
             'location' => 'required|string|max:255',
-            'capacity' => 'required|integer|min:1',
-            'status' => 'required|in:scheduled,ongoing,completed,cancelled'
+            'max_attendees' => 'nullable|integer|min:1',
+            'price' => 'nullable|numeric|min:0',
+            'customer_id' => 'required|exists:customers,id',
+            'status' => 'required|in:scheduled,in_progress,completed,cancelled',
+            'notes' => 'nullable|string',
         ]);
 
         Event::create($validated);
@@ -84,7 +89,9 @@ class EventController extends Controller
 
     public function show(Event $event)
     {
-        return view('events.show', compact('event'));
+        $assignedStaffIds = $event->staff->pluck('id');
+        $availableStaff = \App\Models\Staff::whereNotIn('id', $assignedStaffIds)->get();
+        return view('events.show', compact('event', 'availableStaff'));
     }
 
     public function edit(Event $event)
@@ -149,5 +156,21 @@ class EventController extends Controller
             default:
                 return '#6c757d'; // secondary gray
         }
+    }
+
+    public function assignStaff(Request $request, Event $event)
+    {
+        $validated = $request->validate([
+            'staff_id' => 'required|exists:staff,id',
+            'role' => 'required|string|max:255',
+        ]);
+        $event->staff()->attach($validated['staff_id'], ['role' => $validated['role']]);
+        return redirect()->route('events.show', $event)->with('success', 'Staff assigned successfully.');
+    }
+
+    public function removeStaff(Event $event, $staffId)
+    {
+        $event->staff()->detach($staffId);
+        return redirect()->route('events.show', $event)->with('success', 'Staff removed successfully.');
     }
 }

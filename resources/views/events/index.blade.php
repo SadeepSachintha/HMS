@@ -64,7 +64,6 @@
                                             </div>
                                         </a>
                                     </th>
-                                    <th>Description</th>
                                     <th>
                                         <a href="{{ request()->fullUrlWithQuery(['sort' => 'start_date', 'order' => request('sort') == 'start_date' && request('order') == 'asc' ? 'desc' : 'asc']) }}"
                                            class="text-decoration-none text-dark d-flex align-items-center justify-content-between">
@@ -112,7 +111,6 @@
                                 @forelse($events as $event)
                                     <tr>
                                         <td>{{ $event->name }}</td>
-                                        <td>{{ Str::limit($event->description, 50) }}</td>
                                         <td>{{ $event->start_time->format('Y-m-d H:i') }}</td>
                                         <td>{{ $event->end_time->format('Y-m-d H:i') }}</td>
                                         <td>{{ $event->location }}</td>
