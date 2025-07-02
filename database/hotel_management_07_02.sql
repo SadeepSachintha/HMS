@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 02, 2025 at 05:06 PM
+-- Generation Time: Jul 02, 2025 at 08:05 PM
 -- Server version: 10.4.13-MariaDB
 -- PHP Version: 7.3.19
 
@@ -201,6 +201,18 @@ CREATE TABLE `invoices` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `invoices`
+--
+
+INSERT INTO `invoices` (`id`, `invoice_number`, `customer_id`, `event_id`, `invoice_date`, `due_date`, `subtotal`, `tax_rate`, `tax_amount`, `total_amount`, `status`, `notes`, `created_at`, `updated_at`) VALUES
+(1, 'INV-000001', 11, 3, '2025-07-02', '2025-07-03', '75000.00', '5.00', '3750.00', '78750.00', 'draft', NULL, '2025-07-02 11:21:42', '2025-07-02 11:21:42'),
+(2, 'INV-000002', 11, 3, '2025-07-02', '2025-07-03', '75000.00', '5.00', '3750.00', '78750.00', 'draft', NULL, '2025-07-02 11:31:13', '2025-07-02 11:31:13'),
+(3, 'INV-000003', 11, NULL, '2025-07-02', '2025-07-03', '25000.00', '5.00', '1250.00', '26250.00', 'draft', NULL, '2025-07-02 11:34:42', '2025-07-02 11:34:42'),
+(4, 'INV-000004', 17, NULL, '2025-07-02', '2025-07-09', '50000.00', '5.00', '2500.00', '52500.00', 'draft', NULL, '2025-07-02 11:39:00', '2025-07-02 11:54:19'),
+(6, 'INV-000005', 14, 2, '2025-07-02', '2025-07-16', '22500.00', '5.00', '1125.00', '23625.00', 'draft', NULL, '2025-07-02 12:01:34', '2025-07-02 12:01:34'),
+(7, 'INV-000007', 16, 1, '2025-07-02', '2025-07-18', '15000.00', '0.00', '0.00', '15000.00', 'sent', NULL, '2025-07-02 12:05:33', '2025-07-02 12:28:18');
+
 -- --------------------------------------------------------
 
 --
@@ -216,6 +228,14 @@ CREATE TABLE `invoice_items` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `invoice_items`
+--
+
+INSERT INTO `invoice_items` (`id`, `invoice_id`, `description`, `quantity`, `unit_price`, `created_at`, `updated_at`) VALUES
+(1, 6, 'Event', 15, '1500.00', '2025-07-02 12:01:34', '2025-07-02 12:01:34'),
+(3, 7, 'Event', 10, '1500.00', '2025-07-02 12:28:18', '2025-07-02 12:28:18');
 
 -- --------------------------------------------------------
 
@@ -254,7 +274,8 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (29, '2024_03_20_000002_create_invoices_table', 2),
 (30, '2024_03_20_000003_create_invoice_items_table', 2),
 (31, '2025_03_16_124020_create_sessions_table', 2),
-(32, '2025_06_08_053011_create_alerts_table', 2);
+(32, '2025_06_08_053011_create_alerts_table', 2),
+(33, '2024_06_09_000001_add_invoice_id_to_payments_table', 3);
 
 -- --------------------------------------------------------
 
@@ -277,6 +298,7 @@ CREATE TABLE `password_resets` (
 CREATE TABLE `payments` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `reservation_id` bigint(20) UNSIGNED NOT NULL,
+  `invoice_id` bigint(20) UNSIGNED DEFAULT NULL,
   `amount` decimal(10,2) NOT NULL,
   `payment_method` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `status` enum('pending','completed','failed','refunded') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'pending',
@@ -627,7 +649,8 @@ ALTER TABLE `password_resets`
 --
 ALTER TABLE `payments`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `payments_reservation_id_foreign` (`reservation_id`);
+  ADD KEY `payments_reservation_id_foreign` (`reservation_id`),
+  ADD KEY `payments_invoice_id_foreign` (`invoice_id`);
 
 --
 -- Indexes for table `personal_access_tokens`
@@ -744,19 +767,19 @@ ALTER TABLE `food_items`
 -- AUTO_INCREMENT for table `invoices`
 --
 ALTER TABLE `invoices`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `invoice_items`
 --
 ALTER TABLE `invoice_items`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT for table `payments`
@@ -858,6 +881,7 @@ ALTER TABLE `invoice_items`
 -- Constraints for table `payments`
 --
 ALTER TABLE `payments`
+  ADD CONSTRAINT `payments_invoice_id_foreign` FOREIGN KEY (`invoice_id`) REFERENCES `invoices` (`id`) ON DELETE SET NULL,
   ADD CONSTRAINT `payments_reservation_id_foreign` FOREIGN KEY (`reservation_id`) REFERENCES `reservations` (`id`);
 
 --
