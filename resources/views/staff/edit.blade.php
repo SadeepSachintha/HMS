@@ -65,6 +65,11 @@
                                 <option value="Food & Beverage" {{ old('department', $staff->department) == 'Food & Beverage' ? 'selected' : '' }}>Food & Beverage</option>
                                 <option value="Maintenance" {{ old('department', $staff->department) == 'Maintenance' ? 'selected' : '' }}>Maintenance</option>
                                 <option value="Security" {{ old('department', $staff->department) == 'Security' ? 'selected' : '' }}>Security</option>
+                                <option value="Human Resources" {{ old('department', $staff->department) == 'Human Resources' ? 'selected' : '' }}>Human Resources</option>
+                                <option value="Kitchen" {{ old('department', $staff->department) == 'Kitchen' ? 'selected' : '' }}>Kitchen</option>
+                                <option value="Events" {{ old('department', $staff->department) == 'Events' ? 'selected' : '' }}>Events</option>
+                                <option value="IT" {{ old('department', $staff->department) == 'IT' ? 'selected' : '' }}>IT</option>
+                                <option value="Other" {{ old('department', $staff->department) == 'Other' ? 'selected' : '' }}>Other</option>
                                 <option value="Administration" {{ old('department', $staff->department) == 'Administration' ? 'selected' : '' }}>Administration</option>
                             </select>
                             @error('department')

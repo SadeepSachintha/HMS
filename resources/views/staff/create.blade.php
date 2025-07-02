@@ -61,6 +61,12 @@
                                 <option value="Food & Beverage" {{ old('department') == 'Food & Beverage' ? 'selected' : '' }}>Food & Beverage</option>
                                 <option value="Maintenance" {{ old('department') == 'Maintenance' ? 'selected' : '' }}>Maintenance</option>
                                 <option value="Security" {{ old('department') == 'Security' ? 'selected' : '' }}>Security</option>
+                                <option value="Kitchen" {{ old('department') == 'Kitchen' ? 'selected' : '' }}>Kitchen</option>
+                                <option value="Laundry" {{ old('department') == 'Laundry' ? 'selected' : '' }}>Laundry</option>
+                                <option value="IT" {{ old('department') == 'IT' ? 'selected' : '' }}>IT</option>
+                                <option value="Events" {{ old('department') == 'Events' ? 'selected' : '' }}>Events</option>
+                                <option value="Human Resources" {{ old('department') == 'Human Resources' ? 'selected' : '' }}>Human Resources</option>
+                                <option value="Other" {{ old('department') == 'Other' ? 'selected' : '' }}>Other</option>
                                 <option value="Administration" {{ old('department') == 'Administration' ? 'selected' : '' }}>Administration</option>
                             </select>
                             @error('department')
