@@ -12,6 +12,7 @@ class Payment extends Model
 
     protected $fillable = [
         'reservation_id',
+        'invoice_id',
         'amount',
         'payment_date',
         'payment_method',
@@ -31,5 +32,13 @@ class Payment extends Model
     public function reservation(): BelongsTo
     {
         return $this->belongsTo(Reservation::class);
+    }
+
+    /**
+     * Get the invoice that owns the payment.
+     */
+    public function invoice(): BelongsTo
+    {
+        return $this->belongsTo(Invoice::class);
     }
 }

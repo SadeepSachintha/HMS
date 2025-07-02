@@ -3,7 +3,7 @@
 @section('content')
 <div class="container-fluid">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-md-10">
             <div class="card">
                 <div class="card-header">
                     <h4 class="mb-0">Create New Invoice</h4>
@@ -157,7 +157,7 @@
 </div>
 @endsection
 
-@section('scripts')
+@push('scripts')
 <script>
 $(document).ready(function() {
     let itemCount = 1;
@@ -185,6 +185,8 @@ $(document).ready(function() {
         });
 
         $('#invoice-items').append(newItem);
+        // Trigger calculation for the new row
+        newItem.find('.quantity, .unit-price').trigger('input');
         itemCount++;
         updateTotals();
     });
@@ -228,8 +230,15 @@ $(document).ready(function() {
     // Update totals when tax rate changes
     $('#tax_rate').on('input', updateTotals);
 
-    // Initialize totals
+    // Initialize totals and calculate for all rows on page load
+    $('.invoice-item').each(function() {
+        const item = $(this);
+        const quantity = parseFloat(item.find('.quantity').val()) || 0;
+        const unitPrice = parseFloat(item.find('.unit-price').val()) || 0;
+        const total = quantity * unitPrice;
+        item.find('.item-total').val(total.toFixed(2));
+    });
     updateTotals();
 });
 </script>
-@endsection
+@endpush

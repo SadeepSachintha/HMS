@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Payment;
+use App\Models\Invoice;
 use Illuminate\Http\Request;
 
 class PaymentController extends Controller
@@ -48,17 +49,17 @@ class PaymentController extends Controller
 
     public function create()
     {
-        return view('payments.create');
+        $invoices = Invoice::with('customer')->orderBy('invoice_date', 'desc')->get();
+        return view('payments.create', compact('invoices'));
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'reservation_id' => 'required|exists:reservations,id',
-            'amount' => 'required|numeric|min:0',
-            'payment_method' => 'required|in:cash,credit_card,debit_card,bank_transfer',
+            'invoice_id' => 'required|exists:invoices,id',
+            'amount' => 'required|numeric|min:0.01',
+            'payment_method' => 'required|in:cash,credit_card,debit_card,bank_transfer,check',
             'payment_date' => 'required|date',
-            'status' => 'required|in:pending,completed,failed,refunded',
             'transaction_id' => 'nullable|string|max:100|unique:payments,transaction_id',
             'notes' => 'nullable|string'
         ]);
@@ -76,7 +77,8 @@ class PaymentController extends Controller
 
     public function edit(Payment $payment)
     {
-        return view('payments.edit', compact('payment'));
+        $invoices = \App\Models\Invoice::with('customer')->orderBy('invoice_date', 'desc')->get();
+        return view('payments.edit', compact('payment', 'invoices'));
     }
 
     public function update(Request $request, Payment $payment)

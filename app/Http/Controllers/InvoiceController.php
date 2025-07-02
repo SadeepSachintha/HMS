@@ -14,7 +14,7 @@ class InvoiceController extends Controller
 
     public function index(Request $request)
     {
-        $query = Invoice::with(['reservation', 'customer']);
+        $query = Invoice::with(['customer']);
 
         // Search functionality
         if ($request->has('search') && !empty($request->search)) {
@@ -63,24 +63,39 @@ class InvoiceController extends Controller
 
     public function create()
     {
-        return view('invoices.create');
+        $customers = \App\Models\Customer::orderBy('name')->get();
+        $events = \App\Models\Event::orderBy('start_time', 'desc')->get();
+        return view('invoices.create', compact('customers', 'events'));
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'reservation_id' => 'required|exists:reservations,id',
-            'invoice_number' => 'required|string|unique:invoices,invoice_number',
-            'issue_date' => 'required|date',
-            'due_date' => 'required|date|after:issue_date',
+            'customer_id' => 'required|exists:customers,id',
+            'event_id' => 'nullable|exists:events,id',
+            'invoice_date' => 'required|date',
+            'due_date' => 'required|date|after:invoice_date',
             'subtotal' => 'required|numeric|min:0',
-            'tax' => 'required|numeric|min:0',
-            'total' => 'required|numeric|min:0',
-            'status' => 'required|in:draft,sent,paid,overdue,cancelled',
+            'tax_rate' => 'required|numeric|min:0',
+            'tax_amount' => 'required|numeric|min:0',
+            'total_amount' => 'required|numeric|min:0',
             'notes' => 'nullable|string'
         ]);
 
-        Invoice::create($validated);
+        $invoice = Invoice::create($validated);
+
+        // Save invoice items
+        if ($request->has('items')) {
+            foreach ($request->items as $item) {
+                if (!empty($item['description']) && !empty($item['quantity']) && !empty($item['unit_price'])) {
+                    $invoice->items()->create([
+                        'description' => $item['description'],
+                        'quantity' => $item['quantity'],
+                        'unit_price' => $item['unit_price'],
+                    ]);
+                }
+            }
+        }
 
         return redirect()->route('invoices.index')
             ->with('success', 'Invoice created successfully.');
@@ -93,24 +108,43 @@ class InvoiceController extends Controller
 
     public function edit(Invoice $invoice)
     {
-        return view('invoices.edit', compact('invoice'));
+        $customers = \App\Models\Customer::orderBy('name')->get();
+        $events = \App\Models\Event::orderBy('start_time', 'desc')->get();
+        return view('invoices.edit', compact('invoice', 'customers', 'events'));
     }
 
     public function update(Request $request, Invoice $invoice)
     {
         $validated = $request->validate([
-            'reservation_id' => 'required|exists:reservations,id',
-            'invoice_number' => 'required|string|unique:invoices,invoice_number,' . $invoice->id,
-            'issue_date' => 'required|date',
-            'due_date' => 'required|date|after:issue_date',
+            'customer_id' => 'required|exists:customers,id',
+            'event_id' => 'nullable|exists:events,id',
+            'invoice_date' => 'required|date',
+            'due_date' => 'required|date|after:invoice_date',
             'subtotal' => 'required|numeric|min:0',
-            'tax' => 'required|numeric|min:0',
-            'total' => 'required|numeric|min:0',
+            'tax_rate' => 'required|numeric|min:0',
+            'tax_amount' => 'required|numeric|min:0',
+            'total_amount' => 'required|numeric|min:0',
             'status' => 'required|in:draft,sent,paid,overdue,cancelled',
             'notes' => 'nullable|string'
         ]);
 
         $invoice->update($validated);
+
+        // Remove old items
+        $invoice->items()->delete();
+
+        // Add new items
+        if ($request->has('items')) {
+            foreach ($request->items as $item) {
+                if (!empty($item['description']) && !empty($item['quantity']) && !empty($item['unit_price'])) {
+                    $invoice->items()->create([
+                        'description' => $item['description'],
+                        'quantity' => $item['quantity'],
+                        'unit_price' => $item['unit_price'],
+                    ]);
+                }
+            }
+        }
 
         return redirect()->route('invoices.index')
             ->with('success', 'Invoice updated successfully.');

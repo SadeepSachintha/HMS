@@ -47,7 +47,6 @@
                                     </div>
                                 </a>
                             </th>
-                            <th>Reservation</th>
                             <th>Customer</th>
                             <th>
                                 <a href="{{ request()->fullUrlWithQuery(['sort' => 'issue_date', 'order' => request('sort') == 'issue_date' && request('order') == 'asc' ? 'desc' : 'asc']) }}"
@@ -96,15 +95,10 @@
                         @forelse($invoices as $invoice)
                             <tr>
                                 <td>{{ $invoice->invoice_number }}</td>
-                                <td>
-                                    <a href="{{ route('reservations.show', $invoice->reservation_id) }}">
-                                        #{{ $invoice->reservation_id }}
-                                    </a>
-                                </td>
-                                <td>{{ $invoice->reservation->customer->name }}</td>
-                                <td>{{ $invoice->issue_date->format('Y-m-d') }}</td>
-                                <td>{{ $invoice->due_date->format('Y-m-d') }}</td>
-                                <td>${{ number_format($invoice->total, 2) }}</td>
+                                <td>{{ $invoice->customer->name }}</td>
+                                <td>{{ $invoice->invoice_date ? $invoice->invoice_date->format('Y-m-d') : '' }}</td>
+                                <td>{{ $invoice->due_date ? $invoice->due_date->format('Y-m-d') : '' }}</td>
+                                <td>${{ number_format($invoice->total_amount, 2) }}</td>
                                 <td>
                                     <span class="badge bg-{{ $invoice->status === 'paid' ? 'success' : ($invoice->status === 'pending' ? 'warning' : ($invoice->status === 'overdue' ? 'danger' : 'info')) }}">
                                         {{ ucfirst($invoice->status) }}

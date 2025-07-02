@@ -75,6 +75,7 @@ Route::resource('staff', StaffController::class);
 // Billing & Payments Routes
 Route::resource('payments', PaymentController::class);
 Route::resource('invoices', InvoiceController::class);
+Route::get('invoices/{invoice}/download', [InvoiceController::class, 'download'])->name('invoices.download');
 
 // Test route for debugging reports
 Route::get('/test-reports', function() {

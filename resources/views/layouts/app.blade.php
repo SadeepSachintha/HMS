@@ -39,12 +39,12 @@
                         <span>Reservations</span>
                     </a>
                 </li>
-                <li class="{{ Request::is('reservations/calendar*') ? 'active' : '' }}">
+                {{-- <li class="{{ Request::is('reservations/calendar*') ? 'active' : '' }}">
                     <a href="{{ route('reservations.calendar') }}">
                         <i class="fas fa-calendar-week"></i>
                         <span>Calendar</span>
                     </a>
-                </li>
+                </li> --}}
                 <li class="{{ Request::is('customers*') ? 'active' : '' }}">
                     <a href="{{ route('customers.index') }}">
                         <i class="fas fa-users"></i>
@@ -88,15 +88,15 @@
                     </a>
                     <ul class="collapse list-unstyled" id="billingSubmenu">
                         <li>
-                            <a href="{{ route('payments.index') }}">
-                                <i class="fas fa-money-bill-wave"></i>
-                                <span>Payments</span>
-                            </a>
-                        </li>
-                        <li>
                             <a href="{{ route('invoices.index') }}">
                                 <i class="fas fa-file-invoice"></i>
                                 <span>Invoices</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('payments.index') }}">
+                                <i class="fas fa-money-bill-wave"></i>
+                                <span>Payments</span>
                             </a>
                         </li>
                     </ul>

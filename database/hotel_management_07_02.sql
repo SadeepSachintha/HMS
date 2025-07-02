@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 02, 2025 at 04:05 PM
+-- Generation Time: Jul 02, 2025 at 05:06 PM
 -- Server version: 10.4.13-MariaDB
 -- PHP Version: 7.3.19
 
@@ -493,7 +493,11 @@ CREATE TABLE `staff` (
 --
 
 INSERT INTO `staff` (`id`, `user_id`, `name`, `email`, `position`, `department`, `phone`, `address`, `emergency_contact`, `hire_date`, `salary`, `status`, `created_at`, `updated_at`) VALUES
-(1, 1, 'Chamila Silva', 'amila@gmail.com', 'Receptionist', 'Front Office', '+94763928334', '51, Railway Station Rd, Kalutara.', '+94763928359', '2025-07-01', '40000.00', 'active', '2025-07-01 06:18:56', '2025-07-02 08:31:56');
+(17, 1, 'Nadeesha Perera', 'nadeesha.perera@gmail.com', 'Receptionist', 'Front Office', '0771234567', 'No. 45, Kandy Road, Colombo', '0745678912', '2025-03-15', '55000.00', 'active', '2025-07-02 09:09:07', '2025-07-02 09:09:07'),
+(18, 2, 'Ravindu Senanayake', 'ravindu.s@gmail.com', 'Housekeeping Supervisor', 'Housekeeping', '0779876543', '12 Lake View, Galle', '0751234567', '2021-11-20', '60000.00', 'active', NULL, '2025-07-02 09:29:41'),
+(19, 3, 'Chamari Jayasuriya', 'chamari.j@gmail.com', 'Event Coordinator', 'Events', '0712347890', '88 Park Street, Nuwara Eliya', '0774561230', '2023-01-10', '58000.00', 'on_leave', NULL, '2025-07-02 09:29:18'),
+(20, 4, 'Thilina Fernando', 'thilina.f@gmail.com', 'Chef', 'Kitchen', '0701122334', '67 Beach Road, Negombo', '0789988776', '2020-06-05', '75000.00', 'active', NULL, '2025-07-02 09:25:05'),
+(21, 5, 'Dilani Rajapaksha', 'dilani.r@gmail.com', 'HR Assistant', 'Human Resources', '0722233445', '21 Hill Side, Matara', '0717654321', '2023-09-01', '62000.00', 'inactive', NULL, '2025-07-02 09:22:26');
 
 -- --------------------------------------------------------
 
@@ -538,7 +542,11 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `two_factor_secret`, `two_factor_recovery_codes`, `two_factor_confirmed_at`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1, 'Sadeep', 'manager@gmail.com', NULL, '$2y$10$AFIiYvvTIxLjglXDTAIWzODw1aLbA3u3taWTGimPdnQ8f/IVBiL0.', NULL, NULL, NULL, NULL, '2025-06-28 10:22:23', '2025-06-28 10:22:23');
+(1, 'Sadeep', 'manager@gmail.com', NULL, '$2y$10$AFIiYvvTIxLjglXDTAIWzODw1aLbA3u3taWTGimPdnQ8f/IVBiL0.', NULL, NULL, NULL, NULL, '2025-06-28 10:22:23', '2025-06-28 10:22:23'),
+(2, 'Ravindu Senanayake', 'ravindu.s@example.com', NULL, 'password2', NULL, NULL, NULL, NULL, NULL, NULL),
+(3, 'Chamari Jayasuriya', 'chamari.j@example.com', NULL, 'password3', NULL, NULL, NULL, NULL, NULL, NULL),
+(4, 'Thilina Fernando', 'thilina.f@example.com', NULL, 'password4', NULL, NULL, NULL, NULL, NULL, NULL),
+(5, 'Dilani Rajapaksha', 'dilani.r@example.com', NULL, 'password5', NULL, NULL, NULL, NULL, NULL, NULL);
 
 --
 -- Indexes for dumped tables
@@ -796,7 +804,7 @@ ALTER TABLE `settings`
 -- AUTO_INCREMENT for table `staff`
 --
 ALTER TABLE `staff`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT for table `system_notifications`
@@ -808,7 +816,7 @@ ALTER TABLE `system_notifications`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Constraints for dumped tables

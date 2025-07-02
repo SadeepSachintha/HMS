@@ -100,10 +100,6 @@
                                     </div>
                                     @endforeach
                                 </div>
-
-                                <button type="button" class="btn btn-success" id="add-item">
-                                    <i class="fas fa-plus"></i> Add Item
-                                </button>
                             </div>
                         </div>
 
@@ -184,7 +180,18 @@ $(document).ready(function() {
         $('#due_date').attr('min', $(this).val());
     });
 
-    // Add new item
+    function updateItemIndices() {
+        $('#invoice-items .invoice-item').each(function(index) {
+            $(this).find('input').each(function() {
+                const name = $(this).attr('name');
+                if (name) {
+                    // Replace the index inside brackets with the new index
+                    $(this).attr('name', name.replace(/\[\d+\]/, `[${index}]`));
+                }
+            });
+        });
+    }
+
     $('#add-item').click(function() {
         const newItem = $('.invoice-item').first().clone();
         newItem.find('input').val('');
@@ -193,22 +200,14 @@ $(document).ready(function() {
         newItem.find('.item-total').val('');
         newItem.find('.remove-item').prop('disabled', false);
 
-        // Update input names
-        newItem.find('input').each(function() {
-            const name = $(this).attr('name');
-            if (name) {
-                $(this).attr('name', name.replace('[0]', `[${itemCount}]`));
-            }
-        });
-
         $('#invoice-items').append(newItem);
-        itemCount++;
+        updateItemIndices();
         updateTotals();
     });
 
-    // Remove item
     $(document).on('click', '.remove-item', function() {
         $(this).closest('.invoice-item').remove();
+        updateItemIndices();
         updateTotals();
     });
 
