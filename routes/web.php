@@ -35,14 +35,16 @@ Route::post('login', [LoginController::class, 'login']);
 Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 
 // Dashboard Route
-Route::get('/', function () {
-    return redirect()->route('dashboard');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/', function () {
+        return redirect()->route('dashboard');
+    });
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard/refresh-stats', [DashboardController::class, 'refreshStats'])->name('dashboard.refresh-stats');
+    Route::get('/dashboard/occupancy', [DashboardController::class, 'getOccupancyStats'])->name('dashboard.occupancy');
+    Route::get('/dashboard/revenue', [DashboardController::class, 'getRevenueStats'])->name('dashboard.revenue');
+    Route::get('/dashboard/charts', [DashboardController::class, 'getChartData'])->name('dashboard.charts');
 });
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-Route::get('/dashboard/refresh-stats', [DashboardController::class, 'refreshStats'])->name('dashboard.refresh-stats');
-Route::get('/dashboard/occupancy', [DashboardController::class, 'getOccupancyStats'])->name('dashboard.occupancy');
-Route::get('/dashboard/revenue', [DashboardController::class, 'getRevenueStats'])->name('dashboard.revenue');
-Route::get('/dashboard/charts', [DashboardController::class, 'getChartData'])->name('dashboard.charts');
 
 // Reservations Routes
 Route::get('/reservations/calendar', [ReservationController::class, 'calendar'])->name('reservations.calendar');

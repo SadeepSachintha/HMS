@@ -18,7 +18,7 @@
                                 <option value="">Select Invoice</option>
                                 @foreach($invoices as $invoice)
                                     <option value="{{ $invoice->id }}" {{ old('invoice_id') == $invoice->id ? 'selected' : '' }}>
-                                        #{{ $invoice->invoice_number }} - {{ $invoice->customer->name }} (${{ number_format($invoice->amount, 2) }})
+                                        #{{ $invoice->invoice_number }} - {{ $invoice->customer->name }} (${{ number_format($invoice->total_amount, 2) }})
                                     </option>
                                 @endforeach
                             </select>
@@ -54,7 +54,7 @@
                                 <option value="debit_card" {{ old('payment_method') == 'debit_card' ? 'selected' : '' }}>Debit Card</option>
                                 <option value="cash" {{ old('payment_method') == 'cash' ? 'selected' : '' }}>Cash</option>
                                 <option value="bank_transfer" {{ old('payment_method') == 'bank_transfer' ? 'selected' : '' }}>Bank Transfer</option>
-                                <option value="check" {{ old('payment_method') == 'check' ? 'selected' : '' }}>Check</option>
+                                <option value="check" {{ old('payment_method') == 'check' ? 'selected' : '' }}>Cheque</option>
                             </select>
                             @error('payment_method')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -66,6 +66,21 @@
                             <input type="text" class="form-control @error('transaction_id') is-invalid @enderror" id="transaction_id" name="transaction_id" value="{{ old('transaction_id') }}">
                             <div class="form-text">Optional: Enter the transaction ID from your payment processor</div>
                             @error('transaction_id')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="reservation_id" class="form-label">Reservation</label>
+                            <select class="form-select @error('reservation_id') is-invalid @enderror" id="reservation_id" name="reservation_id" required>
+                                <option value="">Select Reservation</option>
+                                @foreach($reservations as $reservation)
+                                    <option value="{{ $reservation->id }}" {{ old('reservation_id') == $reservation->id ? 'selected' : '' }}>
+                                        #{{ $reservation->id }} - {{ $reservation->customer->name }} (Room: {{ $reservation->room_id }})
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('reservation_id')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
@@ -97,8 +112,24 @@ $(document).ready(function() {
     $('#invoice_id').change(function() {
         var selectedOption = $(this).find('option:selected');
         if (selectedOption.val()) {
-            var amount = selectedOption.text().match(/\$([0-9,]+(\.[0-9]{2})?)/)[1];
-            $('#amount').val(amount.replace(/,/g, ''));
+            var match = selectedOption.text().match(/\$([0-9,]+(\.[0-9]{2})?)/);
+            if (match) {
+                var amount = match[1];
+                $('#amount').val(amount.replace(/,/g, ''));
+            }
+        }
+        // Auto-select reservation based on invoice
+        var invoiceId = $(this).val();
+        var reservationId = null;
+        @foreach($invoices as $invoice)
+            if (invoiceId == '{{ $invoice->id }}') {
+                reservationId = '{{ $invoice->reservation_id }}';
+            }
+        @endforeach
+        if (reservationId) {
+            $('#reservation_id').val(reservationId);
+        } else {
+            $('#reservation_id').val('');
         }
     });
 });

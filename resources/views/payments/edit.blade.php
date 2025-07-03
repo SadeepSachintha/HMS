@@ -19,11 +19,26 @@
                                 <option value="">Select Invoice</option>
                                 @foreach($invoices as $invoice)
                                     <option value="{{ $invoice->id }}" {{ old('invoice_id', $payment->invoice_id) == $invoice->id ? 'selected' : '' }}>
-                                        #{{ $invoice->invoice_number }} - {{ $invoice->customer->name }} (${{ number_format($invoice->amount, 2) }})
+                                        #{{ $invoice->invoice_number }} - {{ $invoice->customer->name }} (${{ number_format($invoice->total_amount, 2) }})
                                     </option>
                                 @endforeach
                             </select>
                             @error('invoice_id')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="reservation_id" class="form-label">Reservation</label>
+                            <select class="form-select @error('reservation_id') is-invalid @enderror" id="reservation_id" name="reservation_id" required>
+                                <option value="">Select Reservation</option>
+                                @foreach($reservations as $reservation)
+                                    <option value="{{ $reservation->id }}" {{ old('reservation_id', $payment->reservation_id) == $reservation->id ? 'selected' : '' }}>
+                                        #{{ $reservation->id }} - {{ $reservation->customer->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('reservation_id')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>

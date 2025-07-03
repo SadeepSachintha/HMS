@@ -15,6 +15,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+    <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon"/>
     @stack('styles')
 </head>
 <body>
@@ -122,9 +123,6 @@
             <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
                 <div class="container-fluid">
                     @auth
-                    <button type="button" id="sidebarCollapse" class="btn btn-primary">
-                        <i class="fas fa-bars"></i>
-                    </button>
                     @else
                     <a class="navbar-brand" href="{{ url('/') }}">
                         <i class="fas fa-hotel me-2"></i>{{ config('app.name', 'Hotel Management System') }}

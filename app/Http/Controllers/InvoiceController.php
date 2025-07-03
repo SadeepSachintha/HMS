@@ -66,7 +66,8 @@ class InvoiceController extends Controller
     {
         $customers = \App\Models\Customer::orderBy('name')->get();
         $events = \App\Models\Event::orderBy('start_time', 'desc')->get();
-        return view('invoices.create', compact('customers', 'events'));
+        $reservations = \App\Models\Reservation::with('customer')->orderBy('id', 'desc')->get();
+        return view('invoices.create', compact('customers', 'events', 'reservations'));
     }
 
     public function store(Request $request)
@@ -74,6 +75,7 @@ class InvoiceController extends Controller
         $validated = $request->validate([
             'customer_id' => 'required|exists:customers,id',
             'event_id' => 'nullable|exists:events,id',
+            'reservation_id' => 'nullable|exists:reservations,id',
             'invoice_date' => 'required|date',
             'due_date' => 'required|date|after:invoice_date',
             'subtotal' => 'required|numeric|min:0',
@@ -158,7 +160,7 @@ class InvoiceController extends Controller
         return redirect()->route('invoices.index')
             ->with('success', 'Invoice deleted successfully.');
     }
-
+    //PDF generation and download
     public function download(Invoice $invoice)
     {
         $pdf = Pdf::loadView('invoices.pdf', compact('invoice'));

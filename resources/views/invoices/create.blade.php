@@ -43,6 +43,21 @@
                         </div>
 
                         <div class="mb-3">
+                            <label for="reservation_id" class="form-label">Reservation</label>
+                            <select class="form-select @error('reservation_id') is-invalid @enderror" id="reservation_id" name="reservation_id">
+                                <option value="">Select Reservation (Optional)</option>
+                                @foreach($reservations as $reservation)
+                                    <option value="{{ $reservation->id }}" {{ old('reservation_id') == $reservation->id ? 'selected' : '' }}>
+                                        #{{ $reservation->id }} - {{ $reservation->customer->name }} (Room: {{ $reservation->room_id }})
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('reservation_id')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3">
                             <label for="invoice_date" class="form-label">Invoice Date</label>
                             <input type="date" class="form-control @error('invoice_date') is-invalid @enderror" id="invoice_date" name="invoice_date" value="{{ old('invoice_date', date('Y-m-d')) }}" required>
                             @error('invoice_date')

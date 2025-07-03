@@ -42,23 +42,6 @@
 @section('content')
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
     <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
-    <div>
-        <a href="{{ route('reports.index') }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm me-2 generate-report">
-            <i class="fas fa-download fa-sm text-white-50"></i> Generate Report
-        </a>
-        <div class="btn-group">
-            <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle date-range-btn" data-bs-toggle="dropdown" aria-expanded="false">
-                Today <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu dropdown-menu-end">
-                <li><a class="dropdown-item" href="#" data-range="today">Today</a></li>
-                <li><a class="dropdown-item" href="#" data-range="yesterday">Yesterday</a></li>
-                <li><a class="dropdown-item" href="#" data-range="last_7_days">Last 7 Days</a></li>
-                <li><a class="dropdown-item" href="#" data-range="this_month">This Month</a></li>
-                <li><a class="dropdown-item" href="#" data-range="last_month">Last Month</a></li>
-            </ul>
-        </div>
-    </div>
 </div>
 
 <!-- Stats Overview Cards -->

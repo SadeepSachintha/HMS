@@ -54,6 +54,11 @@ class Invoice extends Model
         return $this->hasMany(Payment::class);
     }
 
+    public function reservation(): BelongsTo
+    {
+        return $this->belongsTo(Reservation::class);
+    }
+
     protected static function boot()
     {
         parent::boot();

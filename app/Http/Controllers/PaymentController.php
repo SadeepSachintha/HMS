@@ -15,7 +15,7 @@ class PaymentController extends Controller
 
     public function index(Request $request)
     {
-        $query = Payment::with(['reservation', 'customer']);
+        $query = Payment::with(['reservation']);
 
         // Sorting functionality
         $sortBy = $request->get('sort', 'id');
@@ -49,14 +49,16 @@ class PaymentController extends Controller
 
     public function create()
     {
-        $invoices = Invoice::with('customer')->orderBy('invoice_date', 'desc')->get();
-        return view('payments.create', compact('invoices'));
+        $invoices = Invoice::with(['customer', 'reservation'])->orderBy('invoice_date', 'desc')->get();
+        $reservations = \App\Models\Reservation::with('customer')->orderBy('id', 'desc')->get();
+        return view('payments.create', compact('invoices', 'reservations'));
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
             'invoice_id' => 'required|exists:invoices,id',
+            'reservation_id' => 'required|exists:reservations,id',
             'amount' => 'required|numeric|min:0.01',
             'payment_method' => 'required|in:cash,credit_card,debit_card,bank_transfer,check',
             'payment_date' => 'required|date',
@@ -78,15 +80,17 @@ class PaymentController extends Controller
     public function edit(Payment $payment)
     {
         $invoices = \App\Models\Invoice::with('customer')->orderBy('invoice_date', 'desc')->get();
-        return view('payments.edit', compact('payment', 'invoices'));
+        $reservations = \App\Models\Reservation::with('customer')->orderBy('id', 'desc')->get();
+        return view('payments.edit', compact('payment', 'invoices', 'reservations'));
     }
 
     public function update(Request $request, Payment $payment)
     {
         $validated = $request->validate([
+            'invoice_id' => 'required|exists:invoices,id',
             'reservation_id' => 'required|exists:reservations,id',
             'amount' => 'required|numeric|min:0',
-            'payment_method' => 'required|in:cash,credit_card,debit_card,bank_transfer',
+            'payment_method' => 'required|in:cash,credit_card,debit_card,bank_transfer,check',
             'payment_date' => 'required|date',
             'status' => 'required|in:pending,completed,failed,refunded',
             'transaction_id' => 'nullable|string|max:100|unique:payments,transaction_id,' . $payment->id,

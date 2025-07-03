@@ -55,11 +55,11 @@
                                         <td class="align-middle">${{ number_format($roomType->price_per_night, 2) }}</td>
                                         <td class="align-middle">
                                             <div class="d-flex gap-2">
-                                                <a href="{{ route('room-types.edit', $roomType) }}" class="btn btn-sm btn-primary d-inline-flex align-items-center" title="Edit">
-                                                    <i class="fas fa-edit me-1"></i>
-                                                </a>
                                                 <a href="{{ route('room-types.show', $roomType) }}" class="btn btn-sm btn-info text-white d-inline-flex align-items-center" title="View">
                                                     <i class="fas fa-eye me-1"></i>
+                                                </a>
+                                                <a href="{{ route('room-types.edit', $roomType) }}" class="btn btn-sm btn-primary d-inline-flex align-items-center" title="Edit">
+                                                    <i class="fas fa-edit me-1"></i>
                                                 </a>
                                                 <form action="{{ route('room-types.destroy', $roomType) }}" method="POST" class="d-inline">
                                                     @csrf

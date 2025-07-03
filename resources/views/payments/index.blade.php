@@ -75,11 +75,21 @@
                             <tr>
                                 <td>{{ $payment->id }}</td>
                                 <td>
-                                    <a href="{{ route('reservations.show', $payment->reservation_id) }}">
-                                        #{{ $payment->reservation_id }}
-                                    </a>
+                                    @if($payment->reservation)
+                                        <a href="{{ route('reservations.show', $payment->reservation_id) }}">
+                                            #{{ $payment->reservation_id }}
+                                        </a>
+                                    @else
+                                        &mdash;
+                                    @endif
                                 </td>
-                                <td>{{ $payment->reservation->customer->name }}</td>
+                                <td>
+                                    @if($payment->reservation && $payment->reservation->customer)
+                                        {{ $payment->reservation->customer->name }}
+                                    @else
+                                        N/A
+                                    @endif
+                                </td>
                                 <td>${{ number_format($payment->amount, 2) }}</td>
                                 <td>{{ ucfirst(str_replace('_', ' ', $payment->payment_method)) }}</td>
                                 <td>{{ $payment->payment_date->format('Y-m-d H:i') }}</td>

@@ -72,7 +72,7 @@
                         </div>
 
                         <div class="d-flex justify-content-between">
-                            <a href="{{ route('rooms.index') }}" class="btn btn-secondary">Back</a>
+                            <a href="{{ route('rooms.index') }}" class="btn btn-secondary">Cancel</a>
                             <button type="submit" class="btn btn-primary">Update Room</button>
                         </div>
                     </form>
