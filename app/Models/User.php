@@ -73,4 +73,20 @@ class User extends Authenticatable
     {
         return $this->alerts()->where('is_read', false);
     }
+
+    // Add role helper methods
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
+    }
+
+    public function isManager()
+    {
+        return $this->role === 'manager';
+    }
+
+    public function isStaff()
+    {
+        return $this->role === 'staff';
+    }
 }

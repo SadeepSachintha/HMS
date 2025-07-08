@@ -88,6 +88,15 @@ class StaffController extends Controller
             'emergency_contact' => 'nullable|string|max:255',
         ]);
 
+        // Only allow role assignment if current user is manager or admin
+        if (auth()->user() && in_array(auth()->user()->role, ['admin', 'manager'])) {
+            $validated['role'] = $request->validate([
+                'role' => 'required|in:admin,manager,staff',
+            ])['role'];
+        } else {
+            $validated['role'] = 'staff';
+        }
+
         $validated['user_id'] = auth()->id();
 
         Staff::create($validated);
@@ -120,6 +129,13 @@ class StaffController extends Controller
             'salary' => 'nullable|numeric|min:0',
             'emergency_contact' => 'nullable|string|max:255',
         ]);
+
+        // Only allow role assignment if current user is manager or admin
+        if (auth()->user() && in_array(auth()->user()->role, ['admin', 'manager'])) {
+            $validated['role'] = $request->validate([
+                'role' => 'required|in:admin,manager,staff',
+            ])['role'];
+        }
 
         $staff->update($validated);
 

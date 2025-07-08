@@ -76,12 +76,26 @@
                         <span>Events</span>
                     </a>
                 </li>
+                @role('admin,manager')
                 <li class="{{ Request::is('staff*') ? 'active' : '' }}">
                     <a href="{{ route('staff.index') }}">
                         <i class="fas fa-user-tie"></i>
                         <span>Staff</span>
                     </a>
                 </li>
+                <li class="{{ Request::is('reports*') ? 'active' : '' }}">
+                    <a href="{{ route('reports.index') }}">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Reports</span>
+                    </a>
+                </li>
+                <li class="{{ Request::is('settings*') ? 'active' : '' }}">
+                    <a href="{{ route('settings.index') }}">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+                @endrole
                 <li class="{{ Request::is('payments*') || Request::is('invoices*') ? 'active' : '' }}">
                     <a href="#billingSubmenu" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                         <i class="fas fa-file-invoice-dollar"></i>
@@ -101,18 +115,6 @@
                             </a>
                         </li>
                     </ul>
-                </li>
-                <li class="{{ Request::is('reports*') ? 'active' : '' }}">
-                    <a href="{{ route('reports.index') }}">
-                        <i class="fas fa-chart-bar"></i>
-                        <span>Reports</span>
-                    </a>
-                </li>
-                <li class="{{ Request::is('settings*') ? 'active' : '' }}">
-                    <a href="{{ route('settings.index') }}">
-                        <i class="fas fa-cog"></i>
-                        <span>Settings</span>
-                    </a>
                 </li>
             </ul>
         </nav>

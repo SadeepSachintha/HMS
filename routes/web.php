@@ -46,6 +46,26 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard/charts', [DashboardController::class, 'getChartData'])->name('dashboard.charts');
 });
 
+// Example: Admin-only routes
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    // Place admin-only routes here
+    Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+    // e.g., Route::resource('staff', StaffController::class);
+});
+
+// Example: Manager and Admin routes
+Route::middleware(['auth', 'role:admin,manager'])->group(function () {
+    // Place routes accessible by admin and manager here
+    Route::get('/manager/reports', [ReportController::class, 'index'])->name('manager.reports');
+    Route::resource('staff', StaffController::class);
+});
+
+// Example: Staff, Manager, and Admin routes
+Route::middleware(['auth', 'role:admin,manager,staff'])->group(function () {
+    // Place routes accessible by all staff, manager, and admin here
+    Route::get('/staff/alerts', [AlertController::class, 'index'])->name('staff.alerts');
+});
+
 // Reservations Routes
 Route::get('/reservations/calendar', [ReservationController::class, 'calendar'])->name('reservations.calendar');
 Route::get('/reservations/events', [ReservationController::class, 'events'])->name('reservations.events');
@@ -72,7 +92,18 @@ Route::post('/events/{event}/staff/assign', [App\Http\Controllers\EventControlle
 Route::delete('/events/{event}/staff/{staff}/remove', [App\Http\Controllers\EventController::class, 'removeStaff'])->name('events.staff.remove');
 
 // Staff Routes
-Route::resource('staff', StaffController::class);
+// Only manager and admin can create/edit staff
+Route::middleware(['auth', 'role:admin,manager'])->group(function () {
+    Route::get('staff/create', [StaffController::class, 'create'])->name('staff.create');
+    Route::post('staff', [StaffController::class, 'store'])->name('staff.store');
+    Route::get('staff/{staff}/edit', [StaffController::class, 'edit'])->name('staff.edit');
+    Route::put('staff/{staff}', [StaffController::class, 'update'])->name('staff.update');
+});
+// All staff, manager, and admin can view staff list and details
+Route::middleware(['auth', 'role:admin,manager,staff'])->group(function () {
+    Route::get('staff', [StaffController::class, 'index'])->name('staff.index');
+    Route::get('staff/{staff}', [StaffController::class, 'show'])->name('staff.show');
+});
 
 // Billing & Payments Routes
 Route::resource('payments', PaymentController::class);
@@ -102,15 +133,16 @@ Route::get('/test-reports', function() {
     }
 });
 
-// Reports Routes
-Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
-Route::post('/reports/generate', [ReportController::class, 'generate'])->name('reports.generate');
-Route::post('/reports/export-pdf', [ReportController::class, 'exportPdf'])->name('reports.export-pdf');
-Route::get('/reports/occupancy/export-excel', [ReportController::class, 'exportOccupancyExcel'])->name('reports.occupancy.export-excel');
-
-// Settings Routes
-Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
-Route::put('/settings', [SettingsController::class, 'update'])->name('settings.update');
+// Reports Routes (manager and admin only)
+Route::middleware(['auth', 'role:admin,manager'])->group(function () {
+    Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+    Route::post('/reports/generate', [ReportController::class, 'generate'])->name('reports.generate');
+    Route::post('/reports/export-pdf', [ReportController::class, 'exportPdf'])->name('reports.export-pdf');
+    Route::get('/reports/occupancy/export-excel', [ReportController::class, 'exportOccupancyExcel'])->name('reports.occupancy.export-excel');
+    // Settings Routes (manager and admin only)
+    Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
+    Route::put('/settings', [SettingsController::class, 'update'])->name('settings.update');
+});
 
 Auth::routes();
 

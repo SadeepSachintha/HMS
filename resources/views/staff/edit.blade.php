@@ -113,6 +113,20 @@
                             @enderror
                         </div>
 
+                        @role('admin,manager')
+                        <div class="mb-3">
+                            <label for="role" class="form-label">Role</label>
+                            <select name="role" id="role" class="form-select @error('role') is-invalid @enderror">
+                                <option value="staff" {{ old('role', $staff->role ?? '') == 'staff' ? 'selected' : '' }}>Staff</option>
+                                <option value="manager" {{ old('role', $staff->role ?? '') == 'manager' ? 'selected' : '' }}>Manager</option>
+                                <option value="admin" {{ old('role', $staff->role ?? '') == 'admin' ? 'selected' : '' }}>Admin</option>
+                            </select>
+                            @error('role')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        @endrole
+
                         <div class="d-flex justify-content-between">
                             <a href="{{ route('staff.index') }}" class="btn btn-secondary">Cancel</a>
                             <button type="submit" class="btn btn-primary">Update Staff Member</button>

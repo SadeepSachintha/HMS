@@ -24,9 +24,11 @@
                     </a>
                 @endif
             </form>
+            @role('admin,manager')
             <a href="{{ route('staff.create') }}" class="btn btn-primary">
                 <i class="fas fa-plus"></i> Add New Staff
             </a>
+            @endrole
         </div>
     </div>
 
@@ -131,6 +133,7 @@
                                     <a href="{{ route('staff.show', $member) }}" class="btn btn-sm btn-info">
                                         <i class="fas fa-eye"></i>
                                     </a>
+                                    @role('admin,manager')
                                     <a href="{{ route('staff.edit', $member) }}" class="btn btn-sm btn-warning">
                                         <i class="fas fa-edit"></i>
                                     </a>
@@ -141,6 +144,7 @@
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </form>
+                                    @endrole
                                 </td>
                             </tr>
                         @empty
