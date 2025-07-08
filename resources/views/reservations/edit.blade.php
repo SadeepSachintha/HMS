@@ -30,7 +30,7 @@
                     <select name="room_id" id="room_id" class="form-control @error('room_id') is-invalid @enderror" required>
                         <option value="">Select Room</option>
                         @foreach($rooms as $room)
-                            <option value="{{ $room->id }}" {{ old('room_id', $reservation->room_id) == $room->id ? 'selected' : '' }}>
+                            <option value="{{ $room->id }}" data-room-type="{{ $room->roomType->name }}" data-capacity="{{ $room->roomType->capacity }}" {{ old('room_id', $reservation->room_id) == $room->id ? 'selected' : '' }}>
                                 Room {{ $room->number }} ({{ $room->roomType->name }})
                             </option>
                         @endforeach
@@ -95,3 +95,44 @@
     </form>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Set minimum date for check-in to today
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('check_in_date').setAttribute('min', today);
+
+        // Update check-out minimum and maximum date when check-in date changes
+        document.getElementById('check_in_date').addEventListener('change', function() {
+            const checkInDate = new Date(this.value);
+            const nextDay = new Date(checkInDate);
+            nextDay.setDate(checkInDate.getDate() + 1);
+            const maxDay = new Date(checkInDate);
+            maxDay.setDate(checkInDate.getDate() + 14);
+            document.getElementById('check_out_date').setAttribute('min', nextDay.toISOString().split('T')[0]);
+            document.getElementById('check_out_date').setAttribute('max', maxDay.toISOString().split('T')[0]);
+        });
+        // On page load, trigger change event if check-in date is already set
+        const checkInInput = document.getElementById('check_in_date');
+        if (checkInInput.value) {
+            checkInInput.dispatchEvent(new Event('change'));
+        }
+
+        // Room type max guests logic
+        const roomSelect = document.getElementById('room_id');
+        const guestsInput = document.getElementById('number_of_guests');
+        function updateMaxGuests() {
+            const selectedOption = roomSelect.options[roomSelect.selectedIndex];
+            const maxGuests = parseInt(selectedOption.getAttribute('data-capacity')) || 1;
+            guestsInput.max = maxGuests;
+            if (parseInt(guestsInput.value) > maxGuests) {
+                guestsInput.value = maxGuests;
+            }
+        }
+        roomSelect.addEventListener('change', updateMaxGuests);
+        // Run on page load in case of old value
+        updateMaxGuests();
+    });
+</script>
+@endpush
