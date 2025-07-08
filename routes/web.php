@@ -13,7 +13,6 @@ use App\Http\Controllers\StaffController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\ReportController;
-use App\Http\Controllers\SettingsController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\AlertController;
@@ -139,9 +138,6 @@ Route::middleware(['auth', 'role:admin,manager'])->group(function () {
     Route::post('/reports/generate', [ReportController::class, 'generate'])->name('reports.generate');
     Route::post('/reports/export-pdf', [ReportController::class, 'exportPdf'])->name('reports.export-pdf');
     Route::get('/reports/occupancy/export-excel', [ReportController::class, 'exportOccupancyExcel'])->name('reports.occupancy.export-excel');
-    // Settings Routes (manager and admin only)
-    Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
-    Route::put('/settings', [SettingsController::class, 'update'])->name('settings.update');
 });
 
 Auth::routes();
@@ -169,3 +165,10 @@ Route::middleware('auth')->group(function () {
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+// User Management (admin only)
+Route::middleware(['auth', 'can:manage-users'])->group(function () {
+    Route::resource('users', App\Http\Controllers\UserController::class);
+    Route::post('users/{user}/reset-password', [App\Http\Controllers\UserController::class, 'resetPassword'])->name('users.reset-password');
+    Route::post('users/{user}/toggle-status', [App\Http\Controllers\UserController::class, 'toggleStatus'])->name('users.toggle-status');
+});

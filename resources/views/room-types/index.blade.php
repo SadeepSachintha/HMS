@@ -31,7 +31,6 @@
                                             </a>
                                         </div>
                                     </th>
-                                    <th><div class="d-flex align-items-center" style="height: 100%;">Description</div></th>
                                     <th>
                                         <div class="d-flex align-items-center" style="height: 100%;">
                                             <a href="{{ request()->fullUrlWithQuery(['sort' => 'price_per_night', 'order' => request('sort') == 'price_per_night' && request('order') == 'asc' ? 'desc' : 'asc']) }}"
@@ -51,7 +50,6 @@
                                 @forelse($roomTypes as $roomType)
                                     <tr>
                                         <td class="align-middle">{{ $roomType->name }}</td>
-                                        <td class="align-middle">{{ $roomType->description }}</td>
                                         <td class="align-middle">${{ number_format($roomType->price_per_night, 2) }}</td>
                                         <td class="align-middle">
                                             <div class="d-flex gap-2">

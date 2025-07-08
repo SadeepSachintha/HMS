@@ -40,12 +40,6 @@
                         <span>Reservations</span>
                     </a>
                 </li>
-                {{-- <li class="{{ Request::is('reservations/calendar*') ? 'active' : '' }}">
-                    <a href="{{ route('reservations.calendar') }}">
-                        <i class="fas fa-calendar-week"></i>
-                        <span>Calendar</span>
-                    </a>
-                </li> --}}
                 <li class="{{ Request::is('customers*') ? 'active' : '' }}">
                     <a href="{{ route('customers.index') }}">
                         <i class="fas fa-users"></i>
@@ -76,26 +70,6 @@
                         <span>Events</span>
                     </a>
                 </li>
-                @role('admin,manager')
-                <li class="{{ Request::is('staff*') ? 'active' : '' }}">
-                    <a href="{{ route('staff.index') }}">
-                        <i class="fas fa-user-tie"></i>
-                        <span>Staff</span>
-                    </a>
-                </li>
-                <li class="{{ Request::is('reports*') ? 'active' : '' }}">
-                    <a href="{{ route('reports.index') }}">
-                        <i class="fas fa-chart-bar"></i>
-                        <span>Reports</span>
-                    </a>
-                </li>
-                <li class="{{ Request::is('settings*') ? 'active' : '' }}">
-                    <a href="{{ route('settings.index') }}">
-                        <i class="fas fa-cog"></i>
-                        <span>Settings</span>
-                    </a>
-                </li>
-                @endrole
                 <li class="{{ Request::is('payments*') || Request::is('invoices*') ? 'active' : '' }}">
                     <a href="#billingSubmenu" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                         <i class="fas fa-file-invoice-dollar"></i>
@@ -116,6 +90,25 @@
                         </li>
                     </ul>
                 </li>
+                @role('admin,manager')
+                <li class="{{ Request::is('staff*') ? 'active' : '' }}">
+                    <a href="{{ route('staff.index') }}">
+                        <i class="fas fa-user-tie"></i>
+                        <span>Staff</span>
+                    </a>
+                </li>
+                <li class="{{ Request::is('users*') ? 'active' : '' }}">
+                    <a class="nav-link" href="{{ route('users.index') }}">
+                        <i class="fa fa-users"></i> User Management
+                    </a>
+                </li>
+                <li class="{{ Request::is('reports*') ? 'active' : '' }}">
+                    <a href="{{ route('reports.index') }}">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Reports</span>
+                    </a>
+                </li>
+                @endrole
             </ul>
         </nav>
         @endauth

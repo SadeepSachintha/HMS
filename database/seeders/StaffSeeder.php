@@ -14,14 +14,11 @@ class StaffSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create a test user if it doesn't exist
-        $user = User::firstOrCreate(
-            ['email' => 'admin@hotel.com'],
-            [
-                'name' => 'Admin User',
-                'password' => bcrypt('password'),
-            ]
-        );
+        // Fetch the admin user created in UserSeeder
+        $user = User::where('email', 'admin@gmail.com')->first();
+        if (!$user) {
+            throw new \Exception('User admin@gmail.com not found. Please run UserSeeder first.');
+        }
 
         $staffData = [
             [

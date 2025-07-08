@@ -33,5 +33,9 @@ class AuthServiceProvider extends ServiceProvider
         Blade::directive('endrole', function () {
             return '<?php endif; ?>';
         });
+
+        Gate::define('manage-users', function ($user) {
+            return strtolower($user->role) === 'admin';
+        });
     }
 }

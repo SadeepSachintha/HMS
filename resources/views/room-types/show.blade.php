@@ -72,11 +72,6 @@
                                                      style="width: 60px; height: 60px; object-fit: cover; cursor: pointer;">
                                             @endforeach
                                         </div>
-                                    @else
-                                        <div class="text-center py-5">
-                                            <i class="fas fa-image fa-3x text-muted mb-3"></i>
-                                            <p class="text-muted mb-0">No images available</p>
-                                        </div>
                                     @endif
                                 </div>
                             </div>
