@@ -249,5 +249,95 @@
         });
     </script>
     @stack('scripts')
+
+    <!-- Inactivity Warning Modal -->
+    <div class="modal fade" id="inactivityModal" tabindex="-1" aria-labelledby="inactivityModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="inactivityModalLabel">Session Expiring Soon</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            You have been inactive for a while. You will be logged out in <span id="logoutCountdown">60</span> seconds.<br>
+            Do you want to stay signed in?
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" id="stayLoggedInBtn" data-bs-dismiss="modal">Stay Signed In</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+    (function() {
+        var inactivityTime = 15 * 60 * 1000; // 15 minutes
+        var warningTime = 14 * 60 * 1000; // Show modal at 14 minutes
+        var logoutCountdown = 60; // seconds
+        var timer, warningTimer, countdownInterval;
+        var modalShown = false;
+
+        function resetTimer() {
+            clearTimeout(timer);
+            clearTimeout(warningTimer);
+            if (modalShown) {
+                hideModal();
+            }
+            startTimers();
+        }
+
+        function startTimers() {
+            warningTimer = setTimeout(showModal, warningTime);
+            timer = setTimeout(logout, inactivityTime);
+        }
+
+        function showModal() {
+            modalShown = true;
+            var modal = new bootstrap.Modal(document.getElementById('inactivityModal'));
+            document.getElementById('logoutCountdown').textContent = logoutCountdown;
+            modal.show();
+            countdownInterval = setInterval(function() {
+                logoutCountdown--;
+                document.getElementById('logoutCountdown').textContent = logoutCountdown;
+                if (logoutCountdown <= 0) {
+                    clearInterval(countdownInterval);
+                }
+            }, 1000);
+        }
+
+        function hideModal() {
+            modalShown = false;
+            logoutCountdown = 60;
+            clearInterval(countdownInterval);
+            var modalEl = document.getElementById('inactivityModal');
+            var modal = bootstrap.Modal.getInstance(modalEl);
+            if (modal) modal.hide();
+        }
+
+        function logout() {
+            document.getElementById('logout-form').submit();
+        }
+
+        // Reset timer on user activity
+        window.onload = resetTimer;
+        document.onmousemove = resetTimer;
+        document.onkeydown = resetTimer;
+        document.onscroll = resetTimer;
+        document.onclick = resetTimer;
+        document.ontouchstart = resetTimer;
+
+        // Stay signed in button
+        document.addEventListener('DOMContentLoaded', function() {
+            var stayBtn = document.getElementById('stayLoggedInBtn');
+            if (stayBtn) {
+                stayBtn.addEventListener('click', function() {
+                    resetTimer();
+                });
+            }
+        });
+
+        startTimers();
+    })();
+    </script>
 </body>
 </html>
