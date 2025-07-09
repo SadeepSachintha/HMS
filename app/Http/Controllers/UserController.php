@@ -42,14 +42,13 @@ class UserController extends Controller
             'email' => 'required|email|unique:users,email',
             'role' => 'required|in:admin,manager,staff',
             'password' => 'required|string|min:6|confirmed',
-            'status' => 'required|boolean',
         ]);
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'role' => $request->role,
             'password' => Hash::make($request->password),
-            'status' => $request->status,
+            'status' => $request->has('status'),
         ]);
         return redirect()->route('users.index')->with('success', 'User created successfully.');
     }
@@ -74,13 +73,13 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $user->id,
             'role' => 'required|in:admin,manager,staff',
-            'status' => 'required|boolean',
         ]);
+
         $user->update([
             'name' => $request->name,
             'email' => $request->email,
             'role' => $request->role,
-            'status' => $request->status,
+            'status' => $request->has('status'),
         ]);
         return redirect()->route('users.index')->with('success', 'User updated successfully.');
     }
@@ -100,7 +99,7 @@ class UserController extends Controller
         ]);
         $user->password = Hash::make($request->password);
         $user->save();
-        return redirect()->route('users.edit', $user)->with('success', 'Password reset successfully.');
+        return redirect()->route('users.index')->with('success', 'Password reset successfully.');
     }
 
     // Toggle user status (active/inactive)

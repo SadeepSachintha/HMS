@@ -2,156 +2,231 @@
 
 @section('content')
 <div class="container-fluid">
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Generate Reports</h1>
-    </div>
-
-    @if($errors->any())
-        <div class="alert alert-danger">
-            <ul class="mb-0">
-                @foreach($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
+    <div class="row">
+        <!-- Sidebar/Menu for Report Types -->
+        <div class="col-md-3 mb-4">
+            <div class="list-group">
+                <a href="#" class="list-group-item list-group-item-action active" id="report-occupancy">Occupancy Report</a>
+                <a href="#" class="list-group-item list-group-item-action" id="report-revenue">Revenue Report</a>
+                <a href="#" class="list-group-item list-group-item-action" id="report-reservations">Reservations Report</a>
+            </div>
         </div>
-    @endif
-
-    <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Report Configuration</h6>
-        </div>
-        <div class="card-body">
-            <form action="{{ route('reports.generate') }}" method="POST">
-                @csrf
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="report_type">Report Type</label>
-                            <select class="form-control @error('report_type') is-invalid @enderror" id="report_type" name="report_type" required>
-                                <option value="">Select Report Type</option>
-                                <option value="occupancy">Occupancy Report</option>
-                                <option value="revenue">Revenue Report</option>
-                                <option value="reservations">Reservations Report</option>
-                            </select>
-                            @error('report_type')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="date_range">Date Range</label>
-                            <select class="form-control @error('date_range') is-invalid @enderror" id="date_range" name="date_range" required>
-                                <option value="">Select Date Range</option>
-                                <option value="today">Today</option>
-                                <option value="yesterday">Yesterday</option>
-                                <option value="last_7_days">Last 7 Days</option>
-                                <option value="this_month">This Month</option>
-                                <option value="last_month">Last Month</option>
-                                <option value="custom">Custom Range</option>
-                            </select>
-                            @error('date_range')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
+        <!-- Main Content Area -->
+        <div class="col-md-9">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary" id="report-title">Occupancy Report</h6>
                 </div>
-
-                <div class="row mb-3 custom-date-range" style="display: none;">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="start_date">Start Date</label>
-                            <input type="date" class="form-control @error('start_date') is-invalid @enderror" id="start_date" name="start_date">
-                            @error('start_date')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                <div class="card-body">
+                    <!-- Date Range Filter -->
+                    <form id="report-filter-form" class="row g-3 mb-4 align-items-end">
+                        <div class="col-md-4">
+                            <label for="from_date" class="form-label">From</label>
+                            <input type="date" class="form-control" id="from_date" name="from_date">
                         </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="end_date">End Date</label>
-                            <input type="date" class="form-control @error('end_date') is-invalid @enderror" id="end_date" name="end_date">
-                            @error('end_date')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                        <div class="col-md-4">
+                            <label for="to_date" class="form-label">To</label>
+                            <input type="date" class="form-control" id="to_date" name="to_date">
                         </div>
+                        <div class="col-md-4">
+                            <button type="button" class="btn btn-success mt-4" id="search-report">Search</button>
+                        </div>
+                    </form>
+                    <!-- Placeholder for DataTable -->
+                    <div id="report-table-container">
+                        <!-- DataTable will be rendered here based on report type -->
+                        <div class="alert alert-info">Select a report type and date range, then click Search to view the report.</div>
                     </div>
-                </div>
 
-                <div class="row">
-                    <div class="col-md-6">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-eye"></i> Generate Report
+                    <!-- Download buttons (initially hidden) -->
+                    <div id="download-buttons" class="mt-3" style="display: none;">
+                        <button type="button" class="btn btn-success me-2" onclick="exportExcel()">
+                            <i class="fas fa-file-excel"></i> Export Excel
                         </button>
-                    </div>
-                    <div class="col-md-6">
-                        <button type="button" class="btn btn-success" onclick="exportPdf()">
-                            <i class="fas fa-download"></i> Export PDF
+                        <button type="button" class="btn btn-danger" onclick="exportPdf()">
+                            <i class="fas fa-file-pdf"></i> Export PDF
                         </button>
                     </div>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 </div>
 @endsection
 
-@section('scripts')
+@push('scripts')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.bootstrap5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.bootstrap5.min.css">
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const dateRangeSelect = document.getElementById('date_range');
-        const customDateRange = document.querySelector('.custom-date-range');
-        const startDateInput = document.getElementById('start_date');
-        const endDateInput = document.getElementById('end_date');
+let currentReportType = 'occupancy';
 
-        dateRangeSelect.addEventListener('change', function() {
-            if (this.value === 'custom') {
-                customDateRange.style.display = 'flex';
-                startDateInput.required = true;
-                endDateInput.required = true;
-            } else {
-                customDateRange.style.display = 'none';
-                startDateInput.required = false;
-                endDateInput.required = false;
-            }
-        });
+function getTableColumns(type) {
+    if (type === 'occupancy') {
+        return [
+            { title: 'Room no', data: 'room_no' },
+            { title: 'Check-in date', data: 'check_in' },
+            { title: 'Check-out date', data: 'check_out' },
+            { title: 'Status', data: 'status' }
+        ];
+    } else if (type === 'revenue') {
+        return [
+            { title: 'Appointment ID', data: 'appointment_id' },
+            { title: 'Customer', data: 'customer' },
+            { title: 'Reservation date', data: 'reservation_date' },
+            { title: 'Total amount (LKR)', data: 'total_amount' }
+        ];
+    } else {
+        return [
+            { title: 'Customer', data: 'customer' },
+            { title: 'Reservation date', data: 'reservation_date' },
+            { title: 'Check-in', data: 'check_in' },
+            { title: 'Check-out', data: 'check_out' },
+            { title: 'Status', data: 'status' }
+        ];
+    }
+}
 
-        // Set min date for end date when start date changes
-        startDateInput.addEventListener('change', function() {
-            endDateInput.min = this.value;
+function renderTable(type, data) {
+    let columns = getTableColumns(type);
+    let tableHtml = '<table id="report-table" class="table table-striped" style="width:100%"></table>';
+    $('#report-table-container').html(tableHtml);
+    let dtOptions = {
+        data: Array.isArray(data) ? data : (data.rows || []),
+        columns: columns,
+        dom: 'rtip',
+        destroy: true,
+        searching: true,
+        paging: true
+    };
+    let table = $('#report-table').DataTable(dtOptions);
+    // For revenue report, add total row
+    if (type === 'revenue' && data.total !== undefined) {
+        $(table.table().footer()).remove();
+        $('#report-table').append('<tfoot><tr><th colspan="3" style="text-align:right">Total</th><th>' + data.total + '</th></tr></tfoot>');
+    }
+
+    // Show download buttons after table is rendered
+    $('#download-buttons').show();
+}
+
+$(document).ready(function() {
+    // Sidebar navigation logic
+    const reportTypes = ['occupancy', 'revenue', 'reservations'];
+    reportTypes.forEach(type => {
+        $('#report-' + type).on('click', function(e) {
+            e.preventDefault();
+            reportTypes.forEach(t => $('#report-' + t).removeClass('active'));
+            $(this).addClass('active');
+            $('#report-title').text($(this).text());
+            currentReportType = type;
+            $('#report-table-container').html('<div class="alert alert-info">Select a date range and click Search to view the ' + $(this).text() + '.</div>');
         });
     });
 
-    function exportPdf() {
-        const form = document.querySelector('form');
-        const formData = new FormData(form);
-
-        fetch('{{ route("reports.export-pdf") }}', {
+    // Search button logic
+    $('#search-report').on('click', function() {
+        let from = $('#from_date').val();
+        let to = $('#to_date').val();
+        if (!from || !to) {
+            $('#report-table-container').html('<div class="alert alert-danger">Please select both From and To dates.</div>');
+            return;
+        }
+        $.ajax({
+            url: '{{ url('reports/fetch-data') }}',
             method: 'POST',
-            body: formData,
-            headers: {
-                'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+            data: {
+                report_type: currentReportType,
+                from_date: from,
+                to_date: to,
+                _token: '{{ csrf_token() }}'
+            },
+            success: function(response) {
+                if (response.success) {
+                    renderTable(currentReportType, response.data);
+                } else {
+                    $('#report-table-container').html('<div class="alert alert-danger">Failed to load report data.</div>');
+                }
+            },
+            error: function(xhr) {
+                $('#report-table-container').html('<div class="alert alert-danger">Error loading report data.</div>');
             }
-        })
-        .then(response => {
-            if (response.ok) {
-                return response.blob();
-            }
-            throw new Error('Network response was not ok');
-        })
-        .then(blob => {
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'report.pdf';
-            document.body.appendChild(a);
-            a.click();
-            window.URL.revokeObjectURL(url);
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Error generating PDF. Please try again.');
         });
+    });
+});
+
+// Move these outside the document ready block so they are global
+function exportExcel() {
+    let from = $('#from_date').val();
+    let to = $('#to_date').val();
+    if (!from || !to) {
+        alert('Please select both From and To dates.');
+        return;
     }
+    // Create a form and submit it
+    let form = document.createElement('form');
+    form.method = 'GET';
+    form.action = '{{ route("reports.export-excel") }}';
+    let reportType = document.createElement('input');
+    reportType.type = 'hidden';
+    reportType.name = 'report_type';
+    reportType.value = currentReportType;
+    form.appendChild(reportType);
+    let fromDate = document.createElement('input');
+    fromDate.type = 'hidden';
+    fromDate.name = 'from_date';
+    fromDate.value = from;
+    form.appendChild(fromDate);
+    let toDate = document.createElement('input');
+    toDate.type = 'hidden';
+    toDate.name = 'to_date';
+    toDate.value = to;
+    form.appendChild(toDate);
+    document.body.appendChild(form);
+    form.submit();
+    document.body.removeChild(form);
+}
+
+function exportPdf() {
+    let from = $('#from_date').val();
+    let to = $('#to_date').val();
+    if (!from || !to) {
+        alert('Please select both From and To dates.');
+        return;
+    }
+    // Create a form and submit it
+    let form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '{{ route("reports.export-pdf") }}';
+    let csrfToken = document.createElement('input');
+    csrfToken.type = 'hidden';
+    csrfToken.name = '_token';
+    csrfToken.value = '{{ csrf_token() }}';
+    form.appendChild(csrfToken);
+    let reportType = document.createElement('input');
+    reportType.type = 'hidden';
+    reportType.name = 'report_type';
+    reportType.value = currentReportType;
+    form.appendChild(reportType);
+    let fromDate = document.createElement('input');
+    fromDate.type = 'hidden';
+    fromDate.name = 'from_date';
+    fromDate.value = from;
+    form.appendChild(fromDate);
+    let toDate = document.createElement('input');
+    toDate.type = 'hidden';
+    toDate.name = 'to_date';
+    toDate.value = to;
+    form.appendChild(toDate);
+    document.body.appendChild(form);
+    form.submit();
+    document.body.removeChild(form);
+}
 </script>
-@endsection
+@endpush

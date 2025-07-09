@@ -9,8 +9,11 @@ use App\Models\RoomType;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Exports\OccupancyReportExport;
+use App\Exports\RevenueReportExport;
+use App\Exports\ReservationsReportExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Log;
 
 class ReportController extends Controller
 {
@@ -58,7 +61,8 @@ class ReportController extends Controller
             }
 
             $roomTypes = RoomType::all();
-            return view('reports.show', compact('data', 'title', 'startDate', 'endDate', 'roomTypes', 'roomTypeId'));
+            // Return the index view with data and filters
+            return view('reports.index', compact('data', 'title', 'startDate', 'endDate', 'roomTypes', 'roomTypeId'));
         } catch (\Exception $e) {
             return back()->withErrors(['error' => 'Error generating report: ' . $e->getMessage()]);
         }
@@ -69,36 +73,62 @@ class ReportController extends Controller
         try {
             $request->validate([
                 'report_type' => 'required|in:occupancy,revenue,reservations',
-                'date_range' => 'required|in:today,yesterday,last_7_days,this_month,last_month,custom',
-                'start_date' => 'required_if:date_range,custom|date',
-                'end_date' => 'required_if:date_range,custom|date|after_or_equal:start_date',
+                'from_date' => 'required|date',
+                'to_date' => 'required|date|after_or_equal:from_date',
             ]);
 
-            $dateRange = $this->getDateRange($request->date_range, $request->start_date, $request->end_date);
-            $startDate = $dateRange['start'];
-            $endDate = $dateRange['end'];
+            $from = Carbon::parse($request->from_date)->startOfDay();
+            $to = Carbon::parse($request->to_date)->endOfDay();
+            $type = $request->report_type;
 
-            switch ($request->report_type) {
-                case 'occupancy':
-                    $data = $this->generateOccupancyReport($startDate, $endDate);
-                    $title = 'Occupancy Report';
-                    break;
-                case 'revenue':
-                    $data = $this->generateRevenueReport($startDate, $endDate);
-                    $title = 'Revenue Report';
-                    break;
-                case 'reservations':
-                    $data = $this->generateReservationsReport($startDate, $endDate);
-                    $title = 'Reservations Report';
-                    break;
-                default:
-                    throw new \Exception('Invalid report type');
+            if ($type === 'occupancy') {
+                $data = $this->getOccupancyTableData($from, $to);
+                $title = 'Occupancy Report';
+            } elseif ($type === 'revenue') {
+                $data = $this->getRevenueTableData($from, $to);
+                $title = 'Revenue Report';
+            } else {
+                $data = $this->getReservationsTableData($from, $to);
+                $title = 'Reservations Report';
             }
 
-            $pdf = Pdf::loadView('reports.pdf', compact('data', 'title', 'startDate', 'endDate'));
-            return $pdf->download($title . '_' . $startDate->format('Y-m-d') . '_to_' . $endDate->format('Y-m-d') . '.pdf');
+            $pdf = Pdf::loadView('reports.pdf', compact('data', 'title', 'from', 'to'));
+            return $pdf->download($title . '_' . $from->format('Y-m-d') . '_to_' . $to->format('Y-m-d') . '.pdf');
         } catch (\Exception $e) {
             return back()->withErrors(['error' => 'Error generating PDF: ' . $e->getMessage()]);
+        }
+    }
+
+    public function exportExcel(Request $request)
+    {
+        try {
+            $request->validate([
+                'report_type' => 'required|in:occupancy,revenue,reservations',
+                'from_date' => 'required|date',
+                'to_date' => 'required|date|after_or_equal:from_date',
+            ]);
+
+            $from = Carbon::parse($request->from_date)->startOfDay();
+            $to = Carbon::parse($request->to_date)->endOfDay();
+            $type = $request->report_type;
+
+            if ($type === 'occupancy') {
+                $data = $this->getOccupancyTableData($from, $to);
+                $export = new OccupancyReportExport($data->toArray());
+                $fileName = 'Occupancy_Report_' . $from->format('Ymd') . '_to_' . $to->format('Ymd') . '.xlsx';
+            } elseif ($type === 'revenue') {
+                $data = $this->getRevenueTableData($from, $to);
+                $export = new RevenueReportExport($data['rows']->toArray());
+                $fileName = 'Revenue_Report_' . $from->format('Ymd') . '_to_' . $to->format('Ymd') . '.xlsx';
+            } else {
+                $data = $this->getReservationsTableData($from, $to);
+                $export = new ReservationsReportExport($data->toArray());
+                $fileName = 'Reservations_Report_' . $from->format('Ymd') . '_to_' . $to->format('Ymd') . '.xlsx';
+            }
+
+            return Excel::download($export, $fileName);
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'Error generating Excel: ' . $e->getMessage()]);
         }
     }
 
@@ -116,6 +146,36 @@ class ReportController extends Controller
         $export = new OccupancyReportExport($data['room_details']->toArray());
         $fileName = 'Occupancy_Report_' . $startDate->format('Ymd') . '_to_' . $endDate->format('Ymd') . '.xlsx';
         return Excel::download($export, $fileName);
+    }
+
+    // New AJAX endpoint for dynamic report data
+    public function fetchReportData(Request $request)
+    {
+        try {
+            $request->validate([
+                'report_type' => 'required|in:occupancy,revenue,reservations',
+                'from_date' => 'required|date',
+                'to_date' => 'required|date|after_or_equal:from_date',
+            ]);
+
+            $from = Carbon::parse($request->from_date)->startOfDay();
+            $to = Carbon::parse($request->to_date)->endOfDay();
+            $type = $request->report_type;
+
+            if ($type === 'occupancy') {
+                $data = $this->getOccupancyTableData($from, $to);
+            } elseif ($type === 'revenue') {
+                $data = $this->getRevenueTableData($from, $to);
+            } else {
+                $data = $this->getReservationsTableData($from, $to);
+            }
+            return response()->json(['success' => true, 'data' => $data]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json(['success' => false, 'message' => 'Validation error', 'errors' => $e->errors()], 422);
+        } catch (\Exception $e) {
+            Log::error('Report fetch error: ' . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Server error: ' . $e->getMessage()], 500);
+        }
     }
 
     private function getDateRange($range, $customStart = null, $customEnd = null)
@@ -258,5 +318,58 @@ class ReportController extends Controller
                 'end' => $endDate->format('Y-m-d'),
             ],
         ];
+    }
+
+    // Helper for Occupancy Report Table
+    private function getOccupancyTableData($from, $to)
+    {
+        $reservations = Reservation::with('room')
+            ->where('status', 'Occupied')
+            ->whereBetween('check_in_date', [$from, $to])
+            ->get();
+        return $reservations->map(function($r) {
+            return [
+                'room_no' => $r->room->number ?? '',
+                'check_in' => $r->check_in_date->format('Y-m-d'),
+                'check_out' => $r->check_out_date->format('Y-m-d'),
+                'status' => 'Occupied',
+            ];
+        });
+    }
+
+    // Helper for Revenue Report Table
+    private function getRevenueTableData($from, $to)
+    {
+        $payments = Payment::with(['reservation', 'reservation.customer'])
+            ->where('status', 'completed')
+            ->whereBetween('payment_date', [$from, $to])
+            ->get();
+        $rows = $payments->map(function($p) {
+            return [
+                'appointment_id' => $p->reservation ? $p->reservation->id : '',
+                'customer' => $p->reservation && $p->reservation->customer ? $p->reservation->customer->name : '',
+                'reservation_date' => $p->reservation ? $p->reservation->check_in_date->format('Y-m-d') : '',
+                'total_amount' => $p->amount,
+            ];
+        });
+        $total = $rows->sum('total_amount');
+        return ['rows' => $rows, 'total' => $total];
+    }
+
+    // Helper for Reservations Report Table
+    private function getReservationsTableData($from, $to)
+    {
+        $reservations = Reservation::with('customer')
+            ->whereBetween('check_in_date', [$from, $to])
+            ->get();
+        return $reservations->map(function($r) {
+            return [
+                'customer' => $r->customer->name ?? '',
+                'reservation_date' => $r->created_at ? $r->created_at->format('Y-m-d') : '',
+                'check_in' => $r->check_in_date->format('Y-m-d'),
+                'check_out' => $r->check_out_date->format('Y-m-d'),
+                'status' => ucfirst($r->status),
+            ];
+        });
     }
 }

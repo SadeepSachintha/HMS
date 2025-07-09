@@ -55,7 +55,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 // Example: Manager and Admin routes
 Route::middleware(['auth', 'role:admin,manager'])->group(function () {
     // Place routes accessible by admin and manager here
-    Route::get('/manager/reports', [ReportController::class, 'index'])->name('manager.reports');
+    // Route::get('/manager/reports', [ReportController::class, 'index'])->name('manager.reports');
     Route::resource('staff', StaffController::class);
 });
 
@@ -134,12 +134,12 @@ Route::get('/test-reports', function() {
     }
 });
 
-// Reports Routes (manager and admin only)
-Route::middleware(['auth', 'role:admin,manager'])->group(function () {
+// Reports: Main page and AJAX data (admin, manager, staff)
+Route::middleware(['auth', 'role:admin,manager,staff'])->group(function () {
     Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
-    Route::post('/reports/generate', [ReportController::class, 'generate'])->name('reports.generate');
+    Route::post('/reports/fetch-data', [ReportController::class, 'fetchReportData'])->name('reports.fetch-data');
     Route::post('/reports/export-pdf', [ReportController::class, 'exportPdf'])->name('reports.export-pdf');
-    Route::get('/reports/occupancy/export-excel', [ReportController::class, 'exportOccupancyExcel'])->name('reports.occupancy.export-excel');
+    Route::get('/reports/export-excel', [ReportController::class, 'exportExcel'])->name('reports.export-excel');
 });
 
 Auth::routes();

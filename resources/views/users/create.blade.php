@@ -38,9 +38,9 @@
                                     <div class="col-md-6">
                                         <label class="fw-bold"><i class="fa fa-toggle-on fa-fw me-2"></i>Status</label><br>
                                         <div class="form-check form-switch">
-                                            <input class="form-check-input" type="checkbox" id="statusSwitch" name="status" value="1">
+                                            <input class="form-check-input" type="checkbox" id="statusSwitch" name="status" value="1" checked>
                                             <label class="form-check-label" for="statusSwitch" id="statusSwitchLabel">
-                                                Inactive
+                                                Active
                                             </label>
                                         </div>
                                     </div>

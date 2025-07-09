@@ -68,64 +68,76 @@
     </div>
 
     <div class="period">
-        Report Period: {{ $startDate->format('M d, Y') }} - {{ $endDate->format('M d, Y') }}
+        Report Period: {{ $from->format('M d, Y') }} - {{ $to->format('M d, Y') }}
     </div>
 
-    @if(isset($data['occupancy_rate']))
-        <div class="stats-container">
-            <div class="stat-box">
-                <div class="stat-label">Occupancy Rate</div>
-                <div class="stat-value">{{ $data['occupancy_rate'] }}%</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-label">Total Rooms</div>
-                <div class="stat-value">{{ $data['total_rooms'] }}</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-label">Occupied Rooms</div>
-                <div class="stat-value">{{ $data['occupied_rooms'] }}</div>
-            </div>
-        </div>
-    @endif
-
-    @if(isset($data['total_revenue']))
-        <div class="stats-container">
-            <div class="stat-box">
-                <div class="stat-label">Total Revenue</div>
-                <div class="stat-value">${{ number_format($data['total_revenue'], 2) }}</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-label">Average Revenue</div>
-                <div class="stat-value">${{ number_format($data['average_revenue'], 2) }}</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-label">Total Payments</div>
-                <div class="stat-value">{{ $data['payment_count'] }}</div>
-            </div>
-        </div>
-    @endif
-
-    @if(isset($data['reservations']))
+    @if($title === 'Occupancy Report')
         <table>
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Customer</th>
-                    <th>Room</th>
-                    <th>Check In</th>
-                    <th>Check Out</th>
+                    <th>Room no</th>
+                    <th>Check-in date</th>
+                    <th>Check-out date</th>
                     <th>Status</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach($data['reservations'] as $reservation)
+                @foreach($data as $row)
                     <tr>
-                        <td>{{ $reservation->id }}</td>
-                        <td>{{ $reservation->customer->name }}</td>
-                        <td>{{ $reservation->room->number }}</td>
-                        <td>{{ $reservation->check_in_date->format('M d, Y') }}</td>
-                        <td>{{ $reservation->check_out_date->format('M d, Y') }}</td>
-                        <td>{{ ucfirst($reservation->status) }}</td>
+                        <td>{{ $row['room_no'] }}</td>
+                        <td>{{ $row['check_in'] }}</td>
+                        <td>{{ $row['check_out'] }}</td>
+                        <td>{{ $row['status'] }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    @elseif($title === 'Revenue Report')
+        <table>
+            <thead>
+                <tr>
+                    <th>Appointment ID</th>
+                    <th>Customer</th>
+                    <th>Reservation date</th>
+                    <th>Total amount (LKR)</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($data['rows'] as $row)
+                    <tr>
+                        <td>{{ $row['appointment_id'] }}</td>
+                        <td>{{ $row['customer'] }}</td>
+                        <td>{{ $row['reservation_date'] }}</td>
+                        <td>{{ $row['total_amount'] }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th colspan="3" style="text-align:right">Total</th>
+                    <th>{{ $data['total'] }}</th>
+                </tr>
+            </tfoot>
+        </table>
+    @else
+        <table>
+            <thead>
+                <tr>
+                    <th>Customer</th>
+                    <th>Reservation date</th>
+                    <th>Check-in</th>
+                    <th>Check-out</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($data as $row)
+                    <tr>
+                        <td>{{ $row['customer'] }}</td>
+                        <td>{{ $row['reservation_date'] }}</td>
+                        <td>{{ $row['check_in'] }}</td>
+                        <td>{{ $row['check_out'] }}</td>
+                        <td>{{ $row['status'] }}</td>
                     </tr>
                 @endforeach
             </tbody>

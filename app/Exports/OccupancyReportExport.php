@@ -22,10 +22,10 @@ class OccupancyReportExport implements FromArray, WithHeadings
     public function headings(): array
     {
         return [
-            'Room No',
-            'Room Type',
-            'Check-in Date',
-            'Check-out Date',
+            'Room no',
+            'Room type',
+            'Check-in date',
+            'Check-out date',
             'Status',
         ];
     }

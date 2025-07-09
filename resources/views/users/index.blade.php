@@ -38,6 +38,13 @@
                                         @else
                                             <span class="badge bg-secondary">Inactive</span>
                                         @endif
+                                        <form method="POST" action="{{ route('users.toggle-status', $user) }}" class="d-inline ms-2">
+                                            @csrf
+                                            <button type="submit" class="btn btn-sm {{ $user->status ? 'btn-outline-danger' : 'btn-outline-success' }}"
+                                                    title="{{ $user->status ? 'Deactivate' : 'Activate' }} user">
+                                                <i class="fa {{ $user->status ? 'fa-toggle-off' : 'fa-toggle-on' }}"></i>
+                                            </button>
+                                        </form>
                                     </td>
                                     <td>
                                         <a href="{{ route('users.show', $user) }}" class="btn btn-sm btn-info me-1" title="View"><i class="fa fa-eye"></i></a>
