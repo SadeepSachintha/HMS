@@ -80,11 +80,11 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                Revenue (Daily)</div>
+                                Revenue (Monthly)</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800 stat-value" id="revenue">
                                 ${{ number_format($stats['revenue'], 2) }}</div>
                             <div class="text-xs text-muted" id="revenue-change">{{ $stats['revenue_change'] }}% increase
-                                from yesterday</div>
+                                from last month</div>
                         </div>
                         <div class="col-auto">
                             <div class="stats-icon bg-success text-white">

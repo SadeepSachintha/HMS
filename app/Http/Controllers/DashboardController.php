@@ -46,9 +46,20 @@ class DashboardController extends Controller
 
         $occupancyRate = $totalRooms > 0 ? round(($occupiedRooms / $totalRooms) * 100, 2) : 0;
 
-        // Calculate revenue
+        // Calculate revenue for this month
         $revenue = Payment::where('status', 'completed')
-            ->whereBetween('payment_date', [$dateRange['start'], $dateRange['end']])
+            ->whereBetween('payment_date', [
+                Carbon::now()->startOfMonth(),
+                Carbon::now()->endOfMonth()
+            ])
+            ->sum('amount');
+
+        // Calculate last month's revenue
+        $lastMonthRevenue = Payment::where('status', 'completed')
+            ->whereBetween('payment_date', [
+                Carbon::now()->subMonth()->startOfMonth(),
+                Carbon::now()->subMonth()->endOfMonth()
+            ])
             ->sum('amount');
 
         // Calculate trends
@@ -68,8 +79,8 @@ class DashboardController extends Controller
         $occupancyChange = $lastWeekOccupancy > 0 ?
             round((($occupancyRate - $lastWeekOccupancy) / $lastWeekOccupancy) * 100, 2) : 0;
 
-        $revenueChange = $yesterdayRevenue > 0 ?
-            round((($revenue - $yesterdayRevenue) / $yesterdayRevenue) * 100, 2) : 0;
+        $revenueChange = $lastMonthRevenue > 0 ?
+            round((($revenue - $lastMonthRevenue) / $lastMonthRevenue) * 100, 2) : 0;
 
         $stats = [
             'occupancy_rate' => $occupancyRate,
@@ -79,8 +90,8 @@ class DashboardController extends Controller
             'total_rooms' => $totalRooms,
             'occupied_rooms' => $occupiedRooms,
             'date_range' => [
-                'start' => $dateRange['start']->format('Y-m-d'),
-                'end' => $dateRange['end']->format('Y-m-d')
+                'start' => Carbon::now()->startOfMonth()->format('Y-m-d'),
+                'end' => Carbon::now()->endOfMonth()->format('Y-m-d')
             ]
         ];
 

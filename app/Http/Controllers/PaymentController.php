@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Payment;
 use App\Models\Invoice;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class PaymentController extends Controller
 {
@@ -47,26 +48,55 @@ class PaymentController extends Controller
         return view('payments.index', compact('payments'));
     }
 
-    public function create()
+    public function create(Request $request)
     {
         $invoices = Invoice::with(['customer', 'reservation'])->orderBy('invoice_date', 'desc')->get();
         $reservations = \App\Models\Reservation::with('customer')->orderBy('id', 'desc')->get();
-        return view('payments.create', compact('invoices', 'reservations'));
+        $selectedInvoiceId = $request->get('invoice_id');
+        return view('payments.create', compact('invoices', 'reservations', 'selectedInvoiceId'));
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'invoice_id' => 'required|exists:invoices,id',
-            'reservation_id' => 'required|exists:reservations,id',
+            'invoice_id' => 'nullable|exists:invoices,id',
+            'reservation_id' => 'nullable|exists:reservations,id',
             'amount' => 'required|numeric|min:0.01',
             'payment_method' => 'required|in:cash,credit_card,debit_card,bank_transfer,check',
             'payment_date' => 'required|date',
-            'transaction_id' => 'nullable|string|max:100|unique:payments,transaction_id',
+            // transaction_id is only required for non-cash methods
+            'transaction_id' => $request->payment_method === 'cash' ? 'nullable|string|max:100' : 'nullable|string|max:100|unique:payments,transaction_id',
             'notes' => 'nullable|string'
         ]);
 
-        Payment::create($validated);
+        if (empty($validated['invoice_id']) && empty($validated['reservation_id'])) {
+            return back()->withErrors(['invoice_id' => 'Please select an invoice or reservation.'])->withInput();
+        }
+
+        // If only invoice_id is provided, get reservation_id from invoice
+        if (!empty($validated['invoice_id']) && empty($validated['reservation_id'])) {
+            $invoice = \App\Models\Invoice::find($validated['invoice_id']);
+            if ($invoice && $invoice->reservation_id) {
+                $validated['reservation_id'] = $invoice->reservation_id;
+            }
+        }
+
+        // Set status automatically for cash payments
+        if ($validated['payment_method'] === 'cash') {
+            $validated['status'] = 'completed';
+            $validated['transaction_id'] = null; // Ensure transaction_id is not set for cash
+        }
+
+        $payment = Payment::create($validated);
+
+        // Update invoice status to paid if payment is completed
+        if (isset($validated['invoice_id']) && $validated['status'] === 'completed') {
+            $invoice = Invoice::find($validated['invoice_id']);
+            if ($invoice) {
+                $invoice->status = 'paid';
+                $invoice->save();
+            }
+        }
 
         return redirect()->route('payments.index')
             ->with('success', 'Payment recorded successfully.');
@@ -88,7 +118,8 @@ class PaymentController extends Controller
     {
         $validated = $request->validate([
             'invoice_id' => 'required|exists:invoices,id',
-            'reservation_id' => 'required|exists:reservations,id',
+            // reservation_id is not required since the field is removed from the form
+            'reservation_id' => 'nullable|exists:reservations,id',
             'amount' => 'required|numeric|min:0',
             'payment_method' => 'required|in:cash,credit_card,debit_card,bank_transfer,check',
             'payment_date' => 'required|date',
@@ -98,6 +129,15 @@ class PaymentController extends Controller
         ]);
 
         $payment->update($validated);
+
+        // Update invoice status to paid if payment is completed
+        if (isset($validated['invoice_id']) && $validated['status'] === 'completed') {
+            $invoice = Invoice::find($validated['invoice_id']);
+            if ($invoice) {
+                $invoice->status = 'paid';
+                $invoice->save();
+            }
+        }
 
         return redirect()->route('payments.index')
             ->with('success', 'Payment updated successfully.');
@@ -109,5 +149,12 @@ class PaymentController extends Controller
 
         return redirect()->route('payments.index')
             ->with('success', 'Payment deleted successfully.');
+    }
+
+    public function receipt(Payment $payment)
+    {
+        $payment->load(['invoice.customer']);
+        $pdf = Pdf::loadView('payments.receipt', compact('payment'));
+        return $pdf->download('payment-receipt-' . $payment->id . '.pdf');
     }
 }

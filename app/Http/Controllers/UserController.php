@@ -18,8 +18,6 @@ class UserController extends Controller
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%$search%")
                   ->orWhere('email', 'like', "%$search%")
-                  ->orWhere('contact_number', 'like', "%$search%")
-                  ->orWhere('address', 'like', "%$search%")
                   ->orWhere('role', 'like', "%$search%")
                   ->orWhere('id', 'like', "%$search%")
                   ;
@@ -32,7 +30,7 @@ class UserController extends Controller
     // Show the form for creating a new user
     public function create()
     {
-        $roles = ['Admin', 'Manager', 'Staff'];
+        $roles = ['admin', 'manager', 'staff'];
         return view('users.create', compact('roles'));
     }
 
@@ -42,17 +40,13 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'contact_number' => 'nullable|string|max:20',
-            'address' => 'nullable|string|max:255',
-            'role' => 'required|in:Admin,Manager,Staff',
+            'role' => 'required|in:admin,manager,staff',
             'password' => 'required|string|min:6|confirmed',
             'status' => 'required|boolean',
         ]);
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'contact_number' => $request->contact_number,
-            'address' => $request->address,
             'role' => $request->role,
             'password' => Hash::make($request->password),
             'status' => $request->status,
@@ -69,7 +63,7 @@ class UserController extends Controller
     // Show the form for editing the specified user
     public function edit(User $user)
     {
-        $roles = ['Admin', 'Manager', 'Staff'];
+        $roles = ['admin', 'manager', 'staff'];
         return view('users.edit', compact('user', 'roles'));
     }
 
@@ -79,16 +73,12 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $user->id,
-            'contact_number' => 'nullable|string|max:20',
-            'address' => 'nullable|string|max:255',
-            'role' => 'required|in:Admin,Manager,Staff',
+            'role' => 'required|in:admin,manager,staff',
             'status' => 'required|boolean',
         ]);
         $user->update([
             'name' => $request->name,
             'email' => $request->email,
-            'contact_number' => $request->contact_number,
-            'address' => $request->address,
             'role' => $request->role,
             'status' => $request->status,
         ]);

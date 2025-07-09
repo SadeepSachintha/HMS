@@ -12,20 +12,51 @@
                     <form action="{{ route('payments.store') }}" method="POST">
                         @csrf
 
-                        <div class="mb-3">
-                            <label for="invoice_id" class="form-label">Invoice</label>
-                            <select class="form-select @error('invoice_id') is-invalid @enderror" id="invoice_id" name="invoice_id" required>
-                                <option value="">Select Invoice</option>
-                                @foreach($invoices as $invoice)
-                                    <option value="{{ $invoice->id }}" {{ old('invoice_id') == $invoice->id ? 'selected' : '' }}>
-                                        #{{ $invoice->invoice_number }} - {{ $invoice->customer->name }} (${{ number_format($invoice->total_amount, 2) }})
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('invoice_id')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                        <div class="mb-3" id="invoice-summary-container" style="display: none;">
+                            <label class="form-label">Invoice Details</label>
+                            <div class="border rounded p-3 bg-light">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <strong>Invoice #:</strong> <span id="summary-invoice-number"></span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <strong>Customer:</strong> <span id="summary-customer-name"></span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <strong>Amount:</strong> <span id="summary-invoice-amount"></span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+
+                        @if(!empty($selectedInvoiceId))
+                            @php
+                                $selectedInvoice = $invoices->firstWhere('id', $selectedInvoiceId);
+                            @endphp
+                            <div class="mb-3">
+                                <label class="form-label">Invoice</label>
+                                <div class="form-control bg-light">
+                                    #{{ $selectedInvoice->invoice_number }} - {{ $selectedInvoice->customer->name }} (${{ number_format($selectedInvoice->total_amount, 2) }})
+                                </div>
+                                <input type="hidden" name="invoice_id" value="{{ $selectedInvoice->id }}">
+                            </div>
+                        @else
+                            <div class="mb-3">
+                                <label for="invoice_id" class="form-label">Invoice</label>
+                                <select class="form-select @error('invoice_id') is-invalid @enderror" id="invoice_id" name="invoice_id" required>
+                                    <option value="">Select Invoice</option>
+                                    @foreach($invoices as $invoice)
+                                        <option value="{{ $invoice->id }}" {{ (old('invoice_id', $selectedInvoiceId ?? '') == $invoice->id) ? 'selected' : '' }}>
+                                            #{{ $invoice->invoice_number }} - {{ $invoice->customer->name }} (${{ number_format($invoice->total_amount, 2) }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('invoice_id')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        @endif
+                        <input type="hidden" id="reservation_id" name="reservation_id" value="{{ old('reservation_id') }}">
 
                         <div class="mb-3">
                             <label for="amount" class="form-label">Amount</label>
@@ -71,21 +102,6 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="reservation_id" class="form-label">Reservation</label>
-                            <select class="form-select @error('reservation_id') is-invalid @enderror" id="reservation_id" name="reservation_id" required>
-                                <option value="">Select Reservation</option>
-                                @foreach($reservations as $reservation)
-                                    <option value="{{ $reservation->id }}" {{ old('reservation_id') == $reservation->id ? 'selected' : '' }}>
-                                        #{{ $reservation->id }} - {{ $reservation->customer->name }} (Room: {{ $reservation->room_id }})
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('reservation_id')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="mb-3">
                             <label for="notes" class="form-label">Notes</label>
                             <textarea class="form-control @error('notes') is-invalid @enderror" id="notes" name="notes" rows="3">{{ old('notes') }}</textarea>
                             @error('notes')
@@ -108,8 +124,24 @@
 @section('scripts')
 <script>
 $(document).ready(function() {
-    // Auto-fill amount when invoice is selected
+    var invoices = @json($invoices);
+    function updateInvoiceSummary(invoiceId) {
+        var invoice = invoices.find(inv => inv.id == invoiceId);
+        if (invoice) {
+            $('#summary-invoice-number').text('#' + invoice.invoice_number);
+            $('#summary-customer-name').text(invoice.customer.name);
+            $('#summary-invoice-amount').text('$' + Number(invoice.total_amount).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+            $('#invoice-summary-container').show();
+        } else {
+            $('#invoice-summary-container').hide();
+        }
+    }
+    // On page load, show summary if pre-selected
+    var initialInvoiceId = $('#invoice_id').val();
+    updateInvoiceSummary(initialInvoiceId);
+    // On change
     $('#invoice_id').change(function() {
+        updateInvoiceSummary($(this).val());
         var selectedOption = $(this).find('option:selected');
         if (selectedOption.val()) {
             var match = selectedOption.text().match(/\$([0-9,]+(\.[0-9]{2})?)/);
@@ -118,14 +150,13 @@ $(document).ready(function() {
                 $('#amount').val(amount.replace(/,/g, ''));
             }
         }
-        // Auto-select reservation based on invoice
         var invoiceId = $(this).val();
         var reservationId = null;
-        @foreach($invoices as $invoice)
-            if (invoiceId == '{{ $invoice->id }}') {
-                reservationId = '{{ $invoice->reservation_id }}';
+        invoices.forEach(function(invoice) {
+            if (invoiceId == invoice.id) {
+                reservationId = invoice.reservation_id;
             }
-        @endforeach
+        });
         if (reservationId) {
             $('#reservation_id').val(reservationId);
         } else {

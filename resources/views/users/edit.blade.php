@@ -32,7 +32,7 @@
                                             <select name="role" class="form-control" required>
                                                 <option value="">Select Role</option>
                                                 @foreach ($roles as $role)
-                                                    <option value="{{ $role }}" {{ old('role', $user->role) == $role ? 'selected' : '' }}>{{ $role }}</option>
+                                                    <option value="{{ $role }}" {{ old('role', $user->role) == $role ? 'selected' : '' }}>{{ ucfirst($role) }}</option>
                                                 @endforeach
                                             </select>
                                         </div>

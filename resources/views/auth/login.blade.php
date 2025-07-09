@@ -229,11 +229,11 @@
 
                 <button type="submit" class="btn btn-login">Sign In</button>
 
-                <div class="forgot-password">
+                {{-- <div class="forgot-password">
                     @if (Route::has('password.request'))
                         <a href="{{ route('password.request') }}">Forgot Your Password?</a>
                     @endif
-                </div>
+                </div> --}}
 
                 <div class="register-link text-center mt-3">
                     Don't have an account? <a href="{{ route('register') }}">Create one</a>

@@ -153,6 +153,19 @@ class InvoiceController extends Controller
             ->with('success', 'Invoice updated successfully.');
     }
 
+    public function updateStatusNotes(Request $request, Invoice $invoice)
+    {
+        $validated = $request->validate([
+            'status' => 'required|in:draft,sent,paid,overdue,cancelled',
+            'notes' => 'nullable|string'
+        ]);
+
+        $invoice->update($validated);
+
+        return redirect()->route('invoices.show', $invoice)
+            ->with('success', 'Invoice status and notes updated successfully.');
+    }
+
     public function destroy(Invoice $invoice)
     {
         $invoice->delete();

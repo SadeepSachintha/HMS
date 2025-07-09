@@ -106,7 +106,9 @@ Route::middleware(['auth', 'role:admin,manager,staff'])->group(function () {
 
 // Billing & Payments Routes
 Route::resource('payments', PaymentController::class);
+Route::get('payments/{payment}/receipt', [PaymentController::class, 'receipt'])->name('payments.receipt');
 Route::resource('invoices', InvoiceController::class);
+Route::put('invoices/{invoice}/update-status-notes', [InvoiceController::class, 'updateStatusNotes'])->name('invoices.update-status-notes');
 Route::get('invoices/{invoice}/download', [InvoiceController::class, 'download'])->name('invoices.download');
 
 // Test route for debugging reports

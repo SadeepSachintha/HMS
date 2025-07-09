@@ -30,7 +30,7 @@
                                 @forelse($users as $user)
                                 <tr>
                                     <td>{{ $user->id }}</td>
-                                    <td>{{ $user->role }}</td>
+                                    <td>{{ ucfirst($user->role) }}</td>
                                     <td>{{ $user->name }}</td>
                                     <td>
                                         @if($user->status)
@@ -42,11 +42,6 @@
                                     <td>
                                         <a href="{{ route('users.show', $user) }}" class="btn btn-sm btn-info me-1" title="View"><i class="fa fa-eye"></i></a>
                                         <a href="{{ route('users.edit', $user) }}" class="btn btn-sm btn-primary me-1" title="Edit"><i class="fa fa-edit"></i></a>
-                                        <form action="{{ route('users.destroy', $user) }}" method="POST" style="display:inline;">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-danger me-1" title="Delete" onclick="return confirm('Are you sure?')"><i class="fa fa-trash"></i></button>
-                                        </form>
                                         <button type="button" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#resetPasswordModal{{ $user->id }}" title="Reset Password"><i class="fa fa-key"></i></button>
                                         <!-- Reset Password Modal -->
                                         <div class="modal fade" id="resetPasswordModal{{ $user->id }}" tabindex="-1" aria-labelledby="resetPasswordModalLabel{{ $user->id }}" aria-hidden="true">

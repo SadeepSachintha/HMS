@@ -15,75 +15,43 @@
 
                         <div class="mb-3">
                             <label for="invoice_id" class="form-label">Invoice</label>
-                            <select class="form-select @error('invoice_id') is-invalid @enderror" id="invoice_id" name="invoice_id" required>
-                                <option value="">Select Invoice</option>
-                                @foreach($invoices as $invoice)
-                                    <option value="{{ $invoice->id }}" {{ old('invoice_id', $payment->invoice_id) == $invoice->id ? 'selected' : '' }}>
-                                        #{{ $invoice->invoice_number }} - {{ $invoice->customer->name }} (${{ number_format($invoice->total_amount, 2) }})
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('invoice_id')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <div class="form-control" readonly tabindex="-1">
+                                #{{ $payment->invoice->invoice_number }} - {{ $payment->invoice->customer->name }} (${{ number_format($payment->invoice->total_amount, 2) }})
+                            </div>
+                            <input type="hidden" name="invoice_id" value="{{ $payment->invoice_id }}">
                         </div>
 
-                        <div class="mb-3">
-                            <label for="reservation_id" class="form-label">Reservation</label>
-                            <select class="form-select @error('reservation_id') is-invalid @enderror" id="reservation_id" name="reservation_id" required>
-                                <option value="">Select Reservation</option>
-                                @foreach($reservations as $reservation)
-                                    <option value="{{ $reservation->id }}" {{ old('reservation_id', $payment->reservation_id) == $reservation->id ? 'selected' : '' }}>
-                                        #{{ $reservation->id }} - {{ $reservation->customer->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('reservation_id')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
+                        {{-- Reservation field removed --}}
 
                         <div class="mb-3">
                             <label for="amount" class="form-label">Amount</label>
                             <div class="input-group">
                                 <span class="input-group-text">$</span>
-                                <input type="number" class="form-control @error('amount') is-invalid @enderror" id="amount" name="amount" value="{{ old('amount', $payment->amount) }}" min="0.01" step="0.01" required>
+                                <input type="number" class="form-control" id="amount" name="amount" value="{{ old('amount', $payment->amount) }}" min="0.01" step="0.01" readonly tabindex="-1">
                             </div>
-                            @error('amount')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
                         </div>
 
                         <div class="mb-3">
                             <label for="payment_date" class="form-label">Payment Date</label>
-                            <input type="date" class="form-control @error('payment_date') is-invalid @enderror" id="payment_date" name="payment_date" value="{{ old('payment_date', $payment->payment_date->format('Y-m-d')) }}" required>
-                            @error('payment_date')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <input type="date" class="form-control" id="payment_date" name="payment_date" value="{{ old('payment_date', $payment->payment_date->format('Y-m-d')) }}" readonly tabindex="-1">
                         </div>
 
                         <div class="mb-3">
                             <label for="payment_method" class="form-label">Payment Method</label>
-                            <select class="form-select @error('payment_method') is-invalid @enderror" id="payment_method" name="payment_method" required>
-                                <option value="">Select Payment Method</option>
+                            <select class="form-select" id="payment_method" name="payment_method" disabled tabindex="-1">
                                 <option value="credit_card" {{ old('payment_method', $payment->payment_method) == 'credit_card' ? 'selected' : '' }}>Credit Card</option>
                                 <option value="debit_card" {{ old('payment_method', $payment->payment_method) == 'debit_card' ? 'selected' : '' }}>Debit Card</option>
                                 <option value="cash" {{ old('payment_method', $payment->payment_method) == 'cash' ? 'selected' : '' }}>Cash</option>
                                 <option value="bank_transfer" {{ old('payment_method', $payment->payment_method) == 'bank_transfer' ? 'selected' : '' }}>Bank Transfer</option>
                                 <option value="check" {{ old('payment_method', $payment->payment_method) == 'check' ? 'selected' : '' }}>Check</option>
                             </select>
-                            @error('payment_method')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <input type="hidden" name="payment_method" value="{{ old('payment_method', $payment->payment_method) }}">
                         </div>
 
                         <div class="mb-3">
                             <label for="transaction_id" class="form-label">Transaction ID</label>
-                            <input type="text" class="form-control @error('transaction_id') is-invalid @enderror" id="transaction_id" name="transaction_id" value="{{ old('transaction_id', $payment->transaction_id) }}">
+                            <input type="text" class="form-control" id="transaction_id" name="transaction_id" value="{{ old('transaction_id', $payment->transaction_id) }}" readonly tabindex="-1">
                             <div class="form-text">Optional: Enter the transaction ID from your payment processor</div>
-                            @error('transaction_id')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
                         </div>
 
                         <div class="mb-3">
@@ -101,10 +69,7 @@
 
                         <div class="mb-3">
                             <label for="notes" class="form-label">Notes</label>
-                            <textarea class="form-control @error('notes') is-invalid @enderror" id="notes" name="notes" rows="3">{{ old('notes', $payment->notes) }}</textarea>
-                            @error('notes')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <textarea class="form-control" id="notes" name="notes" rows="3">{{ old('notes', $payment->notes) }}</textarea>
                         </div>
 
                         <div class="d-flex justify-content-between">

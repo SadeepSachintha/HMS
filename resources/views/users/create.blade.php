@@ -27,14 +27,6 @@
                                         <input type="email" name="email" class="form-control" required autocomplete="off">
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="fw-bold"><i class="fa fa-phone fa-fw me-2"></i>Contact Number</label>
-                                        <input type="text" name="contact_number" class="form-control">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="fw-bold"><i class="fa fa-map-marker-alt fa-fw me-2"></i>Address</label>
-                                        <input type="text" name="address" class="form-control">
-                                    </div>
-                                    <div class="col-md-6">
                                         <label class="fw-bold"><i class="fa fa-user-tag fa-fw me-2"></i>Role</label>
                                         <select name="role" class="form-control" required>
                                             <option value="">Select Role</option>

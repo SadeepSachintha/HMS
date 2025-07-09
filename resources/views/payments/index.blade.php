@@ -4,9 +4,6 @@
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Payment Records</h2>
-        <a href="{{ route('payments.create') }}" class="btn btn-primary">
-            <i class="fas fa-plus"></i> Record New Payment
-        </a>
     </div>
 
     <div class="card">
@@ -25,8 +22,7 @@
                                     </div>
                                 </a>
                             </th>
-                            <th>Reservation</th>
-                            <th>Customer</th>
+                            <th>Invoice</th>
                             <th>
                                 <a href="{{ request()->fullUrlWithQuery(['sort' => 'amount', 'order' => request('sort') == 'amount' && request('order') == 'asc' ? 'desc' : 'asc']) }}"
                                    class="text-decoration-none text-dark d-flex align-items-center justify-content-between">
@@ -75,19 +71,12 @@
                             <tr>
                                 <td>{{ $payment->id }}</td>
                                 <td>
-                                    @if($payment->reservation)
-                                        <a href="{{ route('reservations.show', $payment->reservation_id) }}">
-                                            #{{ $payment->reservation_id }}
+                                    @if($payment->invoice)
+                                        <a href="{{ route('invoices.show', $payment->invoice_id) }}">
+                                            #{{ $payment->invoice->invoice_number }}
                                         </a>
                                     @else
                                         &mdash;
-                                    @endif
-                                </td>
-                                <td>
-                                    @if($payment->reservation && $payment->reservation->customer)
-                                        {{ $payment->reservation->customer->name }}
-                                    @else
-                                        N/A
                                     @endif
                                 </td>
                                 <td>${{ number_format($payment->amount, 2) }}</td>
