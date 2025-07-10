@@ -80,7 +80,7 @@
                                     @endif
                                 </td>
                                 <td>${{ number_format($payment->amount, 2) }}</td>
-                                <td>{{ ucfirst(str_replace('_', ' ', $payment->payment_method)) }}</td>
+                                <td>{{ $payment->payment_method === 'check' ? 'Cheque' : ucfirst(str_replace('_', ' ', $payment->payment_method)) }}</td>
                                 <td>{{ $payment->payment_date->format('Y-m-d H:i') }}</td>
                                 <td>
                                     <span class="badge bg-{{ $payment->status === 'completed' ? 'success' : ($payment->status === 'pending' ? 'warning' : ($payment->status === 'failed' ? 'danger' : 'info')) }}">

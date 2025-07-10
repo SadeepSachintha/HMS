@@ -120,7 +120,7 @@
                 <tr>
                     <td>#{{ $payment->id }}</td>
                     <td>{{ $payment->payment_date->format('M d, Y') }}</td>
-                    <td>{{ ucfirst(str_replace('_', ' ', $payment->payment_method)) }}</td>
+                    <td>{{ $payment->payment_method === 'check' ? 'Cheque' : ucfirst(str_replace('_', ' ', $payment->payment_method)) }}</td>
                     <td>${{ number_format($payment->amount, 2) }}</td>
                 </tr>
                 @endforeach

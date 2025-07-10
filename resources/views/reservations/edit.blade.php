@@ -99,9 +99,8 @@
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Set minimum date for check-in to today
-        const today = new Date().toISOString().split('T')[0];
-        document.getElementById('check_in_date').setAttribute('min', today);
+        // Remove min restriction for check-in date on edit
+        // (No code to set min for check_in_date)
 
         // Update check-out minimum and maximum date when check-in date changes
         document.getElementById('check_in_date').addEventListener('change', function() {

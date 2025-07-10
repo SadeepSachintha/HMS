@@ -77,9 +77,9 @@ function getTableColumns(type) {
         ];
     } else if (type === 'revenue') {
         return [
-            { title: 'Appointment ID', data: 'appointment_id' },
-            { title: 'Customer', data: 'customer' },
-            { title: 'Reservation date', data: 'reservation_date' },
+            { title: 'Payment id', data: 'payment_id' },
+            { title: 'Payment method', data: 'payment_method' },
+            { title: 'Payment date', data: 'payment_date' },
             { title: 'Total amount (LKR)', data: 'total_amount' }
         ];
     } else {

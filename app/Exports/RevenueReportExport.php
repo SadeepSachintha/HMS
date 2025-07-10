@@ -22,9 +22,9 @@ class RevenueReportExport implements FromArray, WithHeadings
     public function headings(): array
     {
         return [
-            'Appointment ID',
-            'Customer',
-            'Reservation date',
+            'Payment id',
+            'Payment method',
+            'Payment date',
             'Total amount (LKR)',
         ];
     }

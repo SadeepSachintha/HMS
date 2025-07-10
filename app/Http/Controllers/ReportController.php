@@ -337,18 +337,33 @@ class ReportController extends Controller
         });
     }
 
+    /**
+     * Map payment method code to display name.
+     */
+    private function getPaymentMethodDisplayName($code)
+    {
+        $map = [
+            'cash' => 'Cash',
+            'credit_card' => 'Credit Card',
+            'debit_card' => 'Debit Card',
+            'bank_transfer' => 'Bank Transfer',
+            'cheque' => 'Cheque',
+        ];
+        return $map[$code] ?? ucfirst(str_replace('_', ' ', $code));
+    }
+
     // Helper for Revenue Report Table
     private function getRevenueTableData($from, $to)
     {
-        $payments = Payment::with(['reservation', 'reservation.customer'])
-            ->where('status', 'completed')
+        $payments = Payment::where('status', 'completed')
             ->whereBetween('payment_date', [$from, $to])
+            ->with(['reservation.customer'])
             ->get();
         $rows = $payments->map(function($p) {
             return [
-                'appointment_id' => $p->reservation ? $p->reservation->id : '',
-                'customer' => $p->reservation && $p->reservation->customer ? $p->reservation->customer->name : '',
-                'reservation_date' => $p->reservation ? $p->reservation->check_in_date->format('Y-m-d') : '',
+                'payment_id' => $p->id,
+                'payment_method' => $this->getPaymentMethodDisplayName($p->payment_method ?? ''),
+                'payment_date' => $p->payment_date ? (new \Carbon\Carbon($p->payment_date))->format('Y-m-d') : '',
                 'total_amount' => $p->amount,
             ];
         });

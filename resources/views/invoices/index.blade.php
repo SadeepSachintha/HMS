@@ -111,9 +111,15 @@
                                     <a href="{{ route('invoices.edit', $invoice) }}" class="btn btn-sm btn-warning" title="Edit Status & Notes">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <a href="{{ route('payments.create', ['invoice_id' => $invoice->id]) }}" class="btn btn-sm btn-success" title="Pay">
-                                        <i class="fas fa-credit-card"></i>
-                                    </a>
+                                    @if($invoice->status !== 'paid' && $invoice->status !== 'cancelled')
+                                        <a href="{{ route('payments.create', ['invoice_id' => $invoice->id]) }}" class="btn btn-sm btn-success" title="Pay">
+                                            <i class="fas fa-credit-card"></i>
+                                        </a>
+                                    @else
+                                        <button class="btn btn-sm btn-secondary" title="Pay" disabled style="pointer-events: none; opacity: 0.65;">
+                                            <i class="fas fa-credit-card"></i>
+                                        </button>
+                                    @endif
                                     <a href="{{ route('invoices.download', $invoice) }}" class="btn btn-sm btn-secondary" title="Download">
                                         <i class="fas fa-download"></i>
                                     </a>

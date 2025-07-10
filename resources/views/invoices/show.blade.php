@@ -10,11 +10,8 @@
                         <h4 class="mb-0">Invoice #{{ $invoice->invoice_number }}</h4>
                         <div>
                             <a href="{{ route('invoices.edit', $invoice) }}" class="btn btn-warning">
-                                <i class="fas fa-edit"></i> Edit Status & Notes
+                                <i class="fas fa-edit"></i> Edit Invoice
                             </a>
-                            <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#editStatusNotesModal">
-                                <i class="fas fa-cog"></i> Quick Edit Status & Notes
-                            </button>
                             <form action="{{ route('invoices.destroy', $invoice) }}" method="POST" class="d-inline">
                                 @csrf
                                 @method('DELETE')
@@ -134,7 +131,7 @@
                                             </a>
                                         </td>
                                         <td>{{ $payment->payment_date->format('M d, Y') }}</td>
-                                        <td>{{ ucfirst(str_replace('_', ' ', $payment->payment_method)) }}</td>
+                                        <td>{{ $payment->payment_method === 'check' ? 'Cheque' : ucfirst(str_replace('_', ' ', $payment->payment_method)) }}</td>
                                         <td>${{ number_format($payment->amount, 2) }}</td>
                                         <td>
                                             <span class="badge bg-{{ $payment->status === 'completed' ? 'success' : ($payment->status === 'pending' ? 'warning' : ($payment->status === 'failed' ? 'danger' : 'info')) }}">
@@ -166,49 +163,6 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-</div>
-
-<!-- Edit Status & Notes Modal -->
-<div class="modal fade" id="editStatusNotesModal" tabindex="-1" aria-labelledby="editStatusNotesModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editStatusNotesModalLabel">Edit Status & Notes</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <form action="{{ route('invoices.update-status-notes', $invoice) }}" method="POST">
-                @csrf
-                @method('PUT')
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="status" class="form-label">Status</label>
-                        <select class="form-select @error('status') is-invalid @enderror" id="status" name="status" required>
-                            <option value="draft" {{ old('status', $invoice->status) == 'draft' ? 'selected' : '' }}>Draft</option>
-                            <option value="sent" {{ old('status', $invoice->status) == 'sent' ? 'selected' : '' }}>Sent</option>
-                            <option value="paid" {{ old('status', $invoice->status) == 'paid' ? 'selected' : '' }}>Paid</option>
-                            <option value="overdue" {{ old('status', $invoice->status) == 'overdue' ? 'selected' : '' }}>Overdue</option>
-                            <option value="cancelled" {{ old('status', $invoice->status) == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
-                        </select>
-                        @error('status')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="notes" class="form-label">Notes</label>
-                        <textarea class="form-control @error('notes') is-invalid @enderror" id="notes" name="notes" rows="4">{{ old('notes', $invoice->notes) }}</textarea>
-                        @error('notes')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Update</button>
-                </div>
-            </form>
         </div>
     </div>
 </div>

@@ -96,18 +96,18 @@
         <table>
             <thead>
                 <tr>
-                    <th>Appointment ID</th>
-                    <th>Customer</th>
-                    <th>Reservation date</th>
+                    <th>Payment id</th>
+                    <th>Payment method</th>
+                    <th>Payment date</th>
                     <th>Total amount (LKR)</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($data['rows'] as $row)
                     <tr>
-                        <td>{{ $row['appointment_id'] }}</td>
-                        <td>{{ $row['customer'] }}</td>
-                        <td>{{ $row['reservation_date'] }}</td>
+                        <td>{{ $row['payment_id'] }}</td>
+                        <td>{{ $row['payment_method'] }}</td>
+                        <td>{{ $row['payment_date'] }}</td>
                         <td>{{ $row['total_amount'] }}</td>
                     </tr>
                 @endforeach

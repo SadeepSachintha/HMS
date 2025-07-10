@@ -129,7 +129,7 @@
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Set minimum date for check-in to today
+        // Set minimum date for check-in to today (creation only)
         const today = new Date().toISOString().split('T')[0];
         document.getElementById('check_in_date').setAttribute('min', today);
 

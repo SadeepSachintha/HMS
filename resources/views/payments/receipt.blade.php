@@ -43,7 +43,7 @@
         <p><span class="label">Payment ID:</span> #{{ $payment->id }}</p>
         <p><span class="label">Invoice:</span> #{{ $payment->invoice->invoice_number }}</p>
         <p><span class="label">Amount:</span> ${{ number_format($payment->amount, 2) }}</p>
-        <p><span class="label">Payment Method:</span> {{ ucfirst(str_replace('_', ' ', $payment->payment_method)) }}</p>
+        <p><span class="label">Payment Method:</span> {{ $payment->payment_method === 'check' ? 'Cheque' : ucfirst(str_replace('_', ' ', $payment->payment_method)) }}</p>
         <p><span class="label">Transaction ID:</span> {{ $payment->transaction_id ?? 'Not provided' }}</p>
         <p><span class="label">Notes:</span> {{ $payment->notes ?? '-' }}</p>
     </div>

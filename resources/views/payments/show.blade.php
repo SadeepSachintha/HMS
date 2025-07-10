@@ -63,7 +63,7 @@
                                 <tbody>
                                     <tr>
                                         <th width="30%">Payment Method:</th>
-                                        <td>{{ ucfirst(str_replace('_', ' ', $payment->payment_method)) }}</td>
+                                        <td>{{ $payment->payment_method === 'check' ? 'Cheque' : ucfirst(str_replace('_', ' ', $payment->payment_method)) }}</td>
                                     </tr>
                                     <tr>
                                         <th>Transaction ID:</th>
@@ -138,7 +138,7 @@
                                     </td>
                                     <td>{{ $otherPayment->payment_date->format('M d, Y') }}</td>
                                     <td>${{ number_format($otherPayment->amount, 2) }}</td>
-                                    <td>{{ ucfirst(str_replace('_', ' ', $otherPayment->payment_method)) }}</td>
+                                    <td>{{ $otherPayment->payment_method === 'check' ? 'Cheque' : ucfirst(str_replace('_', ' ', $otherPayment->payment_method)) }}</td>
                                     <td>
                                         <span class="badge bg-{{ $otherPayment->status === 'completed' ? 'success' : ($otherPayment->status === 'pending' ? 'warning' : ($otherPayment->status === 'failed' ? 'danger' : 'info')) }}">
                                             {{ ucfirst($otherPayment->status) }}

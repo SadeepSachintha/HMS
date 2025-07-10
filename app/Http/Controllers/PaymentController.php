@@ -62,7 +62,7 @@ class PaymentController extends Controller
             'invoice_id' => 'nullable|exists:invoices,id',
             'reservation_id' => 'nullable|exists:reservations,id',
             'amount' => 'required|numeric|min:0.01',
-            'payment_method' => 'required|in:cash,credit_card,debit_card,bank_transfer,check',
+            'payment_method' => 'required|in:cash,credit_card,debit_card,bank_transfer,cheque',
             'payment_date' => 'required|date',
             // transaction_id is only required for non-cash methods
             'transaction_id' => $request->payment_method === 'cash' ? 'nullable|string|max:100' : 'nullable|string|max:100|unique:payments,transaction_id',
@@ -121,7 +121,7 @@ class PaymentController extends Controller
             // reservation_id is not required since the field is removed from the form
             'reservation_id' => 'nullable|exists:reservations,id',
             'amount' => 'required|numeric|min:0',
-            'payment_method' => 'required|in:cash,credit_card,debit_card,bank_transfer,check',
+            'payment_method' => 'required|in:cash,credit_card,debit_card,bank_transfer,cheque',
             'payment_date' => 'required|date',
             'status' => 'required|in:pending,completed,failed,refunded',
             'transaction_id' => 'nullable|string|max:100|unique:payments,transaction_id,' . $payment->id,
