@@ -19,7 +19,7 @@ function updateStats(data) {
     updateStatValue('occupancy-change', data.occupancy_change + '% increase from last week');
 
     // Update revenue
-    updateStatValue('revenue', '$' + parseFloat(data.revenue).toLocaleString(undefined, {
+    updateStatValue('revenue', 'LKR' + parseFloat(data.revenue).toLocaleString(undefined, {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
     }));

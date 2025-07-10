@@ -16,7 +16,7 @@
                         <div class="mb-3">
                             <label for="invoice_id" class="form-label">Invoice</label>
                             <div class="form-control" readonly tabindex="-1">
-                                #{{ $payment->invoice->invoice_number }} - {{ $payment->invoice->customer->name }} (${{ number_format($payment->invoice->total_amount, 2) }})
+                                #{{ $payment->invoice->invoice_number }} - {{ $payment->invoice->customer->name }} (LKR{{ number_format($payment->invoice->total_amount, 2) }})
                             </div>
                             <input type="hidden" name="invoice_id" value="{{ $payment->invoice_id }}">
                         </div>
@@ -26,7 +26,7 @@
                         <div class="mb-3">
                             <label for="amount" class="form-label">Amount</label>
                             <div class="input-group">
-                                <span class="input-group-text">$</span>
+                                <span class="input-group-text">LKR</span>
                                 <input type="number" class="form-control" id="amount" name="amount" value="{{ old('amount', $payment->amount) }}" min="0.01" step="0.01" readonly tabindex="-1">
                             </div>
                         </div>
@@ -91,7 +91,7 @@ $(document).ready(function() {
     $('#invoice_id').change(function() {
         var selectedOption = $(this).find('option:selected');
         if (selectedOption.val()) {
-            var amount = selectedOption.text().match(/\$([0-9,]+(\.[0-9]{2})?)/)[1];
+            var amount = selectedOption.text().match(/LKR([0-9,]+(\.[0-9]{2})?)/)[1];
             $('#amount').val(amount.replace(/,/g, ''));
         }
     });

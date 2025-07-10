@@ -66,7 +66,12 @@ class InvoiceController extends Controller
     {
         $customers = \App\Models\Customer::orderBy('name')->get();
         $events = \App\Models\Event::orderBy('start_time', 'desc')->get();
-        $reservations = \App\Models\Reservation::with('customer')->orderBy('id', 'desc')->get();
+        $reservations = \App\Models\Reservation::with(['customer', 'room.roomType'])
+            ->whereIn('status', ['pending', 'confirmed'])
+            ->whereDoesntHave('invoice')
+            ->unpaid()
+            ->orderBy('id', 'desc')
+            ->get();
         return view('invoices.create', compact('customers', 'events', 'reservations'));
     }
 

@@ -107,7 +107,7 @@
                                         <tr>
                                             <td class="align-middle">{{ $item->name }}</td>
                                             <td class="align-middle">{{ ucfirst(str_replace('_', ' ', $item->category)) }}</td>
-                                            <td class="align-middle">${{ number_format($item->price, 2) }}</td>
+                                            <td class="align-middle">LKR{{ number_format($item->price, 2) }}</td>
                                             <td class="align-middle">
                                                 <span class="badge {{ $item->is_available ? 'bg-success' : 'bg-danger' }}">
                                                     {{ $item->is_available ? 'Available' : 'Not Available' }}

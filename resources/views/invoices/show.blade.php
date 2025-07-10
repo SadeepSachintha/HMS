@@ -75,23 +75,23 @@
                                 <tr>
                                     <td>{{ $item->description }}</td>
                                     <td class="text-center">{{ $item->quantity }}</td>
-                                    <td class="text-end">${{ number_format($item->unit_price, 2) }}</td>
-                                    <td class="text-end">${{ number_format($item->quantity * $item->unit_price, 2) }}</td>
+                                    <td class="text-end">LKR{{ number_format($item->unit_price, 2) }}</td>
+                                    <td class="text-end">LKR{{ number_format($item->quantity * $item->unit_price, 2) }}</td>
                                 </tr>
                                 @endforeach
                             </tbody>
                             <tfoot>
                                 <tr>
                                     <td colspan="3" class="text-end">Subtotal:</td>
-                                    <td class="text-end">${{ number_format($invoice->subtotal, 2) }}</td>
+                                    <td class="text-end">LKR{{ number_format($invoice->subtotal, 2) }}</td>
                                 </tr>
                                 <tr>
                                     <td colspan="3" class="text-end">Tax ({{ $invoice->tax_rate }}%):</td>
-                                    <td class="text-end">${{ number_format($invoice->tax_amount, 2) }}</td>
+                                    <td class="text-end">LKR{{ number_format($invoice->tax_amount, 2) }}</td>
                                 </tr>
                                 <tr>
                                     <td colspan="3" class="text-end"><strong>Total:</strong></td>
-                                    <td class="text-end"><strong>${{ number_format($invoice->total_amount, 2) }}</strong></td>
+                                    <td class="text-end"><strong>LKR{{ number_format($invoice->total_amount, 2) }}</strong></td>
                                 </tr>
                             </tfoot>
                         </table>
@@ -132,7 +132,7 @@
                                         </td>
                                         <td>{{ $payment->payment_date->format('M d, Y') }}</td>
                                         <td>{{ $payment->payment_method === 'check' ? 'Cheque' : ucfirst(str_replace('_', ' ', $payment->payment_method)) }}</td>
-                                        <td>${{ number_format($payment->amount, 2) }}</td>
+                                        <td>LKR{{ number_format($payment->amount, 2) }}</td>
                                         <td>
                                             <span class="badge bg-{{ $payment->status === 'completed' ? 'success' : ($payment->status === 'pending' ? 'warning' : ($payment->status === 'failed' ? 'danger' : 'info')) }}">
                                                 {{ ucfirst($payment->status) }}
@@ -144,11 +144,11 @@
                                 <tfoot>
                                     <tr>
                                         <td colspan="3" class="text-end"><strong>Total Paid:</strong></td>
-                                        <td colspan="2"><strong>${{ number_format($invoice->payments->where('status', 'completed')->sum('amount'), 2) }}</strong></td>
+                                        <td colspan="2"><strong>LKR{{ number_format($invoice->payments->where('status', 'completed')->sum('amount'), 2) }}</strong></td>
                                     </tr>
                                     <tr>
                                         <td colspan="3" class="text-end"><strong>Balance Due:</strong></td>
-                                        <td colspan="2"><strong>${{ number_format($invoice->total_amount - $invoice->payments->where('status', 'completed')->sum('amount'), 2) }}</strong></td>
+                                        <td colspan="2"><strong>LKR{{ number_format($invoice->total_amount - $invoice->payments->where('status', 'completed')->sum('amount'), 2) }}</strong></td>
                                     </tr>
                                 </tfoot>
                             </table>

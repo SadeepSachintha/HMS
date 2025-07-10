@@ -70,7 +70,7 @@
                                     </tr>
                                     <tr>
                                         <th>Price:</th>
-                                        <td>${{ number_format($event->price, 2) }}</td>
+                                        <td>LKR{{ number_format($event->price, 2) }}</td>
                                     </tr>
                                     <tr>
                                         <th>Status:</th>

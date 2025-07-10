@@ -36,7 +36,7 @@
                             <div class="mb-3">
                                 <label class="form-label">Invoice</label>
                                 <div class="form-control bg-light">
-                                    #{{ $selectedInvoice->invoice_number }} - {{ $selectedInvoice->customer->name }} (${{ number_format($selectedInvoice->total_amount, 2) }})
+                                    #{{ $selectedInvoice->invoice_number }} - {{ $selectedInvoice->customer->name }} (LKR{{ number_format($selectedInvoice->total_amount, 2) }})
                                 </div>
                                 <input type="hidden" name="invoice_id" value="{{ $selectedInvoice->id }}">
                             </div>
@@ -47,7 +47,7 @@
                                     <option value="">Select Invoice</option>
                                     @foreach($invoices as $invoice)
                                         <option value="{{ $invoice->id }}" {{ (old('invoice_id', $selectedInvoiceId ?? '') == $invoice->id) ? 'selected' : '' }}>
-                                            #{{ $invoice->invoice_number }} - {{ $invoice->customer->name }} (${{ number_format($invoice->total_amount, 2) }})
+                                            #{{ $invoice->invoice_number }} - {{ $invoice->customer->name }} (LKR{{ number_format($invoice->total_amount, 2) }})
                                         </option>
                                     @endforeach
                                 </select>
@@ -61,7 +61,7 @@
                         <div class="mb-3">
                             <label for="amount" class="form-label">Amount</label>
                             <div class="input-group">
-                                <span class="input-group-text">$</span>
+                                <span class="input-group-text">LKR</span>
                                 <input type="number" class="form-control @error('amount') is-invalid @enderror" id="amount" name="amount" value="{{ old('amount') }}" min="0.01" step="0.01" required>
                             </div>
                             @error('amount')
@@ -130,7 +130,7 @@ $(document).ready(function() {
         if (invoice) {
             $('#summary-invoice-number').text('#' + invoice.invoice_number);
             $('#summary-customer-name').text(invoice.customer.name);
-            $('#summary-invoice-amount').text('$' + Number(invoice.total_amount).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+            $('#summary-invoice-amount').text('LKR' + Number(invoice.total_amount).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
             $('#invoice-summary-container').show();
         } else {
             $('#invoice-summary-container').hide();
@@ -144,7 +144,7 @@ $(document).ready(function() {
         updateInvoiceSummary($(this).val());
         var selectedOption = $(this).find('option:selected');
         if (selectedOption.val()) {
-            var match = selectedOption.text().match(/\$([0-9,]+(\.[0-9]{2})?)/);
+            var match = selectedOption.text().match(/LKR([0-9,]+(\.[0-9]{2})?)/);
             if (match) {
                 var amount = match[1];
                 $('#amount').val(amount.replace(/,/g, ''));

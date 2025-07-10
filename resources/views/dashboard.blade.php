@@ -82,7 +82,7 @@
                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
                                 Revenue (Monthly)</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800 stat-value" id="revenue">
-                                ${{ number_format($stats['revenue'], 2) }}</div>
+                                LKR{{ number_format($stats['revenue'], 2) }}</div>
                             <div class="text-xs text-muted" id="revenue-change">{{ $stats['revenue_change'] }}% increase
                                 from last month</div>
                         </div>

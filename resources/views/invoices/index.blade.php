@@ -98,7 +98,7 @@
                                 <td>{{ $invoice->customer->name }}</td>
                                 <td>{{ $invoice->invoice_date ? $invoice->invoice_date->format('Y-m-d') : '' }}</td>
                                 <td>{{ $invoice->due_date ? $invoice->due_date->format('Y-m-d') : '' }}</td>
-                                <td>${{ number_format($invoice->total_amount, 2) }}</td>
+                                <td>LKR{{ number_format($invoice->total_amount, 2) }}</td>
                                 <td>
                                     <span class="badge bg-{{ $invoice->status === 'paid' ? 'success' : ($invoice->status === 'pending' ? 'warning' : ($invoice->status === 'overdue' ? 'danger' : 'info')) }}">
                                         {{ ucfirst($invoice->status) }}

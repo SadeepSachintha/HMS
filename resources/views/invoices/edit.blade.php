@@ -61,14 +61,14 @@
                                             <div class="col-md-2">
                                                 <label class="form-label">Unit Price</label>
                                                 <div class="input-group">
-                                                    <span class="input-group-text">$</span>
+                                                    <span class="input-group-text">LKR</span>
                                                     <input type="number" class="form-control" value="{{ $item->unit_price }}" readonly tabindex="-1">
                                                 </div>
                                             </div>
                                             <div class="col-md-2">
                                                 <label class="form-label">Total</label>
                                                 <div class="input-group">
-                                                    <span class="input-group-text">$</span>
+                                                    <span class="input-group-text">LKR</span>
                                                     <input type="text" class="form-control" value="{{ number_format($item->quantity * $item->unit_price, 2) }}" readonly tabindex="-1">
                                                 </div>
                                             </div>
@@ -91,15 +91,15 @@
                                     <div class="card-body">
                                         <div class="d-flex justify-content-between mb-2">
                                             <span>Subtotal:</span>
-                                            <span>${{ number_format($invoice->subtotal, 2) }}</span>
+                                            <span>LKR{{ number_format($invoice->subtotal, 2) }}</span>
                                         </div>
                                         <div class="d-flex justify-content-between mb-2">
                                             <span>Tax:</span>
-                                            <span>${{ number_format($invoice->tax_amount, 2) }}</span>
+                                            <span>LKR{{ number_format($invoice->tax_amount, 2) }}</span>
                                         </div>
                                         <div class="d-flex justify-content-between">
                                             <strong>Total:</strong>
-                                            <strong>${{ number_format($invoice->total_amount, 2) }}</strong>
+                                            <strong>LKR{{ number_format($invoice->total_amount, 2) }}</strong>
                                         </div>
                                     </div>
                                 </div>

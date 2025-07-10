@@ -71,7 +71,7 @@
                                 <div class="mb-3">
                                     <label for="price" class="form-label">Price</label>
                                     <div class="input-group">
-                                        <span class="input-group-text">$</span>
+                                        <span class="input-group-text">LKR</span>
                                         <input type="number" class="form-control @error('price') is-invalid @enderror" id="price" name="price" value="{{ old('price') }}" min="0" step="0.01">
                                     </div>
                                     @error('price')

@@ -79,7 +79,7 @@
                                         &mdash;
                                     @endif
                                 </td>
-                                <td>${{ number_format($payment->amount, 2) }}</td>
+                                <td>LKR{{ number_format($payment->amount, 2) }}</td>
                                 <td>{{ $payment->payment_method === 'check' ? 'Cheque' : ucfirst(str_replace('_', ' ', $payment->payment_method)) }}</td>
                                 <td>{{ $payment->payment_date->format('Y-m-d H:i') }}</td>
                                 <td>
