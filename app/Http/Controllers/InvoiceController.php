@@ -69,7 +69,6 @@ class InvoiceController extends Controller
         $reservations = \App\Models\Reservation::with(['customer', 'room.roomType'])
             ->whereIn('status', ['pending', 'confirmed'])
             ->whereDoesntHave('invoice')
-            ->unpaid()
             ->orderBy('id', 'desc')
             ->get();
         return view('invoices.create', compact('customers', 'events', 'reservations'));

@@ -15,6 +15,7 @@ class Invoice extends Model
         'invoice_number',
         'customer_id',
         'event_id',
+        'reservation_id',
         'invoice_date',
         'due_date',
         'subtotal',

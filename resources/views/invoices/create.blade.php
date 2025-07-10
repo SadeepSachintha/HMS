@@ -45,12 +45,21 @@
                                     </optgroup>
                                     <optgroup label="Reservations">
                                         @foreach ($reservations as $reservation)
-                                            <option value="{{ $reservation->id }}"
-                                                data-description="Reservation: {{ $reservation->customer->name }} ({{ $reservation->check_in }} - {{ $reservation->check_out }})"
-                                                data-unit-price="{{ $reservation->room && $reservation->room->roomType ? $reservation->room->roomType->price_per_night : 0 }}"
+                                            @php
+                                                $nights = 0;
+                                                if ($reservation->check_in_date && $reservation->check_out_date) {
+                                                    $nights = $reservation->check_out_date->diffInDays($reservation->check_in_date);
+                                                }
+                                                $pricePerNight = $reservation->room && $reservation->room->roomType ? $reservation->room->roomType->price_per_night : 0;
+                                                $totalPrice = $nights * $pricePerNight;
+                                            @endphp
+                                            <option value="reservation-{{ $reservation->id }}"
+                                                data-unit-price="{{ $pricePerNight }}"
+                                                data-quantity="{{ $nights }}"
+                                                data-reservation-id="{{ $reservation->id }}"
                                                 {{ old('reservation_id') == $reservation->id ? 'selected' : '' }}>
                                                 #{{ $reservation->id }} - {{ $reservation->customer->name }} (Room:
-                                                {{ $reservation->room_id }})
+                                                {{ $reservation->room_id }}) - {{ $nights }} nights - LKR {{ number_format($totalPrice, 2) }}
                                             </option>
                                         @endforeach
                                     </optgroup>
@@ -184,21 +193,38 @@
             // Autofill first invoice item based on context selection
             $('#invoice-context-source').on('change', function() {
                 var selected = $(this).find('option:selected');
-                var description = selected.data('description') || '';
                 var unitPrice = selected.data('unit-price');
+                var quantity = selected.data('quantity');
+                var reservationId = selected.data('reservation-id');
                 var firstItem = $('.invoice-item').first();
-                firstItem.find('.description-field').val(description);
+
+                console.log('Selected option:', selected.text());
+                console.log('Unit price:', unitPrice);
+                console.log('Quantity:', quantity);
+                console.log('Reservation ID:', reservationId);
+
                 if (unitPrice !== undefined) {
-                    firstItem.find('.unit-price').val(unitPrice).trigger('input');
+                    firstItem.find('.unit-price').val(unitPrice);
                 }
+
+                if (quantity !== undefined) {
+                    firstItem.find('.quantity').val(quantity);
+                }
+
+                if (reservationId !== undefined) {
+                    $('#reservation_id').val(reservationId);
+                } else {
+                    $('#reservation_id').val('');
+                }
+
+                // Trigger calculation
+                firstItem.find('.quantity, .unit-price').trigger('input');
             });
 
             function bindItemSourceDropdown(item) {
                 item.find('.item-source').on('change', function() {
                     var selected = $(this).find('option:selected');
-                    var description = selected.data('description') || '';
                     var unitPrice = selected.data('unit-price');
-                    item.find('.description-field').val(description);
                     if (unitPrice !== undefined) {
                         item.find('.unit-price').val(unitPrice).trigger('input');
                     }
@@ -222,7 +248,6 @@
                 newItem.find('.item-total').val('');
                 newItem.find('.remove-item').prop('disabled', false);
                 newItem.find('.item-source').val('');
-                newItem.find('.description-field').val('');
 
                 // Update input names
                 newItem.find('input, select').each(function() {
