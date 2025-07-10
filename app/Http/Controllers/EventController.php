@@ -96,7 +96,8 @@ class EventController extends Controller
 
     public function edit(Event $event)
     {
-        return view('events.edit', compact('event'));
+        $customers = \App\Models\Customer::all();
+        return view('events.edit', compact('event', 'customers'));
     }
 
     public function update(Request $request, Event $event)
