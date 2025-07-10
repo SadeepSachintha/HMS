@@ -76,6 +76,7 @@
             <thead>
                 <tr>
                     <th>Room no</th>
+                    <th>Room type</th>
                     <th>Check-in date</th>
                     <th>Check-out date</th>
                     <th>Status</th>
@@ -85,6 +86,7 @@
                 @foreach($data as $row)
                     <tr>
                         <td>{{ $row['room_no'] }}</td>
+                        <td>{{ $row['room_type'] }}</td>
                         <td>{{ $row['check_in'] }}</td>
                         <td>{{ $row['check_out'] }}</td>
                         <td>{{ $row['status'] }}</td>

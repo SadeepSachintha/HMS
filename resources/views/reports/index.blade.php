@@ -71,6 +71,7 @@ function getTableColumns(type) {
     if (type === 'occupancy') {
         return [
             { title: 'Room no', data: 'room_no' },
+            { title: 'Room type', data: 'room_type' },
             { title: 'Check-in date', data: 'check_in' },
             { title: 'Check-out date', data: 'check_out' },
             { title: 'Status', data: 'status' }

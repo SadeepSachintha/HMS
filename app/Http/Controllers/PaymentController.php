@@ -85,12 +85,23 @@ class PaymentController extends Controller
         if ($validated['payment_method'] === 'cash') {
             $validated['status'] = 'completed';
             $validated['transaction_id'] = null; // Ensure transaction_id is not set for cash
+        } else {
+            // For other payment methods, set status to 'pending' by default
+            $validated['status'] = 'pending';
         }
 
         $payment = Payment::create($validated);
 
-        // Update invoice status to paid if payment is completed
-        if (isset($validated['invoice_id']) && $validated['status'] === 'completed') {
+        // If non-cash payment, set invoice status to 'sent' after payment is created
+        if (isset($validated['invoice_id']) && $validated['payment_method'] !== 'cash') {
+            $invoice = Invoice::find($validated['invoice_id']);
+            if ($invoice) {
+                $invoice->status = 'sent';
+                $invoice->save();
+            }
+        }
+        // If cash payment and completed, set invoice status to 'paid'
+        if (isset($validated['invoice_id']) && $validated['payment_method'] === 'cash' && $validated['status'] === 'completed') {
             $invoice = Invoice::find($validated['invoice_id']);
             if ($invoice) {
                 $invoice->status = 'paid';
@@ -130,11 +141,17 @@ class PaymentController extends Controller
 
         $payment->update($validated);
 
-        // Update invoice status to paid if payment is completed
-        if (isset($validated['invoice_id']) && $validated['status'] === 'completed') {
+        // Update invoice status based on payment status
+        if (isset($validated['invoice_id'])) {
             $invoice = Invoice::find($validated['invoice_id']);
             if ($invoice) {
-                $invoice->status = 'paid';
+                if ($validated['status'] === 'completed') {
+                    $invoice->status = 'paid';
+                } elseif ($validated['status'] === 'failed') {
+                    $invoice->status = 'overdue';
+                } elseif ($validated['status'] === 'refunded') {
+                    $invoice->status = 'cancelled';
+                }
                 $invoice->save();
             }
         }

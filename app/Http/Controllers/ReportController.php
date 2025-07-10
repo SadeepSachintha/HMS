@@ -323,16 +323,23 @@ class ReportController extends Controller
     // Helper for Occupancy Report Table
     private function getOccupancyTableData($from, $to)
     {
-        $reservations = Reservation::with('room')
-            ->where('status', 'Occupied')
-            ->whereBetween('check_in_date', [$from, $to])
+        $reservations = Reservation::with('room.roomType')
+            ->where(function($query) use ($from, $to) {
+                $query->whereBetween('check_in_date', [$from, $to])
+                      ->orWhereBetween('check_out_date', [$from, $to])
+                      ->orWhere(function($q) use ($from, $to) {
+                          $q->where('check_in_date', '<=', $from)
+                            ->where('check_out_date', '>=', $to);
+                      });
+            })
             ->get();
         return $reservations->map(function($r) {
             return [
                 'room_no' => $r->room->number ?? '',
+                'room_type' => $r->room->roomType->name ?? '',
                 'check_in' => $r->check_in_date->format('Y-m-d'),
                 'check_out' => $r->check_out_date->format('Y-m-d'),
-                'status' => 'Occupied',
+                'status' => ucfirst(str_replace('_', ' ', $r->status)),
             ];
         });
     }
