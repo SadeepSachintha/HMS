@@ -50,7 +50,7 @@
                                 @forelse($roomTypes as $roomType)
                                     <tr>
                                         <td class="align-middle">{{ $roomType->name }}</td>
-                                        <td class="align-middle">${{ number_format($roomType->price_per_night, 2) }}</td>
+                                        <td class="align-middle">LKR{{ number_format($roomType->price_per_night, 2) }}</td>
                                         <td class="align-middle">
                                             <div class="d-flex gap-2">
                                                 <a href="{{ route('room-types.show', $roomType) }}" class="btn btn-sm btn-info text-white d-inline-flex align-items-center" title="View">

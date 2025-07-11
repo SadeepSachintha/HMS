@@ -52,7 +52,7 @@
                                 <div class="mb-3">
                                     <label for="price_per_night" class="form-label">Price Per Night</label>
                                     <div class="input-group">
-                                        <span class="input-group-text">$</span>
+                                        <span class="input-group-text">LKR</span>
                                         <input type="number" class="form-control @error('price_per_night') is-invalid @enderror"
                                                id="price_per_night" name="price_per_night"
                                                value="{{ old('price_per_night', $roomType->price_per_night) }}"

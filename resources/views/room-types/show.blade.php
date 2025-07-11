@@ -88,7 +88,7 @@
                                     </tr>
                                     <tr>
                                         <th class="bg-light">Price Per Night</th>
-                                        <td>${{ number_format($roomType->price_per_night, 2) }}</td>
+                                        <td>LKR{{ number_format($roomType->price_per_night, 2) }}</td>
                                     </tr>
                                     <tr>
                                         <th class="bg-light">Capacity</th>

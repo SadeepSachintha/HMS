@@ -46,7 +46,7 @@
                                 </tr>
                                 <tr>
                                     <th>Price:</th>
-                                    <td>${{ number_format($foodItem->price, 2) }}</td>
+                                    <td>LKR{{ number_format($foodItem->price, 2) }}</td>
                                 </tr>
                                 <tr>
                                     <th>Status:</th>
