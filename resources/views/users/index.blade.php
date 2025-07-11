@@ -6,7 +6,7 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header d-flex flex-wrap justify-content-between align-items-center">
-                    <h2 class="mb-0"><i class="fa fa-users me-2"></i>User Management</h2>
+                    <h2 class="mb-0">User Management</h2>
                     <form method="GET" action="" class="d-flex align-items-center gap-2 ms-auto">
                         <input type="text" name="search" class="form-control me-2" style="min-width: 250px;" placeholder="Search by name, email, role..." value="{{ request('search') }}">
                         <button class="btn btn-outline-secondary" type="submit"><i class="fa fa-search"></i></button>
@@ -19,19 +19,19 @@
                         <table class="table table-bordered table-hover table-striped align-middle">
                             <thead class="table-light">
                                 <tr>
-                                    <th><i class="fa fa-id-badge me-1"></i>User ID</th>
-                                    <th><i class="fa fa-user-tag me-1"></i>User Role</th>
-                                    <th><i class="fa fa-user me-1"></i>Name</th>
-                                    <th><i class="fa fa-toggle-on me-1"></i>Status</th>
-                                    <th><i class="fa fa-cogs me-1"></i>Actions</th>
+                                    <th>User ID</th>
+                                    <th>Name</th>
+                                    <th>User Role</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @forelse($users as $user)
                                 <tr>
                                     <td>{{ $user->id }}</td>
-                                    <td>{{ ucfirst($user->role) }}</td>
                                     <td>{{ $user->name }}</td>
+                                    <td>{{ ucfirst($user->role) }}</td>
                                     <td>
                                         @if($user->status)
                                             <span class="badge bg-success">Active</span>
