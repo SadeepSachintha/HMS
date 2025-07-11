@@ -65,13 +65,15 @@ class InvoiceController extends Controller
     public function create()
     {
         $customers = \App\Models\Customer::orderBy('name')->get();
-        $events = \App\Models\Event::orderBy('start_time', 'desc')->get();
+        $events = \App\Models\Event::whereIn('status', ['scheduled', 'in_progress'])
+            ->orderBy('start_time', 'desc')->get();
         $reservations = \App\Models\Reservation::with(['customer', 'room.roomType'])
             ->whereIn('status', ['pending', 'confirmed'])
             ->whereDoesntHave('invoice')
             ->orderBy('id', 'desc')
             ->get();
-        return view('invoices.create', compact('customers', 'events', 'reservations'));
+        $foodItems = \App\Models\FoodItem::where('is_available', 1)->orderBy('name')->get();
+        return view('invoices.create', compact('customers', 'events', 'reservations', 'foodItems'));
     }
 
     public function store(Request $request)
@@ -88,6 +90,14 @@ class InvoiceController extends Controller
             'total_amount' => 'required|numeric|min:0',
             'notes' => 'nullable|string'
         ]);
+
+        // Prevent duplicate invoice for reservation
+        if (!empty($validated['reservation_id'])) {
+            $existingInvoice = \App\Models\Invoice::where('reservation_id', $validated['reservation_id'])->first();
+            if ($existingInvoice) {
+                return redirect()->back()->withInput()->withErrors(['reservation_id' => 'An invoice already exists for the selected reservation.']);
+            }
+        }
 
         $invoice = Invoice::create($validated);
 

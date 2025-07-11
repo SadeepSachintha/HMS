@@ -63,7 +63,8 @@ class EventController extends Controller
     public function create()
     {
         $customers = Customer::all();
-        return view('events.create', compact('customers'));
+        $staff = \App\Models\Staff::active()->get();
+        return view('events.create', compact('customers', 'staff'));
     }
 
     public function store(Request $request)
@@ -79,9 +80,22 @@ class EventController extends Controller
             'customer_id' => 'required|exists:customers,id',
             'status' => 'required|in:scheduled,in_progress,completed,cancelled',
             'notes' => 'nullable|string',
+            'staff_ids' => 'nullable|array',
+            'staff_ids.*' => 'exists:staff,id',
+            'staff_roles' => 'nullable|array',
         ]);
 
-        Event::create($validated);
+        $event = Event::create($validated);
+
+        // Attach staff if provided
+        if (!empty($request->staff_ids)) {
+            $syncData = [];
+            foreach ($request->staff_ids as $index => $staffId) {
+                $role = $request->staff_roles[$index] ?? null;
+                $syncData[$staffId] = ['role' => $role];
+            }
+            $event->staff()->sync($syncData);
+        }
 
         return redirect()->route('events.index')
             ->with('success', 'Event created successfully.');
@@ -90,14 +104,15 @@ class EventController extends Controller
     public function show(Event $event)
     {
         $assignedStaffIds = $event->staff->pluck('id');
-        $availableStaff = \App\Models\Staff::whereNotIn('id', $assignedStaffIds)->get();
+        $availableStaff = \App\Models\Staff::active()->whereNotIn('id', $assignedStaffIds)->get();
         return view('events.show', compact('event', 'availableStaff'));
     }
 
     public function edit(Event $event)
     {
         $customers = \App\Models\Customer::all();
-        return view('events.edit', compact('event', 'customers'));
+        $assignedStaff = $event->staff; // Get assigned staff
+        return view('events.edit', compact('event', 'customers', 'assignedStaff'));
     }
 
     public function update(Request $request, Event $event)
@@ -165,6 +180,11 @@ class EventController extends Controller
             'staff_id' => 'required|exists:staff,id',
             'role' => 'required|string|max:255',
         ]);
+        // Only allow assignment if staff is active
+        $staff = \App\Models\Staff::active()->find($validated['staff_id']);
+        if (!$staff) {
+            return redirect()->route('events.show', $event)->with('error', 'Only active staff can be assigned.');
+        }
         $event->staff()->attach($validated['staff_id'], ['role' => $validated['role']]);
         return redirect()->route('events.show', $event)->with('success', 'Staff assigned successfully.');
     }

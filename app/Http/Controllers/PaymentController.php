@@ -16,7 +16,24 @@ class PaymentController extends Controller
 
     public function index(Request $request)
     {
-        $query = Payment::with(['reservation']);
+        $query = Payment::with(['invoice.customer', 'reservation']);
+
+        // Search functionality
+        if ($request->has('search') && !empty($request->search)) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('id', 'LIKE', "%{$search}%")
+                  ->orWhere('amount', 'LIKE', "%{$search}%")
+                  ->orWhere('payment_method', 'LIKE', "%{$search}%")
+                  ->orWhere('status', 'LIKE', "%{$search}%")
+                  ->orWhereHas('invoice', function($invoiceQuery) use ($search) {
+                      $invoiceQuery->where('invoice_number', 'LIKE', "%{$search}%")
+                                   ->orWhereHas('customer', function($customerQuery) use ($search) {
+                                       $customerQuery->where('name', 'LIKE', "%{$search}%");
+                                   });
+                  });
+            });
+        }
 
         // Sorting functionality
         $sortBy = $request->get('sort', 'id');
@@ -37,7 +54,10 @@ class PaymentController extends Controller
 
         $payments = $query->paginate(10);
 
-        // Preserve sort parameters in pagination
+        // Preserve search and sort parameters in pagination
+        if ($request->has('search')) {
+            $payments->appends(['search' => $request->search]);
+        }
         if ($request->has('sort')) {
             $payments->appends(['sort' => $request->sort]);
         }

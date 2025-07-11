@@ -4,7 +4,27 @@
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Payment Records</h2>
+        <form method="GET" action="{{ route('payments.index') }}" class="d-flex">
+            <input type="text" name="search" class="form-control form-control-sm me-2"
+                   placeholder="Search by ID, amount, method, status, invoice, or customer..."
+                   value="{{ request('search') }}">
+            <button type="submit" class="btn btn-sm btn-outline-primary">
+                <i class="fas fa-search"></i>
+            </button>
+            @if(request('search'))
+                <a href="{{ route('payments.index') }}" class="btn btn-sm btn-outline-secondary ms-2">
+                    <i class="fas fa-times"></i>
+                </a>
+            @endif
+        </form>
     </div>
+
+    @if(request('search'))
+        <div class="alert alert-info">
+            <i class="fas fa-search"></i> Search results for: <strong>"{{ request('search') }}"</strong>
+            <a href="{{ route('payments.index') }}" class="float-end">Clear search</a>
+        </div>
+    @endif
 
     <div class="card">
         <div class="card-body">
@@ -113,7 +133,7 @@
             </div>
 
             <div class="d-flex justify-content-end mt-3">
-                {{ $payments->links() }}
+                {{ $payments->appends(request()->except('page'))->links() }}
             </div>
         </div>
     </div>

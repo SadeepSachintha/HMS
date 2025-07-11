@@ -123,6 +123,48 @@
                             <button type="submit" class="btn btn-primary">Update Event</button>
                         </div>
                     </form>
+
+                    @if(isset($assignedStaff) && $assignedStaff->count() > 0)
+                    <div class="mt-4">
+                        <h5>Assigned Staff</h5>
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Position</th>
+                                        <th>Department</th>
+                                        <th>Role</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($assignedStaff as $staff)
+                                    <tr>
+                                        <td>
+                                            <a href="{{ route('staff.show', $staff) }}">
+                                                {{ $staff->name }}
+                                            </a>
+                                        </td>
+                                        <td>{{ $staff->position }}</td>
+                                        <td>{{ $staff->department }}</td>
+                                        <td>{{ $staff->pivot->role }}</td>
+                                        <td>
+                                            <form action="{{ route('events.staff.remove', [$event, $staff]) }}" method="POST" class="d-inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to remove this staff member from the event?')">
+                                                    <i class="fas fa-user-minus"></i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    @endif
                 </div>
             </div>
         </div>

@@ -117,6 +117,29 @@
                             @enderror
                         </div>
 
+                        <div class="mb-3">
+                            <label class="form-label">Assign Staff</label>
+                            <div id="staff-assign-list">
+                                <div class="row mb-2 staff-assign-row">
+                                    <div class="col-md-7">
+                                        <select name="staff_ids[]" class="form-select">
+                                            <option value="">Select Staff Member</option>
+                                            @foreach($staff as $member)
+                                                <option value="{{ $member->id }}">{{ $member->name }} ({{ $member->position }})</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <input type="text" name="staff_roles[]" class="form-control" placeholder="Role in Event">
+                                    </div>
+                                    <div class="col-md-1 d-flex align-items-center">
+                                        <button type="button" class="btn btn-danger btn-sm remove-staff-row" style="display:none;">&times;</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-outline-primary btn-sm" id="add-staff-row">+ Add Staff</button>
+                        </div>
+
                         <div class="d-flex justify-content-between">
                             <a href="{{ route('events.index') }}" class="btn btn-secondary">Cancel</a>
                             <button type="submit" class="btn btn-primary">Create Event</button>
@@ -135,6 +158,17 @@ $(document).ready(function() {
     // Set minimum end time based on start time
     $('#start_time').change(function() {
         $('#end_time').attr('min', $(this).val());
+    });
+
+    // Add/Remove staff assignment rows
+    $('#add-staff-row').click(function() {
+        var row = $('.staff-assign-row').first().clone();
+        row.find('select, input').val('');
+        row.find('.remove-staff-row').show();
+        $('#staff-assign-list').append(row);
+    });
+    $(document).on('click', '.remove-staff-row', function() {
+        $(this).closest('.staff-assign-row').remove();
     });
 });
 </script>

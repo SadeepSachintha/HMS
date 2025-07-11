@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\FoodItem;
 use Illuminate\Http\Request;
+use App\Services\ImageService;
+use Illuminate\Support\Facades\Storage;
 
 class FoodItemController extends Controller
 {
@@ -71,8 +73,15 @@ class FoodItemController extends Controller
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
             'category' => 'required|string|max:50',
-            'is_available' => 'boolean'
+            'is_available' => 'boolean',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
+
+        if ($request->hasFile('image')) {
+            $imageService = app(ImageService::class);
+            $path = $imageService->optimizeAndStore($request->file('image'), 'food-items');
+            $validated['image_path'] = $path;
+        }
 
         FoodItem::create($validated);
 
@@ -97,8 +106,19 @@ class FoodItemController extends Controller
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
             'category' => 'required|string|max:50',
-            'is_available' => 'boolean'
+            'is_available' => 'boolean',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:3072',
         ]);
+
+        if ($request->hasFile('image')) {
+            // Delete old image if exists
+            if ($foodItem->image_path) {
+                Storage::disk('public')->delete($foodItem->image_path);
+            }
+            $imageService = app(ImageService::class);
+            $path = $imageService->optimizeAndStore($request->file('image'), 'food-items');
+            $validated['image_path'] = $path;
+        }
 
         $foodItem->update($validated);
 

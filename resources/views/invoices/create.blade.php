@@ -90,24 +90,59 @@
                                     <h5 class="mb-0">Invoice Items</h5>
                                 </div>
                                 <div class="card-body">
+                                    <!-- Fixed Event/Reservation Charge Row -->
+                                    <div id="main-charge-row" class="mb-3" style="display: none;">
+                                        <div class="row align-items-end">
+                                            <div class="col-md-4">
+                                                <label class="form-label">Description</label>
+                                                <input type="text" class="form-control main-charge-description" name="main_charge[description]" value="" readonly>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <label class="form-label">Quantity</label>
+                                                <input type="number" class="form-control main-charge-quantity" name="main_charge[quantity]" value="1" min="1" readonly>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label class="form-label">Unit Price</label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text">LKR</span>
+                                                    <input type="number" class="form-control main-charge-unit-price" name="main_charge[unit_price]" value="0.00" min="0" step="0.01" readonly>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <label class="form-label">Total</label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text">LKR</span>
+                                                    <input type="text" class="form-control main-charge-total" readonly>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <h6>Food Items</h6>
                                     <div id="invoice-items">
                                         <div class="invoice-item mb-3">
                                             <div class="row">
+                                                <div class="col-md-3">
+                                                    <label class="form-label">Food Item</label>
+                                                    <select class="form-select item-source" name="items[0][food_item_id]">
+                                                        <option value="">Select Food Item</option>
+                                                        @foreach($foodItems as $foodItem)
+                                                            <option value="{{ $foodItem->id }}" data-description="{{ $foodItem->name }}" data-unit-price="{{ $foodItem->price }}">{{ $foodItem->name }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
                                                 <div class="col-md-2">
                                                     <label class="form-label">Quantity</label>
-                                                    <input type="number" class="form-control quantity"
-                                                        name="items[0][quantity]" value="1" min="1" required>
+                                                    <input type="number" class="form-control quantity" name="items[0][quantity]" value="1" min="1" required>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <label class="form-label">Unit Price</label>
                                                     <div class="input-group">
                                                         <span class="input-group-text">LKR</span>
-                                                        <input type="number" class="form-control unit-price"
-                                                            name="items[0][unit_price]" value="0.00" min="0"
-                                                            step="0.01" required>
+                                                        <input type="number" class="form-control unit-price" name="items[0][unit_price]" value="0.00" min="0" step="0.01" required>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-3">
+                                                <div class="col-md-2">
                                                     <label class="form-label">Total</label>
                                                     <div class="input-group">
                                                         <span class="input-group-text">LKR</span>
@@ -177,6 +212,8 @@
                                 <a href="{{ route('invoices.index') }}" class="btn btn-secondary">Cancel</a>
                                 <button type="submit" class="btn btn-primary">Create Invoice</button>
                             </div>
+                            <input type="hidden" name="reservation_id" id="reservation_id" value="{{ old('reservation_id') }}">
+                            <input type="hidden" name="event_id" id="event_id" value="{{ old('event_id') }}">
                         </form>
                     </div>
                 </div>
@@ -190,41 +227,35 @@
         $(document).ready(function() {
             let itemCount = 1;
 
-            // Autofill first invoice item based on context selection
+            // Show and fill main charge row when event/reservation is selected
             $('#invoice-context-source').on('change', function() {
                 var selected = $(this).find('option:selected');
                 var unitPrice = selected.data('unit-price');
-                var quantity = selected.data('quantity');
+                var quantity = selected.data('quantity') || 1;
                 var reservationId = selected.data('reservation-id');
-                var firstItem = $('.invoice-item').first();
-
-                console.log('Selected option:', selected.text());
-                console.log('Unit price:', unitPrice);
-                console.log('Quantity:', quantity);
-                console.log('Reservation ID:', reservationId);
-
-                if (unitPrice !== undefined) {
-                    firstItem.find('.unit-price').val(unitPrice);
-                }
-
-                if (quantity !== undefined) {
-                    firstItem.find('.quantity').val(quantity);
-                }
-
-                if (reservationId !== undefined) {
-                    $('#reservation_id').val(reservationId);
+                var description = selected.text();
+                if (unitPrice !== undefined && description) {
+                    $('#main-charge-row').show();
+                    $('.main-charge-description').val(description.trim());
+                    $('.main-charge-quantity').val(quantity);
+                    $('.main-charge-unit-price').val(unitPrice);
+                    var total = (parseFloat(unitPrice) || 0) * (parseInt(quantity) || 1);
+                    $('.main-charge-total').val(total.toFixed(2));
                 } else {
-                    $('#reservation_id').val('');
+                    $('#main-charge-row').hide();
+                    $('.main-charge-description').val('');
+                    $('.main-charge-quantity').val('1');
+                    $('.main-charge-unit-price').val('0.00');
+                    $('.main-charge-total').val('0.00');
                 }
-
-                // Trigger calculation
-                firstItem.find('.quantity, .unit-price').trigger('input');
+                updateTotals();
             });
 
             function bindItemSourceDropdown(item) {
                 item.find('.item-source').on('change', function() {
                     var selected = $(this).find('option:selected');
                     var unitPrice = selected.data('unit-price');
+                    var description = selected.data('description');
                     if (unitPrice !== undefined) {
                         item.find('.unit-price').val(unitPrice).trigger('input');
                     }
@@ -284,6 +315,10 @@
             // Update totals
             function updateTotals() {
                 let subtotal = 0;
+                // Add main charge if visible
+                if ($('#main-charge-row').is(':visible')) {
+                    subtotal += parseFloat($('.main-charge-total').val()) || 0;
+                }
                 $('.item-total').each(function() {
                     subtotal += parseFloat($(this).val()) || 0;
                 });
@@ -313,6 +348,21 @@
                 item.find('.item-total').val(total.toFixed(2));
             });
             updateTotals();
+
+            // Set reservation_id or event_id based on selection
+            $('#invoice-context-source').on('change', function() {
+                var selected = $(this).val();
+                if (selected && selected.startsWith('reservation-')) {
+                    $('#reservation_id').val(selected.replace('reservation-', ''));
+                    $('#event_id').val('');
+                } else if (selected && selected.startsWith('event-')) {
+                    $('#event_id').val(selected.replace('event-', ''));
+                    $('#reservation_id').val('');
+                } else {
+                    $('#reservation_id').val('');
+                    $('#event_id').val('');
+                }
+            });
         });
     </script>
 @endpush
