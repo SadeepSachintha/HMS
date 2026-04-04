@@ -14,6 +14,8 @@ class Payment extends Model
         'reservation_id',
         'invoice_id',
         'amount',
+        'paid_amount',
+        'balance',
         'payment_date',
         'payment_method',
         'transaction_id',
@@ -24,6 +26,8 @@ class Payment extends Model
     protected $casts = [
         'payment_date' => 'datetime',
         'amount' => 'decimal:2',
+        'paid_amount' => 'decimal:2',
+        'balance' => 'decimal:2',
     ];
 
     /**

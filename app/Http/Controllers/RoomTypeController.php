@@ -14,6 +14,7 @@ class RoomTypeController extends Controller
 
     public function __construct(ImageService $imageService)
     {
+        $this->middleware('auth');
         $this->imageService = $imageService;
     }
 

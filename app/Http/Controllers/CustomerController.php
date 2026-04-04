@@ -4,9 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use Illuminate\Http\Request;
+use App\Http\Requests\StoreCustomerRequest;
+use App\Http\Requests\UpdateCustomerRequest;
 
 class CustomerController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function index(Request $request)
     {
         $query = Customer::query();
@@ -59,22 +66,9 @@ class CustomerController extends Controller
         return view('customers.create');
     }
 
-    public function store(Request $request)
+    public function store(StoreCustomerRequest $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'nullable|email|unique:customers',
-            'phone' => ['required', 'regex:/^\+(?:[0-9] ?){6,14}[0-9]$/'],
-            'address' => 'nullable|string|max:255',
-            'city' => 'nullable|string|max:100',
-            'state' => 'nullable|string|max:100',
-            'postal_code' => 'nullable|string|max:20',
-            'country' => 'nullable|string|max:100',
-            'loyalty_points' => 'nullable|integer|min:0',
-            'notes' => 'nullable|string'
-        ], [
-            'phone.regex' => 'Please enter a valid phone number with country code (e.g., +1234567890)'
-        ]);
+        $validated = $request->validated();
 
         Customer::create($validated);
 
@@ -92,22 +86,9 @@ class CustomerController extends Controller
         return view('customers.edit', compact('customer'));
     }
 
-    public function update(Request $request, Customer $customer)
+    public function update(UpdateCustomerRequest $request, Customer $customer)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'nullable|email|unique:customers,email,' . $customer->id,
-            'phone' => ['required', 'regex:/^\+(?:[0-9] ?){6,14}[0-9]$/'],
-            'address' => 'nullable|string|max:255',
-            'city' => 'nullable|string|max:100',
-            'state' => 'nullable|string|max:100',
-            'postal_code' => 'nullable|string|max:20',
-            'country' => 'nullable|string|max:100',
-            'loyalty_points' => 'nullable|integer|min:0',
-            'notes' => 'nullable|string'
-        ], [
-            'phone.regex' => 'Please enter a valid phone number with country code (e.g., +1234567890)'
-        ]);
+        $validated = $request->validated();
 
         $customer->update($validated);
 

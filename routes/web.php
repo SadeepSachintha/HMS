@@ -44,7 +44,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard/revenue', [DashboardController::class, 'getRevenueStats'])->name('dashboard.revenue');
     Route::get('/dashboard/charts', [DashboardController::class, 'getChartData'])->name('dashboard.charts');
 });
-
 // Example: Admin-only routes
 Route::middleware(['auth', 'role:admin'])->group(function () {
     // Place admin-only routes here
@@ -111,29 +110,6 @@ Route::resource('invoices', InvoiceController::class);
 Route::put('invoices/{invoice}/update-status-notes', [InvoiceController::class, 'updateStatusNotes'])->name('invoices.update-status-notes');
 Route::get('invoices/{invoice}/download', [InvoiceController::class, 'download'])->name('invoices.download');
 
-// Test route for debugging reports
-Route::get('/test-reports', function() {
-    try {
-        $totalRooms = \App\Models\Room::count();
-        $totalReservations = \App\Models\Reservation::count();
-        $totalPayments = \App\Models\Payment::count();
-
-        return response()->json([
-            'success' => true,
-            'data' => [
-                'total_rooms' => $totalRooms,
-                'total_reservations' => $totalReservations,
-                'total_payments' => $totalPayments,
-            ]
-        ]);
-    } catch (\Exception $e) {
-        return response()->json([
-            'success' => false,
-            'error' => $e->getMessage()
-        ]);
-    }
-});
-
 // Reports: Main page and AJAX data (admin, manager, staff)
 Route::middleware(['auth', 'role:admin,manager,staff'])->group(function () {
     Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
@@ -164,12 +140,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/alerts/unread-count', [AlertController::class, 'getUnreadCount'])->name('alerts.unread-count');
 });
 
-Auth::routes();
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
-// User Management (admin only)
-Route::middleware(['auth', 'can:manage-users'])->group(function () {
+// User Management (admin,manager only)
+Route::middleware(['auth', 'role:admin,manager'])->group(function () {
     Route::resource('users', App\Http\Controllers\UserController::class);
     Route::post('users/{user}/reset-password', [App\Http\Controllers\UserController::class, 'resetPassword'])->name('users.reset-password');
     Route::post('users/{user}/toggle-status', [App\Http\Controllers\UserController::class, 'toggleStatus'])->name('users.toggle-status');

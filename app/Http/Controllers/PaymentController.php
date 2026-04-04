@@ -40,7 +40,7 @@ class PaymentController extends Controller
         $sortOrder = $request->get('order', 'desc');
 
         // Validate sort column
-        $allowedSortColumns = ['id', 'amount', 'payment_method', 'payment_date', 'status', 'created_at'];
+        $allowedSortColumns = ['id', 'amount', 'paid_amount', 'balance', 'payment_method', 'payment_date', 'status', 'created_at'];
         if (!in_array($sortBy, $allowedSortColumns)) {
             $sortBy = 'id';
         }
@@ -82,6 +82,8 @@ class PaymentController extends Controller
             'invoice_id' => 'nullable|exists:invoices,id',
             'reservation_id' => 'nullable|exists:reservations,id',
             'amount' => 'required|numeric|min:0.01',
+            'paid_amount'=> 'required|numeric|min:0.01',
+            'balance' => 'required|numeric|min:0',
             'payment_method' => 'required|in:cash,credit_card,debit_card,bank_transfer,cheque',
             'payment_date' => 'required|date',
             // transaction_id is only required for non-cash methods
@@ -135,11 +137,13 @@ class PaymentController extends Controller
 
     public function show(Payment $payment)
     {
+        $payment->load(['invoice.customer', 'invoice.payments', 'reservation.customer']);
         return view('payments.show', compact('payment'));
     }
 
     public function edit(Payment $payment)
     {
+        $payment->load(['invoice.customer', 'reservation.customer']);
         $invoices = \App\Models\Invoice::with('customer')->orderBy('invoice_date', 'desc')->get();
         $reservations = \App\Models\Reservation::with('customer')->orderBy('id', 'desc')->get();
         return view('payments.edit', compact('payment', 'invoices', 'reservations'));
@@ -147,9 +151,13 @@ class PaymentController extends Controller
 
     public function update(Request $request, Payment $payment)
     {
+        $request->merge([
+            'invoice_id' => $request->input('invoice_id') ?: null,
+            'reservation_id' => $request->input('reservation_id') ?: null,
+        ]);
+
         $validated = $request->validate([
-            'invoice_id' => 'required|exists:invoices,id',
-            // reservation_id is not required since the field is removed from the form
+            'invoice_id' => 'nullable|exists:invoices,id',
             'reservation_id' => 'nullable|exists:reservations,id',
             'amount' => 'required|numeric|min:0',
             'payment_method' => 'required|in:cash,credit_card,debit_card,bank_transfer,cheque',
@@ -159,10 +167,21 @@ class PaymentController extends Controller
             'notes' => 'nullable|string'
         ]);
 
+        if (empty($validated['invoice_id']) && empty($validated['reservation_id'])) {
+            return back()->withErrors(['invoice_id' => 'Please select an invoice or reservation.'])->withInput();
+        }
+
+        if (!empty($validated['invoice_id']) && empty($validated['reservation_id'])) {
+            $invoice = Invoice::find($validated['invoice_id']);
+            if ($invoice && $invoice->reservation_id) {
+                $validated['reservation_id'] = $invoice->reservation_id;
+            }
+        }
+
         $payment->update($validated);
 
         // Update invoice status based on payment status
-        if (isset($validated['invoice_id'])) {
+        if (!empty($validated['invoice_id'])) {
             $invoice = Invoice::find($validated['invoice_id']);
             if ($invoice) {
                 if ($validated['status'] === 'completed') {
@@ -190,7 +209,7 @@ class PaymentController extends Controller
 
     public function receipt(Payment $payment)
     {
-        $payment->load(['invoice.customer']);
+        $payment->load(['invoice.customer', 'reservation.customer']);
         $pdf = Pdf::loadView('payments.receipt', compact('payment'));
         return $pdf->download('payment-receipt-' . $payment->id . '.pdf');
     }

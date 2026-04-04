@@ -25,6 +25,9 @@
                                     <div class="col-md-4">
                                         <strong>Amount:</strong> <span id="summary-invoice-amount"></span>
                                     </div>
+                                    <div class="col-md-4">
+                                        <strong>Balance:</strong> <span id="summary-invoice-balance"></span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -38,7 +41,7 @@
                                 <div class="form-control bg-light">
                                     #{{ $selectedInvoice->invoice_number }} - {{ $selectedInvoice->customer->name }} (LKR{{ number_format($selectedInvoice->total_amount, 2) }})
                                 </div>
-                                <input type="hidden" name="invoice_id" value="{{ $selectedInvoice->id }}">
+                                <input type="hidden" name="invoice_id" id="invoice_id" value="{{ $selectedInvoice->id }}">
                             </div>
                         @else
                             <div class="mb-3">
@@ -65,7 +68,24 @@
                                 <input type="number" class="form-control @error('amount') is-invalid @enderror" id="amount" name="amount" value="{{ old('amount') }}" min="0.01" step="0.01" required>
                             </div>
                             @error('amount')
-                                <div class="invalid-feedback">{{ $message }}</div>
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                            @enderror
+                            <label for="paid_amount" class="form-label mt-2">Paid Amount</label>
+                            <div class="input-group">
+                                <span class="input-group-text">LKR</span>
+                                <input type="number" class="form-control @error('paid_amount') is-invalid @enderror" id="paid_amount" name="paid_amount" value="{{ old('paid_amount') }}" min="0.01" step="0.01" required>
+                            </div>
+                            @error('paid_amount')
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                            @enderror
+                            <label for="balance" class="form-label mt-2">Balance Amount</label>
+                            <div class="input-group">
+                                <span class="input-group-text">LKR</span>
+                                <input type="number" class="form-control @error('balance') is-invalid @enderror" id="balance" name="balance" value="{{ old('balance') }}" min="0" step="0.01" required readonly>
+                            </div>
+                            <div class="form-text">Calculated as Amount − Paid amount.</div>
+                            @error('balance')
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
                             @enderror
                         </div>
 
@@ -125,44 +145,83 @@
 <script>
 $(document).ready(function() {
     var invoices = @json($invoices);
+    var hasOldAmount = @json(old('amount') !== null && old('amount') !== '');
+    var hasOldPaid = @json(old('paid_amount') !== null && old('paid_amount') !== '');
+
+    function getInvoice(invoiceId) {
+        if (!invoiceId) return null;
+        return invoices.find(function(inv) { return String(inv.id) === String(invoiceId); });
+    }
+
     function updateInvoiceSummary(invoiceId) {
-        var invoice = invoices.find(inv => inv.id == invoiceId);
+        var invoice = getInvoice(invoiceId);
         if (invoice) {
             $('#summary-invoice-number').text('#' + invoice.invoice_number);
             $('#summary-customer-name').text(invoice.customer.name);
-            $('#summary-invoice-amount').text('LKR' + Number(invoice.total_amount).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+            var total = Number(invoice.total_amount);
+            var formatted = 'LKR' + total.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            $('#summary-invoice-amount').text(formatted);
+            $('#summary-invoice-balance').text(formatted);
             $('#invoice-summary-container').show();
         } else {
             $('#invoice-summary-container').hide();
         }
     }
-    // On page load, show summary if pre-selected
-    var initialInvoiceId = $('#invoice_id').val();
-    updateInvoiceSummary(initialInvoiceId);
-    // On change
-    $('#invoice_id').change(function() {
-        updateInvoiceSummary($(this).val());
-        var selectedOption = $(this).find('option:selected');
-        if (selectedOption.val()) {
-            var match = selectedOption.text().match(/LKR([0-9,]+(\.[0-9]{2})?)/);
-            if (match) {
-                var amount = match[1];
-                $('#amount').val(amount.replace(/,/g, ''));
-            }
-        }
-        var invoiceId = $(this).val();
-        var reservationId = null;
-        invoices.forEach(function(invoice) {
-            if (invoiceId == invoice.id) {
-                reservationId = invoice.reservation_id;
-            }
-        });
-        if (reservationId) {
-            $('#reservation_id').val(reservationId);
+
+    function fillAmountFromInvoice(invoiceId) {
+        var invoice = getInvoice(invoiceId);
+        if (!invoice) return;
+        $('#amount').val(Number(invoice.total_amount).toFixed(2));
+    }
+
+    function syncReservationHidden(invoiceId) {
+        var invoice = getInvoice(invoiceId);
+        if (invoice && invoice.reservation_id) {
+            $('#reservation_id').val(invoice.reservation_id);
         } else {
             $('#reservation_id').val('');
         }
+    }
+
+    function recalculateBalance() {
+        var amt = parseFloat($('#amount').val());
+        var paidRaw = $('#paid_amount').val();
+        var paid = (paidRaw === '' || paidRaw === null) ? 0 : parseFloat(paidRaw);
+        if (isNaN(amt)) {
+            $('#balance').val('');
+            return;
+        }
+        if (isNaN(paid)) {
+            paid = 0;
+        }
+        var bal = Math.max(0, amt - paid);
+        $('#balance').val(bal.toFixed(2));
+    }
+
+    $('#invoice_id').on('change', function() {
+        var invoiceId = $(this).val();
+        updateInvoiceSummary(invoiceId);
+        fillAmountFromInvoice(invoiceId);
+        syncReservationHidden(invoiceId);
+        recalculateBalance();
     });
+
+    $('#amount, #paid_amount').on('input change', function() {
+        recalculateBalance();
+    });
+
+    var initialInvoiceId = $('#invoice_id').val();
+    if (initialInvoiceId) {
+        updateInvoiceSummary(initialInvoiceId);
+        if (!hasOldAmount) {
+            fillAmountFromInvoice(initialInvoiceId);
+        }
+        syncReservationHidden(initialInvoiceId);
+    }
+
+    if (hasOldPaid || $('#paid_amount').val()) {
+        recalculateBalance();
+    }
 });
 </script>
 @endsection

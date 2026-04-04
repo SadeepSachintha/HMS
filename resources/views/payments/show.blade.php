@@ -23,6 +23,9 @@
                     </div>
                 </div>
                 <div class="card-body">
+                    @php
+                        $customer = $payment->invoice?->customer ?? $payment->reservation?->customer;
+                    @endphp
                     <div class="row">
                         <div class="col-md-6">
                             <table class="table">
@@ -34,22 +37,30 @@
                                     <tr>
                                         <th>Invoice:</th>
                                         <td>
-                                            <a href="{{ route('invoices.show', $payment->invoice) }}">
-                                                #{{ $payment->invoice->invoice_number }}
-                                            </a>
+                                            @if($payment->invoice)
+                                                <a href="{{ route('invoices.show', $payment->invoice) }}">
+                                                    #{{ $payment->invoice->invoice_number }}
+                                                </a>
+                                            @else
+                                                &mdash;
+                                            @endif
                                         </td>
                                     </tr>
                                     <tr>
                                         <th>Customer:</th>
                                         <td>
-                                            <a href="{{ route('customers.show', $payment->invoice->customer) }}">
-                                                {{ $payment->invoice->customer->name }}
-                                            </a>
+                                            @if($customer)
+                                                <a href="{{ route('customers.show', $customer) }}">
+                                                    {{ $customer->name }}
+                                                </a>
+                                            @else
+                                                &mdash;
+                                            @endif
                                         </td>
                                     </tr>
                                     <tr>
                                         <th>Amount:</th>
-                                        <td>${{ number_format($payment->amount, 2) }}</td>
+                                        <td>LKR{{ number_format($payment->amount, 2) }}</td>
                                     </tr>
                                     <tr>
                                         <th>Payment Date:</th>
@@ -111,7 +122,7 @@
                 </div>
             </div>
 
-            @if($payment->invoice->payments->count() > 1)
+            @if($payment->invoice && $payment->invoice->payments->count() > 1)
             <div class="card mt-4">
                 <div class="card-header">
                     <h5 class="mb-0">Other Payments for Invoice #{{ $payment->invoice->invoice_number }}</h5>
@@ -137,7 +148,7 @@
                                         </a>
                                     </td>
                                     <td>{{ $otherPayment->payment_date->format('M d, Y') }}</td>
-                                    <td>${{ number_format($otherPayment->amount, 2) }}</td>
+                                    <td>LKR{{ number_format($otherPayment->amount, 2) }}</td>
                                     <td>{{ $otherPayment->payment_method === 'check' ? 'Cheque' : ucfirst(str_replace('_', ' ', $otherPayment->payment_method)) }}</td>
                                     <td>
                                         <span class="badge bg-{{ $otherPayment->status === 'completed' ? 'success' : ($otherPayment->status === 'pending' ? 'warning' : ($otherPayment->status === 'failed' ? 'danger' : 'info')) }}">

@@ -13,15 +13,28 @@
                         @csrf
                         @method('PUT')
 
-                        <div class="mb-3">
-                            <label for="invoice_id" class="form-label">Invoice</label>
-                            <div class="form-control" readonly tabindex="-1">
-                                #{{ $payment->invoice->invoice_number }} - {{ $payment->invoice->customer->name }} (LKR{{ number_format($payment->invoice->total_amount, 2) }})
+                        @if($payment->invoice)
+                            <div class="mb-3">
+                                <label for="invoice_id" class="form-label">Invoice</label>
+                                <div class="form-control bg-light" readonly tabindex="-1">
+                                    #{{ $payment->invoice->invoice_number }} - {{ $payment->invoice->customer->name }} (LKR{{ number_format($payment->invoice->total_amount, 2) }})
+                                </div>
+                                <input type="hidden" name="invoice_id" value="{{ $payment->invoice_id }}">
                             </div>
-                            <input type="hidden" name="invoice_id" value="{{ $payment->invoice_id }}">
-                        </div>
-
-                        {{-- Reservation field removed --}}
+                        @else
+                            <input type="hidden" name="invoice_id" value="">
+                            <div class="mb-3">
+                                <label class="form-label">Reservation</label>
+                                <div class="form-control bg-light" readonly tabindex="-1">
+                                    @if($payment->reservation)
+                                        #{{ $payment->reservation->id }} — {{ $payment->reservation->customer->name ?? '—' }}
+                                    @else
+                                        &mdash;
+                                    @endif
+                                </div>
+                            </div>
+                        @endif
+                        <input type="hidden" name="reservation_id" value="{{ old('reservation_id', $payment->reservation_id) }}">
 
                         <div class="mb-3">
                             <label for="amount" class="form-label">Amount</label>

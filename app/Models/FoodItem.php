@@ -22,12 +22,4 @@ class FoodItem extends Model
     protected $casts = [
         'ingredients' => 'array',
     ];
-
-    /**
-     * Get the order items for the food item.
-     */
-    public function orderItems()
-    {
-        return $this->hasMany(OrderItem::class);
-    }
 }

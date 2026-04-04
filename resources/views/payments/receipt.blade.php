@@ -23,13 +23,20 @@
     </style>
 </head>
 <body>
+    @php
+        $customer = $payment->invoice?->customer ?? $payment->reservation?->customer;
+    @endphp
     <h4>Payment Receipt #{{ $payment->id }}</h4>
     <div class="section">
         <h4>Customer Information</h4>
-        <p><span class="label">Name:</span> {{ $payment->invoice->customer->name }}</p>
-        <p><span class="label">Email:</span> {{ $payment->invoice->customer->email }}</p>
-        <p><span class="label">Phone:</span> {{ $payment->invoice->customer->phone }}</p>
-        <p><span class="label">Address:</span> {{ $payment->invoice->customer->address }}</p>
+        @if($customer)
+            <p><span class="label">Name:</span> {{ $customer->name }}</p>
+            <p><span class="label">Email:</span> {{ $customer->email }}</p>
+            <p><span class="label">Phone:</span> {{ $customer->phone }}</p>
+            <p><span class="label">Address:</span> {{ $customer->address }}</p>
+        @else
+            <p><span class="label">Name:</span> —</p>
+        @endif
     </div>
     <hr>
     <div class="section">
@@ -41,8 +48,8 @@
             </span>
         </p>
         <p><span class="label">Payment ID:</span> #{{ $payment->id }}</p>
-        <p><span class="label">Invoice:</span> #{{ $payment->invoice->invoice_number }}</p>
-        <p><span class="label">Amount:</span> ${{ number_format($payment->amount, 2) }}</p>
+        <p><span class="label">Invoice:</span> @if($payment->invoice)#{{ $payment->invoice->invoice_number }}@else — @endif</p>
+        <p><span class="label">Amount:</span> LKR{{ number_format($payment->amount, 2) }}</p>
         <p><span class="label">Payment Method:</span> {{ $payment->payment_method === 'check' ? 'Cheque' : ucfirst(str_replace('_', ' ', $payment->payment_method)) }}</p>
         <p><span class="label">Transaction ID:</span> {{ $payment->transaction_id ?? 'Not provided' }}</p>
         <p><span class="label">Notes:</span> {{ $payment->notes ?? '-' }}</p>
