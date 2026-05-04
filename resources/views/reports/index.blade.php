@@ -156,7 +156,7 @@ function getTableColumns(type) {
 
 function renderTable(type, data) {
     let columns = getTableColumns(type);
-    let tableHtml = '<table id="report-table" class="table table-striped" style="width:100%"></table>';
+    let tableHtml = '<table id="report-table" class="table table-striped table-hover" style="width:100%"></table>';
     $('#report-table-container').html(tableHtml);
     let dtOptions = {
         data: Array.isArray(data) ? data : (data.rows || []),

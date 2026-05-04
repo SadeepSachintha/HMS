@@ -37,7 +37,7 @@
             @endif
 
             <div class="table-responsive">
-                <table class="table table-bordered" id="customersTable" width="100%" cellspacing="0">
+                <table class="table table-bordered table-hover" id="customersTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
                             <th>

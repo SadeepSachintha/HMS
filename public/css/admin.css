@@ -277,13 +277,13 @@ main {
     color: var(--text-color) !important;
 }
 
-.table-hover tbody tr:hover {
-    background-color: rgba(255, 255, 255, 0.08) !important;
-    color: var(--text-color) !important;
-}
-
 .table-striped tbody tr:nth-of-type(odd) {
     background-color: rgba(255, 255, 255, 0.02) !important;
+}
+
+.table tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.08) !important;
+    color: var(--text-color) !important;
 }
 
 /* Forms */
