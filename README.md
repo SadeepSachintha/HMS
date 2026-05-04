@@ -103,6 +103,7 @@ A comprehensive, enterprise-grade Hotel Management System built on **Laravel 12*
 | **PDF Export** | DomPDF (barryvdh/laravel-dompdf) |
 | **Excel Export** | Laravel Excel (maatwebsite/excel) |
 | **Asset Strategy** | Fully localized — no CDN dependencies |
+| **Testing Framework** | PHPUnit (Laravel Feature Tests) |
 
 ---
 
@@ -198,6 +199,34 @@ HMS/
 | Admin | admin@hms.com | password |
 | Manager | manager@hms.com | password |
 | Staff | staff@hms.com | password |
+
+---
+
+## 🧪 Automated Testing
+
+The system includes a comprehensive automated test suite built with **Laravel Feature Tests** to ensure security and stability.
+
+### Key Test Coverage
+- **Role-Based Access Control (RBAC)**: Verifies that Admin, Manager, Staff, and Guest roles can only access their authorized components.
+- **Component Integrity**: Ensures that core modules (Reservations, Rooms, Events, Users, etc.) load correctly for authorized users.
+- **Route Precedence Verification**: Protects against routing conflicts (e.g., ensuring resource creation routes are not intercepted by wildcards).
+
+### Running Tests
+To run the full test suite, use the standard Artisan command:
+```bash
+php artisan test
+```
+
+For more focused testing:
+```bash
+# Run only Role-Based Access tests
+php artisan test tests/Feature/RoleAccessTest.php
+
+# Run only Staff Management tests
+php artisan test tests/Feature/StaffManagementTest.php
+```
+
+The testing environment is pre-configured to use an **in-memory SQLite database**, ensuring tests run fast and do not affect your production or development data.
 
 ---
 

@@ -127,7 +127,6 @@ Route::middleware(['auth', 'role:admin,manager,staff'])->group(function () {
 
     // Staff Directory (View Only)
     Route::get('staff', [StaffController::class, 'index'])->name('staff.index');
-    Route::get('staff/{staff}', [StaffController::class, 'show'])->name('staff.show');
 });
 
 // =========================================================================
@@ -143,6 +142,7 @@ Route::middleware(['auth', 'role:admin,manager'])->group(function () {
     // Staff Human Resources
     Route::get('staff/create', [StaffController::class, 'create'])->name('staff.create');
     Route::post('staff', [StaffController::class, 'store'])->name('staff.store');
+    Route::get('staff/{staff}', [StaffController::class, 'show'])->name('staff.show');
     Route::get('staff/{staff}/edit', [StaffController::class, 'edit'])->name('staff.edit');
     Route::put('staff/{staff}', [StaffController::class, 'update'])->name('staff.update');
     Route::delete('staff/{staff}', [StaffController::class, 'destroy'])->name('staff.destroy');

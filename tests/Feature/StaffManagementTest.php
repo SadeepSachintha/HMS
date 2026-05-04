@@ -18,12 +18,8 @@ class StaffManagementTest extends TestCase
     {
         parent::setUp();
 
-        // Create a test user
-        $this->user = User::create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-            'password' => bcrypt('password'),
-        ]);
+        // Create an admin user for testing
+        $this->user = User::factory()->admin()->create();
     }
 
     public function test_staff_index_page_loads()
@@ -55,6 +51,7 @@ class StaffManagementTest extends TestCase
             'status' => 'active',
             'salary' => 45000.00,
             'emergency_contact' => 'Jane Doe (Wife) - +1-555-0102',
+            'role' => 'staff',
         ];
 
         $response = $this->actingAs($this->user)->post('/staff', $staffData);
@@ -92,6 +89,7 @@ class StaffManagementTest extends TestCase
             'address' => '456 Oak Ave',
             'hire_date' => '2023-01-15',
             'status' => 'active',
+            'role' => 'staff',
         ];
 
         $response = $this->actingAs($this->user)->put("/staff/{$staff->id}", $updateData);

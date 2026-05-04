@@ -27,7 +27,65 @@ class UserFactory extends Factory
             'email' => $this->faker->unique()->safeEmail,
             'email_verified_at' => now(),
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+            'role' => 'staff',
+            'status' => true,
             'remember_token' => Str::random(10),
         ];
+    }
+
+    /**
+     * Indicate that the user is an admin.
+     *
+     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     */
+    public function admin()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'role' => 'admin',
+            ];
+        });
+    }
+
+    /**
+     * Indicate that the user is a manager.
+     *
+     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     */
+    public function manager()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'role' => 'manager',
+            ];
+        });
+    }
+
+    /**
+     * Indicate that the user is a staff.
+     *
+     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     */
+    public function staff()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'role' => 'staff',
+            ];
+        });
+    }
+
+    /**
+     * Indicate that the user is a guest.
+     *
+     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     */
+    public function guest()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'role' => 'guest',
+            ];
+        });
     }
 }
