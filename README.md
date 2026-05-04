@@ -1,72 +1,135 @@
 # 🏨 Hotel Management System (HMS)
 
-A comprehensive, enterprise-grade Hotel Management System built on **Laravel 12**. This application provides a seamless experience for both hotel guests and internal management, featuring a stunning modern UI, premium dark mode aesthetics, and a clean, professionally documented codebase.
+A comprehensive, enterprise-grade Hotel Management System built on **Laravel 12**. Designed for both hotel guests and internal management, the system features a premium dark-mode UI with deep navy & gold aesthetics, a rich feature set, and a fully offline-capable architecture.
 
 ---
 
 ## 🚀 Key Features
 
 ### 🌟 Premium Aesthetics & UX
-- **Stunning Landing Page**: A high-end public website with a deep navy and gold aesthetic, featuring glassmorphism, smooth animations, and high-quality hero sections.
-- **Standardized Dark Theme**: A unified, high-contrast dark dashboard for administration and staff, ensuring maximum readability and a premium "luxury" feel.
-- **Streamlined Navigation**: A newly redesigned collapsible sidebar that groups complex management modules into logical categories (Front Office, Room Management, Services, etc.), maximizing workspace efficiency.
-- **Premium Analytics Dashboard**: A state-of-the-art management portal featuring **glassmorphism** design, real-time operational widgets, and interactive data visualizations for revenue and occupancy trends.
-- **Responsive Design**: Fully optimized for desktops, tablets, and mobile devices with a smart toggle navigation for smaller screens.
+- **Stunning Landing Page** — High-end public website with glassmorphism, smooth animations, and hero sections using the deep navy & gold design language.
+- **Unified Dark Theme** — All admin/staff dashboards use a consistent, high-contrast dark theme for maximum readability and a luxury feel.
+- **Scoped Module Stylesheets** — Per-module CSS files (e.g., `events.css`) allow targeted visual customizations without polluting the global design system.
+- **Collapsible Sidebar Navigation** — Grouped into logical categories: *Front Office*, *Room Management*, *Services*, *Billing*, and *Administration*.
+- **Premium Analytics Dashboard** — Glassmorphism cards, real-time stat widgets, and interactive Chart.js visualizations for revenue, occupancy, and reservations.
+- **Responsive Design** — Fully optimized for desktops, tablets, and mobile devices.
 
-### 🛎️ Intelligent Reservation System
-- **Smart Booking Flow**: A dynamic booking form that automatically checks room availability based on selected dates.
-- **Calendar Management**: Interactive calendar for tracking room occupancy and hosted events at a glance.
-- **Case-Insensitive Statuses**: Robust status handling (Pending, Confirmed, Checked-In, etc.) ensures colored badges display correctly regardless of data input format.
+### 🛎️ Front Office & Reservations
+- **Smart Booking Flow** — Dynamic form checks real-time room availability based on selected check-in and check-out dates via AJAX.
+- **Guest Portal** — Registered guests can view and manage their own reservations and invoice history.
+- **Status Management** — Robust status handling (Pending → Confirmed → Checked-In → Checked-Out → Cancelled) with colored badge indicators.
+- **Automated Customer Profiles** — A customer record is automatically created and linked to a user account upon guest registration via email.
 
 ### 🎭 Event & Facility Management
-- **Centralized Event Tracking**: Comprehensive management of hotel-hosted events, including scheduling, pricing, and attendee tracking.
-- **Location Management**: Standardized management of hotel facilities (e.g., Training Rooms, Lounges, Conference Halls) with bi-directional linking to events and venue-specific scheduling views.
-- **Staff Assignment**: Easily assign staff members to specific event roles to ensure smooth operational execution.
+- **Event Scheduling** — Full CRUD for hotel-hosted events: name, description, start/end times, pricing, attendee limits, and status.
+- **Location Management** — Dedicated `EventLocation` entity for managing hotel facilities (Conference Halls, Training Rooms, Lounges, etc.) with bidirectional linking to events.
+- **Staff Assignment** — Assign internal staff members to events with custom role descriptions.
+- **Event Detail View** — Scoped dark-theme table layout preserving rich-text formatting (newlines, spaces) in descriptions and notes.
 
-### 👤 Advanced Role-Based Management
-- **Guest Portal**: A dedicated environment for guests to manage their own bookings, view payment history, and update profiles.
-- **Internal Roles**: Granular access control for **Admin**, **Manager**, and **Staff** roles using Spatie Laravel-Permission.
-- **Automated Workflows**: Automatic creation of customer profiles upon guest registration and **automated invoice generation** triggered by reservation confirmation.
+### 👤 Role-Based Access Control
+| Role | Access |
+|---|---|
+| **Admin** | Full system access — all modules, reports, user management |
+| **Manager** | All operational modules and reports |
+| **Staff** | Reservations, customers, rooms, events, food, billing |
+| **Guest** | My Reservations, My Invoices only |
 
-### 💳 Financials & Reporting
-- **Automated Invoicing**: Professional invoices are generated automatically as soon as a reservation is confirmed, ensuring zero-touch billing.
-- **Advanced Reporting Engine**: A newly overhauled reports module featuring a **premium glassmorphism UI**, interactive report categories, and a real-time loading feedback system for a seamless management experience.
-- **Comprehensive Analytics**: Generate detailed insights for **Occupancy**, **Revenue**, and **Reservations** with custom date range filtering.
-- **Full Payment Policy**: Simplified payment logic that enforces full invoice settlement in a single transaction, eliminating the complexity of partial payments.
-- **Manual Recording**: Support for recording manual payments via Cash, Card, Bank Transfer, and Cheque with instant status synchronization.
-- **Professional Exports**: Instant generation of high-quality **PDF Receipts** and **Excel Reports** for external accounting and audit purposes.
-- **Interactive Data Visualization**: Integrated **Chart.js** analytics provide visual heatmaps of hotel performance and financial trends directly on the dashboard.
+- Powered by **Spatie Laravel-Permission**.
+- Middleware-protected routes per role group.
 
-### 📺 Real-Time Operations
-- **Live Updates**: Dashboard statistics and room statuses update in real-time using Laravel broadcasting and Pusher/Reverb events.
-- **Notifications & Alerts**: Integrated system notifications for urgent tasks like maintenance requests or new bookings.
+### 💳 Billing & Financials
+- **Automated Invoicing** — Invoices are auto-generated via a Laravel Observer when a reservation is confirmed; zero manual billing overhead.
+- **Full Payment Policy** — Enforces full invoice settlement in a single transaction (no partial payments).
+- **Payment Methods** — Cash, Card, Bank Transfer, and Cheque supported with manual payment recording.
+- **Invoice Status Sync** — Invoice status automatically updates to *Paid* when payment is recorded.
+- **PDF Receipts** — Instant generation via DomPDF.
+- **Excel Reports** — Export data to `.xlsx` via Laravel Excel.
+
+### 📊 Reporting & Analytics
+- **Occupancy Reports** — Track room utilization over custom date ranges.
+- **Revenue Reports** — Detailed revenue breakdown by date range.
+- **Reservation Reports** — Booking trends and volume insights.
+- **Glassmorphism Report UI** — Interactive report selector with real-time loading feedback.
+- **Chart.js Visualizations** — Revenue and occupancy trend charts embedded directly in the dashboard.
+
+### 🔔 Alerts & Notifications
+- **In-App Alerts** — Bell icon in the navbar with a live unread count badge.
+- **Session Timeout Warning** — Inactivity modal warns 1 minute before automatic logout (14-minute idle threshold).
+- **Auto-Dismissing Flash Messages** — Success, error, warning, and info banners auto-dismiss after 3 seconds.
 
 ### 📱 Offline-Ready Architecture
-- **Localized Assets**: All dependencies (Bootstrap 5, Chart.js, FontAwesome 6, Google Fonts, DataTables) are hosted locally within the `public/` directory.
-- **Zero Internet Requirement**: Designed to function perfectly in air-gapped or offline environments, making it ideal for on-site deployments and stable local demos.
+- **Zero CDN Dependencies** — All assets (Bootstrap 5, Chart.js, FontAwesome 6, Google Fonts, DataTables, SweetAlert2) are locally hosted in `public/`.
+- **Air-Gap Friendly** — Fully functional in offline environments, ideal for on-site hotel deployments and demos.
+
+---
+
+## 🗄️ Database Schema
+
+| Table | Description |
+|---|---|
+| `users` | Authentication, roles (admin/manager/staff/guest), and status |
+| `customers` | Guest profiles linked to users by email |
+| `room_types` | Room categories with pricing and amenity details |
+| `room_type_images` | Gallery images per room type |
+| `rooms` | Individual room inventory with status tracking |
+| `reservations` | Bookings linking customers and rooms with date ranges |
+| `events` | Hotel-hosted events with pricing and attendee caps |
+| `event_locations` | Named hotel facilities/venues |
+| `event_staff` | Pivot table linking staff to events with custom roles |
+| `food_items` | Hotel restaurant/room-service menu items |
+| `invoices` | Auto-generated invoices per confirmed reservation |
+| `invoice_items` | Line items composing each invoice |
+| `payments` | Payment records against invoices |
+| `staff` | Internal staff profiles linked to user accounts |
+| `alerts` | System alert records for the notification panel |
+| `system_notifications` | Broadcast notification log |
+| `settings` | Application configuration key-value store |
+| `sessions` | Database-backed session management |
 
 ---
 
 ## 🛠️ Technology Stack
 
-- **Framework:** [Laravel 12](https://laravel.com) (PHP 8.2+)
-- **Frontend:** Blade Templating, Vanilla CSS (Premium Design System), Bootstrap 5
-- **Visualizations:** [Chart.js 4.4+](https://www.chartjs.org/)
-- **Interactivity:** JavaScript (ES6+), AJAX (Axios/jQuery), FullCalendar 6
-- **Database:** MySQL 8.0+ / PostgreSQL
-- **Asset Management**: Localized CSS/JS (No CDNs)
-- **Exports:** DomPDF (PDF), Laravel Excel (XLSX)
-- **Broadcasting:** Laravel Reverb / Pusher (Real-time events)
+| Layer | Technology |
+|---|---|
+| **Framework** | Laravel 12 (PHP 8.2+) |
+| **Templating** | Blade |
+| **Styling** | Vanilla CSS Design System (admin.css + module-scoped CSS), Bootstrap 5 |
+| **Visualizations** | Chart.js 4.4+ |
+| **Interactivity** | JavaScript (ES6+), jQuery, AJAX |
+| **Calendar** | FullCalendar 6 |
+| **Database** | MySQL 8.0+ / MariaDB |
+| **Auth & Roles** | Laravel Breeze + Spatie Laravel-Permission |
+| **PDF Export** | DomPDF (barryvdh/laravel-dompdf) |
+| **Excel Export** | Laravel Excel (maatwebsite/excel) |
+| **Asset Strategy** | Fully localized — no CDN dependencies |
 
 ---
 
-## 📖 Code Quality & Documentation
+## 📁 Project Structure (Key Directories)
 
-This codebase is built for maintainability and scalability:
-- **Clean Code**: Follows PSR-12 coding standards with descriptive naming and modular design.
-- **Professional PHPDoc**: Every Model, Controller, and Service is fully documented with PHPDoc blocks for superior IDE support and developer onboarding.
-- **Strict Typing**: Utilizes PHP 8.2 type hinting to ensure code reliability and reduce runtime errors.
-- **Optimized Routes**: Routes are logically organized into Public, Authenticated, and Administrative sections.
+```
+HMS/
+├── app/
+│   ├── Http/Controllers/       # 19 resource controllers
+│   ├── Models/                 # 16 Eloquent models
+│   └── Observers/              # Invoice auto-generation observer
+├── database/
+│   ├── migrations/             # 25 migration files
+│   └── seeders/                # Role, permission, and demo data seeders
+├── public/
+│   └── css/
+│       ├── admin.css           # Global dark theme design system
+│       ├── style.css           # Base layout and structural styles
+│       ├── events.css          # Scoped styles for the Events module
+│       └── website.css         # Public landing page styles
+├── resources/views/
+│   ├── layouts/app.blade.php   # Main authenticated layout
+│   ├── events/                 # Event CRUD views
+│   ├── reservations/           # Reservation CRUD views
+│   └── ...                     # All other module views
+└── routes/web.php              # All application routes
+```
 
 ---
 
@@ -76,7 +139,7 @@ This codebase is built for maintainability and scalability:
 - PHP 8.2 or higher
 - Composer 2.0+
 - Node.js 18+ & NPM
-- MySQL 8.0 or MariaDB
+- MySQL 8.0+ or MariaDB
 
 ### Installation
 
@@ -100,7 +163,7 @@ This codebase is built for maintainability and scalability:
 4. **Environment Setup**:
    ```bash
    cp .env.example .env
-   # Configure your database and app settings in .env
+   # Configure your database credentials in .env
    php artisan key:generate
    ```
 
@@ -109,11 +172,32 @@ This codebase is built for maintainability and scalability:
    php artisan migrate --seed
    ```
 
-6. **Run the Application**:
+6. **Storage Link** (for room type images):
+   ```bash
+   php artisan storage:link
+   ```
+
+7. **Run the Application**:
    ```bash
    php artisan serve
    ```
-   Visit `http://localhost:8000` for the landing page or `http://localhost:8000/login` for the portal.
+
+   - **Landing Page:** `http://localhost:8000`
+   - **Admin Portal:** `http://localhost:8000/login`
+
+### XAMPP (Local Dev)
+   If using XAMPP, place the project in `htdocs/HMS` and access via:
+   - `http://localhost/HMS/public`
+
+---
+
+## 🔑 Default Credentials (after seeding)
+
+| Role | Email | Password |
+|---|---|---|
+| Admin | admin@hms.com | password |
+| Manager | manager@hms.com | password |
+| Staff | staff@hms.com | password |
 
 ---
 

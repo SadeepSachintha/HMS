@@ -1,7 +1,11 @@
 @extends('layouts.app')
 
+@push('styles')
+    <link href="{{ asset('css/events.css') }}" rel="stylesheet">
+@endpush
+
 @section('content')
-    <div class="container-fluid">
+    <div class="container-fluid events-detail-card">
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">

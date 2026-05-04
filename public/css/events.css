@@ -1,0 +1,81 @@
+/*
+ * Events Module — Custom Styles
+ * Scoped to .events-detail-card to avoid polluting global table styles.
+ */
+
+/* ── Detail card wrapper ──────────────────────────────────────── */
+.events-detail-card .card {
+    background: #0A1128;
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    border-radius: 12px;
+}
+
+.events-detail-card .card-header {
+    background: rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+    padding: 15px 20px;
+}
+
+.events-detail-card .card-header h4 {
+    color: #D4AF37;
+    font-family: 'Playfair Display', serif;
+    margin: 0;
+}
+
+.events-detail-card .card-body {
+    background: #0A1128;
+    border-radius: 0 0 12px 12px;
+    padding: 20px;
+}
+
+/* ── Detail table: row-label style ───────────────────────────── */
+.events-detail-card .table {
+    background-color: transparent !important;
+    color: #ffffff !important;
+    margin-bottom: 0;
+}
+
+/* Row label cells (th inside tbody) */
+.events-detail-card .table tbody th {
+    background: rgba(255, 255, 255, 0.04) !important;
+    color: #D4AF37 !important;
+    font-weight: 600;
+    vertical-align: top;
+    white-space: nowrap;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.12);
+    padding: 12px 16px;
+    width: 35%;
+}
+
+/* Value cells */
+.events-detail-card .table tbody td {
+    color: #ffffff !important;
+    vertical-align: top;
+    white-space: pre-wrap;          /* preserve newlines & extra spaces */
+    word-break: break-word;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 12px 16px;
+    background: transparent !important;
+}
+
+/* ── Assigned-staff sub-table (has a real thead) ─────────────── */
+.events-detail-card .table thead th {
+    background: rgba(255, 255, 255, 0.08) !important;
+    color: #D4AF37 !important;
+    text-transform: uppercase;
+    font-size: 0.78rem;
+    letter-spacing: 1px;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+    padding: 10px 16px;
+    white-space: nowrap;
+}
+
+/* Hover highlight — override global style.css white hover */
+.events-detail-card .table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.04) !important;
+}
+
+.events-detail-card .table tbody tr:hover td,
+.events-detail-card .table tbody tr:hover th {
+    background: rgba(255, 255, 255, 0.04) !important;
+}
