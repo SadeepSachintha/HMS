@@ -10,7 +10,7 @@ A comprehensive, enterprise-grade Hotel Management System built on **Laravel 12*
 - **Stunning Landing Page**: A high-end public website with a deep navy and gold aesthetic, featuring glassmorphism, smooth animations, and high-quality hero sections.
 - **Standardized Dark Theme**: A unified, high-contrast dark dashboard for administration and staff, ensuring maximum readability and a premium "luxury" feel.
 - **Streamlined Navigation**: A newly redesigned collapsible sidebar that groups complex management modules into logical categories (Front Office, Room Management, Services, etc.), maximizing workspace efficiency.
-- **Modern Dashboard**: A clean, intuitive management portal for staff and administrators with real-time stats and interactive elements.
+- **Premium Analytics Dashboard**: A state-of-the-art management portal featuring **glassmorphism** design, real-time operational widgets, and interactive data visualizations for revenue and occupancy trends.
 - **Responsive Design**: Fully optimized for desktops, tablets, and mobile devices with a smart toggle navigation for smaller screens.
 
 ### 🛎️ Intelligent Reservation System
@@ -33,14 +33,14 @@ A comprehensive, enterprise-grade Hotel Management System built on **Laravel 12*
 - **Full Payment Policy**: Simplified payment logic that enforces full invoice settlement in a single transaction, eliminating the complexity of partial payments.
 - **Manual Recording**: Support for recording manual payments via Cash, Card, Bank Transfer, and Cheque with instant status synchronization.
 - **PDF Generation**: Downloadable PDF receipts for payments and formal invoices for billing using DomPDF.
-- **Analytics**: Comprehensive reporting module with Excel and PDF exports for revenue analysis and occupancy trends.
+- **Interactive Analytics**: Comprehensive reporting module with interactive charts for revenue analysis and occupancy trends using **Chart.js**.
 
 ### 📺 Real-Time Operations
 - **Live Updates**: Dashboard statistics and room statuses update in real-time using Laravel broadcasting and Pusher/Reverb events.
 - **Notifications & Alerts**: Integrated system notifications for urgent tasks like maintenance requests or new bookings.
 
 ### 📱 Offline-Ready Architecture
-- **Localized Assets**: All dependencies (Bootstrap 5, FontAwesome 6, Google Fonts, DataTables) are hosted locally within the `public/` directory.
+- **Localized Assets**: All dependencies (Bootstrap 5, Chart.js, FontAwesome 6, Google Fonts, DataTables) are hosted locally within the `public/` directory.
 - **Zero Internet Requirement**: Designed to function perfectly in air-gapped or offline environments, making it ideal for on-site deployments and stable local demos.
 
 ---
@@ -49,6 +49,7 @@ A comprehensive, enterprise-grade Hotel Management System built on **Laravel 12*
 
 - **Framework:** [Laravel 12](https://laravel.com) (PHP 8.2+)
 - **Frontend:** Blade Templating, Vanilla CSS (Premium Design System), Bootstrap 5
+- **Visualizations:** [Chart.js 4.4+](https://www.chartjs.org/)
 - **Interactivity:** JavaScript (ES6+), AJAX (Axios/jQuery), FullCalendar 6
 - **Database:** MySQL 8.0+ / PostgreSQL
 - **Asset Management**: Localized CSS/JS (No CDNs)
