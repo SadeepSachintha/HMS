@@ -16,18 +16,24 @@ class ReservationController extends Controller
         $this->middleware('auth');
     }
 
+    /**
+     * Display a listing of the reservations.
+     * 
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\View\View
+     */
     public function index(Request $request)
     {
         $query = Reservation::with(['room', 'customer']);
 
-        // Filter for guest users
+        // Filter results for guest users to only show their own reservations
         if (auth()->user()->isGuest()) {
             $query->whereHas('customer', function($q) {
                 $q->where('email', auth()->user()->email);
             });
         }
 
-        // Search functionality
+        // Apply search filters if present
         if ($request->has('search') && !empty($request->search)) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
@@ -42,11 +48,11 @@ class ReservationController extends Controller
             });
         }
 
-        // Sorting functionality
+        // Handle sorting parameters
         $sortBy = $request->get('sort', 'id');
         $sortOrder = $request->get('order', 'desc');
 
-        // Validate sort column
+        // Validate sort column against whitelist
         $allowedSortColumns = ['id', 'check_in_date', 'check_out_date', 'number_of_guests', 'status', 'created_at'];
         if (!in_array($sortBy, $allowedSortColumns)) {
             $sortBy = 'id';
@@ -61,7 +67,7 @@ class ReservationController extends Controller
 
         $reservations = $query->paginate(10);
 
-        // Preserve search and sort parameters in pagination
+        // Preserve search and sort parameters in pagination links
         if ($request->has('search')) {
             $reservations->appends(['search' => $request->search]);
         }
@@ -75,10 +81,17 @@ class ReservationController extends Controller
         return view('reservations.index', compact('reservations'));
     }
 
+    /**
+     * Show the form for creating a new reservation.
+     * 
+     * @return \Illuminate\View\View
+     */
     public function create()
     {
         $customers = Customer::orderBy('name')->get();
         $guestCustomer = null;
+        
+        // If the user is a guest, pre-select their customer profile
         if (auth()->user()->isGuest()) {
             $guestCustomer = Customer::where('email', auth()->user()->email)->first();
         }
@@ -87,14 +100,21 @@ class ReservationController extends Controller
             ->where('status', 'available')
             ->orderBy('number')
             ->get();
+            
         return view('reservations.create', compact('customers', 'rooms', 'guestCustomer'));
     }
 
+    /**
+     * Store a newly created reservation in storage.
+     * 
+     * @param \App\Http\Requests\StoreReservationRequest $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function store(StoreReservationRequest $request)
     {
         $validated = $request->validated();
 
-        // Convert dates to proper format
+        // Ensure dates are in the correct database format (YYYY-MM-DD)
         $validated['check_in_date'] = date('Y-m-d', strtotime($validated['check_in_date']));
         $validated['check_out_date'] = date('Y-m-d', strtotime($validated['check_out_date']));
 
@@ -104,13 +124,26 @@ class ReservationController extends Controller
             ->with('success', 'Reservation created successfully.');
     }
 
+    /**
+     * Display the specified reservation.
+     * 
+     * @param \App\Models\Reservation $reservation
+     * @return \Illuminate\View\View
+     */
     public function show(Reservation $reservation)
     {
         return view('reservations.show', compact('reservation'));
     }
 
+    /**
+     * Show the form for editing the specified reservation.
+     * 
+     * @param \App\Models\Reservation $reservation
+     * @return \Illuminate\View\View
+     */
     public function edit(Reservation $reservation)
     {
+        // Prevent guests from editing other customers' reservations
         if (auth()->user()->isGuest() && $reservation->customer->email !== auth()->user()->email) {
             abort(403);
         }
@@ -120,6 +153,13 @@ class ReservationController extends Controller
         return view('reservations.edit', compact('reservation', 'customers', 'rooms'));
     }
 
+    /**
+     * Update the specified reservation in storage.
+     * 
+     * @param \App\Http\Requests\UpdateReservationRequest $request
+     * @param \App\Models\Reservation $reservation
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function update(UpdateReservationRequest $request, Reservation $reservation)
     {
         $validated = $request->validated();
@@ -130,8 +170,15 @@ class ReservationController extends Controller
             ->with('success', 'Reservation updated successfully.');
     }
 
+    /**
+     * Remove the specified reservation from storage.
+     * 
+     * @param \App\Models\Reservation $reservation
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function destroy(Reservation $reservation)
     {
+        // Role-based access control: Only staff/admin can delete
         if (auth()->user()->isGuest()) {
             abort(403, 'Guests cannot delete reservations.');
         }
@@ -142,17 +189,29 @@ class ReservationController extends Controller
             ->with('success', 'Reservation deleted successfully.');
     }
 
+    /**
+     * Show the reservation calendar view.
+     * 
+     * @return \Illuminate\View\View
+     */
     public function calendar()
     {
         $rooms = Room::with('roomType')->orderBy('number')->get();
         return view('reservations.calendar', compact('rooms'));
     }
 
+    /**
+     * Fetch reservation events for the calendar (FullCalendar compatible).
+     * 
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Support\Collection
+     */
     public function events(Request $request)
     {
         $query = Reservation::with(['room.roomType', 'customer'])
             ->where('status', '!=', 'cancelled');
 
+        // Optional filter by specific room
         if ($request->has('room_id')) {
             $query->where('room_id', $request->room_id);
         }
@@ -181,6 +240,12 @@ class ReservationController extends Controller
         });
     }
 
+    /**
+     * Fetch details of a specific reservation via AJAX.
+     * 
+     * @param \App\Models\Reservation $reservation
+     * @return \App\Models\Reservation
+     */
     public function details(Reservation $reservation)
     {
         if (auth()->user()->isGuest() && $reservation->customer->email !== auth()->user()->email) {
@@ -189,6 +254,12 @@ class ReservationController extends Controller
         return $reservation->load(['room.roomType', 'customer']);
     }
 
+    /**
+     * Check for available rooms within a date range via AJAX.
+     * 
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function availableRooms(Request $request)
     {
         $request->validate([
@@ -199,7 +270,7 @@ class ReservationController extends Controller
         $checkIn = date('Y-m-d', strtotime($request->check_in));
         $checkOut = date('Y-m-d', strtotime($request->check_out));
 
-        // Get rooms that are NOT booked for the given dates
+        // Identify rooms that have overlapping reservations for the requested dates
         $bookedRoomIds = Reservation::where('status', '!=', 'cancelled')
             ->where(function($query) use ($checkIn, $checkOut) {
                 $query->where(function($q) use ($checkIn, $checkOut) {
@@ -209,6 +280,7 @@ class ReservationController extends Controller
             })
             ->pluck('room_id');
 
+        // Fetch rooms that are both marked 'available' and not in the booked list
         $rooms = Room::with('roomType')
             ->where('status', 'available')
             ->whereNotIn('id', $bookedRoomIds)

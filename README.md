@@ -1,79 +1,99 @@
-# Hotel Management System (HMS)
+# 🏨 Hotel Management System (HMS)
 
-A comprehensive, full-featured Hotel Management System built on Laravel 12. This application handles everything from public room browsing to internal management of reservations, staff, billing, and reporting.
+A comprehensive, enterprise-grade Hotel Management System built on **Laravel 12**. This application provides a seamless experience for both hotel guests and internal management, featuring a stunning modern UI and a clean, professionally documented codebase.
 
-## Key Features
+---
 
-### 🌟 Premium Public Landing Page
-- A visually stunning, modern landing page with a deep navy and gold aesthetic.
-- Glassmorphism UI elements, smooth animations, and high-quality hero sections.
-- Dynamically displays featured rooms, pricing, and amenities directly from the database.
-- Seamless booking flow directing guests to the authentication/dashboard portal.
+## 🚀 Key Features
 
-### 🛎️ Dashboard & Reservations
-- Interactive dashboard providing a snapshot of daily operations, occupancy stats, and revenue.
-- Comprehensive reservation management (create, update, cancel, and view details).
-- Calendar view for tracking upcoming bookings and events.
+### 🌟 Premium Aesthetics & UX
+- **Stunning Landing Page**: A high-end public website with a deep navy and gold aesthetic, featuring glassmorphism, smooth animations, and high-quality hero sections.
+- **Modern Dashboard**: A clean, intuitive management portal for staff and administrators with real-time stats and interactive elements.
+- **Responsive Design**: Fully optimized for desktops, tablets, and mobile devices.
 
-### 🏨 Guest Portal & Smart Booking
-- Dedicated "My Reservations" portal for registered guests.
-- Automated Customer profile linkage upon registration.
-- Smart booking form with dynamic room availability based on selected check-in and check-out dates.
-- Strict data isolation ensuring guests can only access their own reservations and payment history.
+### 🛎️ Intelligent Reservation System
+- **Smart Booking Flow**: A dynamic booking form that automatically checks room availability based on selected dates.
+- **Calendar Management**: Interactive calendar for tracking room occupancy and hosted events at a glance.
+- **Status Tracking**: Real-time status updates for reservations (Pending, Confirmed, Checked-In, Checked-Out, Cancelled).
 
-### 🛏️ Room & Inventory Management
-- Manage Room Types (pricing, descriptions, capacities, and amenities).
-- Track individual room statuses (available, booked, maintenance).
-- Upload and manage room type image galleries.
+### 👤 Advanced Role-Based Management
+- **Guest Portal**: A dedicated environment for guests to manage their own bookings, view payment history, and update profiles.
+- **Internal Roles**: granular access control for **Admin**, **Manager**, and **Staff** roles.
+- **Automated Workflows**: Automatic creation of customer profiles upon guest registration.
 
-### 👥 Customer & Staff Management
-- Full CRUD capabilities for customer profiles.
-- Role-based access control (Admin, Manager, Staff) for internal personnel.
-- Track staff assignments, especially for hosted events.
+### 💳 Financials & Reporting
+- **Invoicing & Payments**: Professional invoice generation with support for multiple payment methods (Cash, Card, Bank Transfer).
+- **PDF Generation**: Downloadable PDF receipts for payments and formal invoices for billing.
+- **Analytics**: Comprehensive reporting module with Excel and PDF exports for revenue analysis and occupancy trends.
 
-### 🍽️ Services & Events
-- Food Menu management for in-house dining or room service.
-- Event tracking and management for banquets, meetings, and conferences, including staff assignment.
+### 📺 Real-Time Operations
+- **Live Updates**: Dashboard statistics and room statuses update in real-time using Laravel broadcasting events.
+- **Notifications & Alerts**: Integrated system notifications and alerts for staff to handle urgent tasks.
 
-### 💳 Billing & Reports
-- Generate invoices and process payments.
-- Downloadable PDF receipts and invoices.
-- Comprehensive reporting (PDF and Excel exports) for revenue, occupancy, and general analytics.
+### 📱 Offline-Ready Architecture
+- **Localized Assets**: All dependencies (Bootstrap, FontAwesome, Google Fonts, DataTables) are hosted locally.
+- **Zero Internet Requirement**: Designed to function perfectly in offline environments, making it ideal for on-site demos and local deployments.
 
-### 📱 Offline-Ready for Demos
-- **Localized Assets**: All CSS, JS, and Font files (Bootstrap, FontAwesome, Google Fonts) are hosted locally within the project.
-- **No Internet Required**: Perfect for offline demo sessions, ensuring the premium UI and functionality remain intact without external connectivity.
+---
 
-## Technology Stack
+## 🛠️ Technology Stack
 
-- **Backend:** Laravel 12 (PHP 8.2+)
-- **Frontend:** Blade Templating, Bootstrap 5, Vanilla CSS (Premium Custom Design)
-- **Database:** MySQL
-- **Icons & Fonts:** FontAwesome 6 (Local), Google Fonts (Local: Playfair Display & Inter)
+- **Framework:** [Laravel 12](https://laravel.com) (PHP 8.2+)
+- **Frontend:** Blade Templating, Vanilla CSS (Premium Design), Bootstrap 5
+- **Interactivity:** JavaScript (ES6+), AJAX (jQuery/Axios), FullCalendar
+- **Database:** MySQL / PostgreSQL
+- **Exports:** DomPDF (PDF), Laravel Excel (XLSX)
+- **Broadcasting:** Laravel Reverb / Pusher (Real-time events)
 
-## Getting Started
+---
 
-1. Clone the repository and navigate into the directory.
-2. Install dependencies:
+## 📖 Code Quality & Documentation
+
+This codebase is built for maintainability and scalability:
+- **Clean Code**: Follows PSR-12 coding standards with descriptive naming and modular design.
+- **Professional PHPDoc**: Every Model, Controller, and Service is fully documented with PHPDoc blocks for superior IDE support and developer onboarding.
+- **Optimized Routes**: Routes are logically organized into Public, Authenticated, and Administrative sections.
+- **Robust Validation**: Uses Laravel Form Requests for clean, decoupled validation logic.
+
+---
+
+## ⚙️ Getting Started
+
+### Prerequisites
+- PHP 8.2 or higher
+- Composer
+- Node.js & NPM
+- MySQL
+
+### Installation
+1. **Clone & Navigate**:
+   ```bash
+   git clone <repository-url>
+   cd HMS
+   ```
+2. **Install Dependencies**:
    ```bash
    composer install
    npm install && npm run build
    ```
-3. Copy `.env.example` to `.env` and configure your database settings.
-4. Generate the application key:
+3. **Environment Setup**:
    ```bash
+   cp .env.example .env
+   # Configure your database in .env
    php artisan key:generate
    ```
-5. Run migrations and seeders (if available):
+4. **Database Initialization**:
    ```bash
    php artisan migrate --seed
    ```
-6. Start the local development server:
+5. **Run the Application**:
    ```bash
    php artisan serve
    ```
-7. Visit `http://localhost:8000` to view the premium landing page, or `http://localhost:8000/login` to access the management portal.
+   Visit `http://localhost:8000` for the landing page or `http://localhost:8000/login` for the portal.
 
-## License
+---
+
+## 📄 License
 
 This project is proprietary software. All rights reserved.

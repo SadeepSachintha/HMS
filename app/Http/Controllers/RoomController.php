@@ -16,11 +16,17 @@ class RoomController extends Controller
         $this->middleware('auth');
     }
 
+    /**
+     * Display a listing of the rooms.
+     * 
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\View\View
+     */
     public function index(Request $request)
     {
         $query = Room::with('roomType');
 
-        // Search functionality
+        // Apply search filters if present
         if ($request->has('search') && !empty($request->search)) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
@@ -32,11 +38,11 @@ class RoomController extends Controller
             });
         }
 
-        // Sorting functionality
+        // Handle sorting parameters
         $sortBy = $request->get('sort', 'id');
         $sortOrder = $request->get('order', 'desc');
 
-        // Validate sort column
+        // Validate sort column against whitelist
         $allowedSortColumns = ['id', 'number', 'floor', 'status', 'created_at'];
         if (!in_array($sortBy, $allowedSortColumns)) {
             $sortBy = 'id';
@@ -51,7 +57,7 @@ class RoomController extends Controller
 
         $rooms = $query->paginate(10);
 
-        // Preserve search and sort parameters in pagination
+        // Preserve search and sort parameters in pagination links
         if ($request->has('search')) {
             $rooms->appends(['search' => $request->search]);
         }
@@ -65,12 +71,23 @@ class RoomController extends Controller
         return view('rooms.index', compact('rooms'));
     }
 
+    /**
+     * Show the form for creating a new room.
+     * 
+     * @return \Illuminate\View\View
+     */
     public function create()
     {
         $roomTypes = RoomType::all();
         return view('rooms.create', compact('roomTypes'));
     }
 
+    /**
+     * Store a newly created room in storage.
+     * 
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -83,25 +100,44 @@ class RoomController extends Controller
 
         $room = Room::create($validated);
 
-        // Broadcast the room created event
+        // Broadcast the room created event for real-time dashboard updates
         broadcast(new RoomEvent($room, 'created'))->toOthers();
 
         return redirect()->route('rooms.index')
             ->with('success', 'Room created successfully.');
     }
 
+    /**
+     * Display the specified room.
+     * 
+     * @param \App\Models\Room $room
+     * @return \Illuminate\View\View
+     */
     public function show(Room $room)
     {
         $room->load('roomType');
         return view('rooms.show', compact('room'));
     }
 
+    /**
+     * Show the form for editing the specified room.
+     * 
+     * @param \App\Models\Room $room
+     * @return \Illuminate\View\View
+     */
     public function edit(Room $room)
     {
         $roomTypes = RoomType::all();
         return view('rooms.edit', compact('room', 'roomTypes'));
     }
 
+    /**
+     * Update the specified room in storage.
+     * 
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Models\Room $room
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function update(Request $request, Room $room)
     {
         $validated = $request->validate([
@@ -114,13 +150,19 @@ class RoomController extends Controller
 
         $room->update($validated);
 
-        // Broadcast the room updated event
+        // Broadcast the room updated event for real-time dashboard updates
         broadcast(new RoomEvent($room, 'updated'))->toOthers();
 
         return redirect()->route('rooms.index')
             ->with('success', 'Room updated successfully.');
     }
 
+    /**
+     * Remove the specified room from storage.
+     * 
+     * @param \App\Models\Room $room
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function destroy(Room $room)
     {
         // Broadcast the room deleted event before deleting

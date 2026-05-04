@@ -25,7 +25,7 @@ class DashboardController extends Controller
     /**
      * Show the application dashboard.
      *
-     * @return \Illuminate\Contracts\Support\Renderable
+     * @return \Illuminate\View\View
      */
     public function index()
     {
@@ -33,11 +33,17 @@ class DashboardController extends Controller
         return view('dashboard', compact('stats'));
     }
 
+    /**
+     * Calculate and return dashboard statistics.
+     * 
+     * @param \Illuminate\Http\Request|null $request
+     * @return array
+     */
     public function getStats(Request $request = null)
     {
         $dateRange = $this->getDateRange($request ? $request->get('date_range', 'today') : 'today');
 
-        // Calculate occupancy rate
+        // Calculate occupancy rate for the given date range
         $totalRooms = Room::count();
         $occupiedRooms = Reservation::where(function($query) use ($dateRange) {
             $query->whereBetween('check_in_date', [$dateRange['start'], $dateRange['end']])
@@ -46,7 +52,7 @@ class DashboardController extends Controller
 
         $occupancyRate = $totalRooms > 0 ? round(($occupiedRooms / $totalRooms) * 100, 2) : 0;
 
-        // Calculate revenue for this month
+        // Calculate current month's revenue (completed payments)
         $revenue = Payment::where('status', 'completed')
             ->whereBetween('payment_date', [
                 Carbon::now()->startOfMonth(),
@@ -54,7 +60,7 @@ class DashboardController extends Controller
             ])
             ->sum('amount');
 
-        // Calculate last month's revenue
+        // Calculate previous month's revenue for trend analysis
         $lastMonthRevenue = Payment::where('status', 'completed')
             ->whereBetween('payment_date', [
                 Carbon::now()->subMonth()->startOfMonth(),
@@ -62,12 +68,13 @@ class DashboardController extends Controller
             ])
             ->sum('amount');
 
-        // Calculate trends
+        // Fetch last week's occupancy for trend comparison
         $lastWeekOccupancy = $this->getOccupancyForPeriod(
             Carbon::now()->subWeek()->startOfDay(),
             Carbon::now()->subWeek()->endOfDay()
         );
 
+        // Calculate yesterday's revenue
         $yesterdayRevenue = Payment::where('status', 'completed')
             ->whereBetween('payment_date', [
                 Carbon::yesterday()->startOfDay(),
@@ -75,7 +82,7 @@ class DashboardController extends Controller
             ])
             ->sum('amount');
 
-        // Calculate changes
+        // Calculate percentage changes (trends)
         $occupancyChange = $lastWeekOccupancy > 0 ?
             round((($occupancyRate - $lastWeekOccupancy) / $lastWeekOccupancy) * 100, 2) : 0;
 
@@ -95,7 +102,7 @@ class DashboardController extends Controller
             ]
         ];
 
-        // Broadcast the stats update if this is an AJAX request
+        // Broadcast stats update to all connected clients for real-time dashboard feel
         if ($request && $request->ajax()) {
             broadcast(new DashboardStatsEvent($stats))->toOthers();
         }
@@ -103,11 +110,23 @@ class DashboardController extends Controller
         return $stats;
     }
 
+    /**
+     * Refresh dashboard stats via AJAX.
+     * 
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function refreshStats(Request $request)
     {
         return response()->json($this->getStats($request));
     }
 
+    /**
+     * Helper to resolve common date range strings to start/end dates.
+     * 
+     * @param string $range
+     * @return array
+     */
     private function getDateRange($range)
     {
         switch ($range) {
@@ -144,6 +163,13 @@ class DashboardController extends Controller
         }
     }
 
+    /**
+     * Helper to calculate occupancy for a specific date period.
+     * 
+     * @param \Carbon\Carbon $start
+     * @param \Carbon\Carbon $end
+     * @return float
+     */
     private function getOccupancyForPeriod($start, $end)
     {
         $totalRooms = Room::count();

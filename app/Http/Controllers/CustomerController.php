@@ -14,11 +14,17 @@ class CustomerController extends Controller
         $this->middleware('auth');
     }
 
+    /**
+     * Display a listing of the customers.
+     * 
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\View\View
+     */
     public function index(Request $request)
     {
         $query = Customer::query();
 
-        // Search functionality
+        // Apply search filters if present
         if ($request->has('search') && !empty($request->search)) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
@@ -28,11 +34,11 @@ class CustomerController extends Controller
             });
         }
 
-        // Sorting functionality
+        // Handle sorting parameters
         $sortBy = $request->get('sort', 'id');
         $sortOrder = $request->get('order', 'desc');
 
-        // Validate sort column
+        // Validate sort column against whitelist
         $allowedSortColumns = ['id', 'name', 'email', 'phone', 'created_at'];
         if (!in_array($sortBy, $allowedSortColumns)) {
             $sortBy = 'id';
@@ -47,7 +53,7 @@ class CustomerController extends Controller
 
         $customers = $query->paginate(10);
 
-        // Preserve search and sort parameters in pagination
+        // Preserve search and sort parameters in pagination links
         if ($request->has('search')) {
             $customers->appends(['search' => $request->search]);
         }
@@ -61,11 +67,22 @@ class CustomerController extends Controller
         return view('customers.index', compact('customers'));
     }
 
+    /**
+     * Show the form for creating a new customer.
+     * 
+     * @return \Illuminate\View\View
+     */
     public function create()
     {
         return view('customers.create');
     }
 
+    /**
+     * Store a newly created customer in storage.
+     * 
+     * @param \App\Http\Requests\StoreCustomerRequest $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function store(StoreCustomerRequest $request)
     {
         $validated = $request->validated();
@@ -76,16 +93,35 @@ class CustomerController extends Controller
             ->with('success', 'Customer created successfully.');
     }
 
+    /**
+     * Display the specified customer.
+     * 
+     * @param \App\Models\Customer $customer
+     * @return \Illuminate\View\View
+     */
     public function show(Customer $customer)
     {
         return view('customers.show', compact('customer'));
     }
 
+    /**
+     * Show the form for editing the specified customer.
+     * 
+     * @param \App\Models\Customer $customer
+     * @return \Illuminate\View\View
+     */
     public function edit(Customer $customer)
     {
         return view('customers.edit', compact('customer'));
     }
 
+    /**
+     * Update the specified customer in storage.
+     * 
+     * @param \App\Http\Requests\UpdateCustomerRequest $request
+     * @param \App\Models\Customer $customer
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function update(UpdateCustomerRequest $request, Customer $customer)
     {
         $validated = $request->validated();
@@ -96,6 +132,12 @@ class CustomerController extends Controller
             ->with('success', 'Customer updated successfully.');
     }
 
+    /**
+     * Remove the specified customer from storage.
+     * 
+     * @param \App\Models\Customer $customer
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function destroy(Customer $customer)
     {
         $customer->delete();

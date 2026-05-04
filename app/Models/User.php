@@ -8,6 +8,25 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
+/**
+ * App\Models\User
+ *
+ * @property int $id
+ * @property string $name
+ * @property string $email
+ * @property string|null $contact_number
+ * @property string|null $address
+ * @property string $role
+ * @property string $password
+ * @property bool $status
+ * @property \Illuminate\Support\Carbon|null $email_verified_at
+ * @property string|null $remember_token
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * 
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\SystemNotification[] $systemNotifications
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Alert[] $alerts
+ */
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
@@ -50,6 +69,8 @@ class User extends Authenticatable
 
     /**
      * Get the system notifications for the user.
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function systemNotifications()
     {
@@ -58,6 +79,8 @@ class User extends Authenticatable
 
     /**
      * Get the unread system notifications for the user.
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function unreadSystemNotifications()
     {
@@ -66,6 +89,8 @@ class User extends Authenticatable
 
     /**
      * Get the alerts for the user.
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function alerts()
     {
@@ -74,28 +99,49 @@ class User extends Authenticatable
 
     /**
      * Get the unread alerts for the user.
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function unreadAlerts()
     {
         return $this->alerts()->where('is_read', false);
     }
 
-    // Add role helper methods
+    /**
+     * Check if the user has an admin role.
+     * 
+     * @return bool
+     */
     public function isAdmin()
     {
         return $this->role === 'admin';
     }
 
+    /**
+     * Check if the user has a manager role.
+     * 
+     * @return bool
+     */
     public function isManager()
     {
         return $this->role === 'manager';
     }
 
+    /**
+     * Check if the user has a staff role.
+     * 
+     * @return bool
+     */
     public function isStaff()
     {
         return $this->role === 'staff';
     }
 
+    /**
+     * Check if the user has a guest role.
+     * 
+     * @return bool
+     */
     public function isGuest()
     {
         return $this->role === 'guest';

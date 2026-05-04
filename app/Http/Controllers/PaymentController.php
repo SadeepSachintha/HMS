@@ -14,10 +14,17 @@ class PaymentController extends Controller
         $this->middleware('auth');
     }
 
+    /**
+     * Display a listing of the payments.
+     * 
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\View\View
+     */
     public function index(Request $request)
     {
         $query = Payment::with(['invoice.customer', 'reservation']);
 
+        // Filter for guest users to only show their own payments
         if (auth()->user()->isGuest()) {
             $query->where(function ($q) {
                 $q->whereHas('reservation.customer', function ($cq) {
@@ -28,7 +35,7 @@ class PaymentController extends Controller
             });
         }
 
-        // Search functionality
+        // Apply search filters if present
         if ($request->has('search') && !empty($request->search)) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
@@ -45,11 +52,11 @@ class PaymentController extends Controller
             });
         }
 
-        // Sorting functionality
+        // Handle sorting parameters
         $sortBy = $request->get('sort', 'id');
         $sortOrder = $request->get('order', 'desc');
 
-        // Validate sort column
+        // Validate sort column against whitelist
         $allowedSortColumns = ['id', 'amount', 'paid_amount', 'balance', 'payment_method', 'payment_date', 'status', 'created_at'];
         if (!in_array($sortBy, $allowedSortColumns)) {
             $sortBy = 'id';
@@ -64,7 +71,7 @@ class PaymentController extends Controller
 
         $payments = $query->paginate(10);
 
-        // Preserve search and sort parameters in pagination
+        // Preserve search and sort parameters in pagination links
         if ($request->has('search')) {
             $payments->appends(['search' => $request->search]);
         }
@@ -78,22 +85,38 @@ class PaymentController extends Controller
         return view('payments.index', compact('payments'));
     }
 
+    /**
+     * Show the form for creating a new payment.
+     * 
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\View\View
+     */
     public function create(Request $request)
     {
+        // Only staff/admin can record payments manually
         if (auth()->user()->isGuest()) {
             abort(403);
         }
+        
         $invoices = Invoice::with(['customer', 'reservation'])->orderBy('invoice_date', 'desc')->get();
         $reservations = \App\Models\Reservation::with('customer')->orderBy('id', 'desc')->get();
         $selectedInvoiceId = $request->get('invoice_id');
+        
         return view('payments.create', compact('invoices', 'reservations', 'selectedInvoiceId'));
     }
 
+    /**
+     * Store a newly created payment in storage.
+     * 
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function store(Request $request)
     {
         if (auth()->user()->isGuest()) {
             abort(403);
         }
+        
         $validated = $request->validate([
             'invoice_id' => 'nullable|exists:invoices,id',
             'reservation_id' => 'nullable|exists:reservations,id',
@@ -107,11 +130,12 @@ class PaymentController extends Controller
             'notes' => 'nullable|string'
         ]);
 
+        // Validation: At least one link (invoice or reservation) must be provided
         if (empty($validated['invoice_id']) && empty($validated['reservation_id'])) {
             return back()->withErrors(['invoice_id' => 'Please select an invoice or reservation.'])->withInput();
         }
 
-        // If only invoice_id is provided, get reservation_id from invoice
+        // If only invoice_id is provided, automatically link to the associated reservation
         if (!empty($validated['invoice_id']) && empty($validated['reservation_id'])) {
             $invoice = \App\Models\Invoice::find($validated['invoice_id']);
             if ($invoice && $invoice->reservation_id) {
@@ -119,30 +143,26 @@ class PaymentController extends Controller
             }
         }
 
-        // Set status automatically for cash payments
+        // Cash payments are considered 'completed' immediately
         if ($validated['payment_method'] === 'cash') {
             $validated['status'] = 'completed';
-            $validated['transaction_id'] = null; // Ensure transaction_id is not set for cash
+            $validated['transaction_id'] = null; // No transaction ID for cash
         } else {
-            // For other payment methods, set status to 'pending' by default
+            // Online/bank payments are set to 'pending' until verified
             $validated['status'] = 'pending';
         }
 
         $payment = Payment::create($validated);
 
-        // If non-cash payment, set invoice status to 'sent' after payment is created
-        if (isset($validated['invoice_id']) && $validated['payment_method'] !== 'cash') {
+        // Synchronize Invoice status based on the new payment
+        if (isset($validated['invoice_id'])) {
             $invoice = Invoice::find($validated['invoice_id']);
             if ($invoice) {
-                $invoice->status = 'sent';
-                $invoice->save();
-            }
-        }
-        // If cash payment and completed, set invoice status to 'paid'
-        if (isset($validated['invoice_id']) && $validated['payment_method'] === 'cash' && $validated['status'] === 'completed') {
-            $invoice = Invoice::find($validated['invoice_id']);
-            if ($invoice) {
-                $invoice->status = 'paid';
+                if ($validated['payment_method'] === 'cash' && $validated['status'] === 'completed') {
+                    $invoice->status = 'paid';
+                } else {
+                    $invoice->status = 'sent';
+                }
                 $invoice->save();
             }
         }
@@ -151,10 +171,17 @@ class PaymentController extends Controller
             ->with('success', 'Payment recorded successfully.');
     }
 
+    /**
+     * Display the specified payment.
+     * 
+     * @param \App\Models\Payment $payment
+     * @return \Illuminate\View\View
+     */
     public function show(Payment $payment)
     {
         $payment->load(['invoice.customer', 'invoice.payments', 'reservation.customer']);
         
+        // Ensure guests can only view their own payment records
         if (auth()->user()->isGuest()) {
             $isOwner = false;
             if ($payment->reservation && $payment->reservation->customer->email === auth()->user()->email) $isOwner = true;
@@ -165,22 +192,39 @@ class PaymentController extends Controller
         return view('payments.show', compact('payment'));
     }
 
+    /**
+     * Show the form for editing the specified payment.
+     * 
+     * @param \App\Models\Payment $payment
+     * @return \Illuminate\View\View
+     */
     public function edit(Payment $payment)
     {
         if (auth()->user()->isGuest()) {
             abort(403);
         }
+        
         $payment->load(['invoice.customer', 'reservation.customer']);
         $invoices = \App\Models\Invoice::with('customer')->orderBy('invoice_date', 'desc')->get();
         $reservations = \App\Models\Reservation::with('customer')->orderBy('id', 'desc')->get();
+        
         return view('payments.edit', compact('payment', 'invoices', 'reservations'));
     }
 
+    /**
+     * Update the specified payment in storage.
+     * 
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Models\Payment $payment
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function update(Request $request, Payment $payment)
     {
         if (auth()->user()->isGuest()) {
             abort(403);
         }
+        
+        // Ensure empty inputs are converted to null for nullable foreign keys
         $request->merge([
             'invoice_id' => $request->input('invoice_id') ?: null,
             'reservation_id' => $request->input('reservation_id') ?: null,
@@ -210,16 +254,20 @@ class PaymentController extends Controller
 
         $payment->update($validated);
 
-        // Update invoice status based on payment status
+        // Automatically update invoice status based on the new payment status
         if (!empty($validated['invoice_id'])) {
             $invoice = Invoice::find($validated['invoice_id']);
             if ($invoice) {
-                if ($validated['status'] === 'completed') {
-                    $invoice->status = 'paid';
-                } elseif ($validated['status'] === 'failed') {
-                    $invoice->status = 'overdue';
-                } elseif ($validated['status'] === 'refunded') {
-                    $invoice->status = 'cancelled';
+                switch ($validated['status']) {
+                    case 'completed':
+                        $invoice->status = 'paid';
+                        break;
+                    case 'failed':
+                        $invoice->status = 'overdue';
+                        break;
+                    case 'refunded':
+                        $invoice->status = 'cancelled';
+                        break;
                 }
                 $invoice->save();
             }
@@ -229,21 +277,35 @@ class PaymentController extends Controller
             ->with('success', 'Payment updated successfully.');
     }
 
+    /**
+     * Remove the specified payment from storage.
+     * 
+     * @param \App\Models\Payment $payment
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function destroy(Payment $payment)
     {
         if (auth()->user()->isGuest()) {
             abort(403);
         }
+        
         $payment->delete();
 
         return redirect()->route('payments.index')
             ->with('success', 'Payment deleted successfully.');
     }
 
+    /**
+     * Generate and download a PDF receipt for the payment.
+     * 
+     * @param \App\Models\Payment $payment
+     * @return \Illuminate\Http\Response
+     */
     public function receipt(Payment $payment)
     {
         $payment->load(['invoice.customer', 'reservation.customer']);
         $pdf = Pdf::loadView('payments.receipt', compact('payment'));
+        
         return $pdf->download('payment-receipt-' . $payment->id . '.pdf');
     }
 }
