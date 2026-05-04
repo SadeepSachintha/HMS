@@ -5,7 +5,7 @@
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-white">Customers</h1>
         <a href="{{ route('customers.create') }}" class="d-none d-sm-inline-block btn btn-primary shadow-sm">
-            <i class="fas fa-plus fa-sm text-white-50"></i> Add New Customer
+            <i class="fas fa-plus me-1"></i> Add New Customer
         </a>
     </div>
 

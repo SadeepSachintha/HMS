@@ -2,7 +2,7 @@
 
 @section('title', 'Dashboard - Hotel Management System')
 
-@section('styles')
+@push('styles')
     <style>
         .dashboard-container {
             animation: fadeIn 0.8s ease-out;
@@ -19,7 +19,7 @@
             width: 100%;
         }
     </style>
-@endsection
+@endpush
 
 @section('content')
 <div class="container-fluid dashboard-container">
@@ -165,7 +165,7 @@
                         <table class="table table-hover recent-reservations-table">
                             <thead>
                                 <tr>
-                                    <th class="ps-4">Guest</th>
+                                    <th class="ps-4">RES. ID</th>
                                     <th>Room</th>
                                     <th>Dates</th>
                                     <th>Status</th>
@@ -177,12 +177,12 @@
                                 <tr>
                                     <td class="ps-4">
                                         <div class="d-flex align-items-center">
-                                            <div class="avatar-initials me-3">
-                                                {{ substr($reservation->customer->name, 0, 2) }}
+                                            <div class="avatar-initials me-3" style="background: rgba(212, 175, 55, 0.1); color: #D4AF37;">
+                                                <i class="fas fa-hashtag"></i>
                                             </div>
                                             <div>
-                                                <div class="fw-bold text-white">{{ $reservation->customer->name }}</div>
-                                                <div class="small text-muted">{{ $reservation->customer->email }}</div>
+                                                <div class="fw-bold text-white">#RES-{{ sprintf('%05d', $reservation->id) }}</div>
+                                                <div class="small text-muted text-uppercase" style="font-size: 0.7rem; letter-spacing: 0.5px;">{{ $reservation->customer->name }}</div>
                                             </div>
                                         </div>
                                     </td>
@@ -275,7 +275,7 @@
 </div>
 @endsection
 
-@section('scripts')
+@push('scripts')
     <script src="{{ asset('js/vendor/pusher.min.js') }}"></script>
     <script src="{{ asset('js/vendor/chart.min.js') }}"></script>
     <script>
@@ -287,4 +287,4 @@
         };
     </script>
     <script src="{{ asset('js/dashboard.js') }}"></script>
-@endsection
+@endpush

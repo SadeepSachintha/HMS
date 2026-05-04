@@ -21,7 +21,7 @@
                                 </a>
                             @endif
                         </form>
-                        <a href="{{ route('reservations.create') }}" class="btn btn-primary">New Reservation</a>
+                        <a href="{{ route('reservations.create') }}" class="btn btn-primary"><i class="fas fa-plus me-1"></i>New Reservation</a>
                     </div>
                 </div>
 
