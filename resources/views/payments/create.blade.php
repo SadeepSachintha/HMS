@@ -62,29 +62,13 @@
                         <input type="hidden" id="reservation_id" name="reservation_id" value="{{ old('reservation_id') }}">
 
                         <div class="mb-3">
-                            <label for="amount" class="form-label">Amount</label>
+                            <label for="amount" class="form-label">Payment Amount (Total Invoice Value)</label>
                             <div class="input-group">
                                 <span class="input-group-text">LKR</span>
-                                <input type="number" class="form-control @error('amount') is-invalid @enderror" id="amount" name="amount" value="{{ old('amount') }}" min="0.01" step="0.01" required>
+                                <input type="number" class="form-control @error('amount') is-invalid @enderror" id="amount" name="amount" value="{{ old('amount') }}" min="0.01" step="0.01" required readonly>
                             </div>
+                            <div class="form-text">Full payment is required. This amount matches the invoice total.</div>
                             @error('amount')
-                                <div class="invalid-feedback d-block">{{ $message }}</div>
-                            @enderror
-                            <label for="paid_amount" class="form-label mt-2">Paid Amount</label>
-                            <div class="input-group">
-                                <span class="input-group-text">LKR</span>
-                                <input type="number" class="form-control @error('paid_amount') is-invalid @enderror" id="paid_amount" name="paid_amount" value="{{ old('paid_amount') }}" min="0.01" step="0.01" required>
-                            </div>
-                            @error('paid_amount')
-                                <div class="invalid-feedback d-block">{{ $message }}</div>
-                            @enderror
-                            <label for="balance" class="form-label mt-2">Balance Amount</label>
-                            <div class="input-group">
-                                <span class="input-group-text">LKR</span>
-                                <input type="number" class="form-control @error('balance') is-invalid @enderror" id="balance" name="balance" value="{{ old('balance') }}" min="0" step="0.01" required readonly>
-                            </div>
-                            <div class="form-text">Calculated as Amount − Paid amount.</div>
-                            @error('balance')
                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                             @enderror
                         </div>
@@ -146,7 +130,6 @@
 $(document).ready(function() {
     var invoices = @json($invoices);
     var hasOldAmount = @json(old('amount') !== null && old('amount') !== '');
-    var hasOldPaid = @json(old('paid_amount') !== null && old('paid_amount') !== '');
 
     function getInvoice(invoiceId) {
         if (!invoiceId) return null;
@@ -183,31 +166,11 @@ $(document).ready(function() {
         }
     }
 
-    function recalculateBalance() {
-        var amt = parseFloat($('#amount').val());
-        var paidRaw = $('#paid_amount').val();
-        var paid = (paidRaw === '' || paidRaw === null) ? 0 : parseFloat(paidRaw);
-        if (isNaN(amt)) {
-            $('#balance').val('');
-            return;
-        }
-        if (isNaN(paid)) {
-            paid = 0;
-        }
-        var bal = Math.max(0, amt - paid);
-        $('#balance').val(bal.toFixed(2));
-    }
-
     $('#invoice_id').on('change', function() {
         var invoiceId = $(this).val();
         updateInvoiceSummary(invoiceId);
         fillAmountFromInvoice(invoiceId);
         syncReservationHidden(invoiceId);
-        recalculateBalance();
-    });
-
-    $('#amount, #paid_amount').on('input change', function() {
-        recalculateBalance();
     });
 
     var initialInvoiceId = $('#invoice_id').val();
@@ -217,10 +180,6 @@ $(document).ready(function() {
             fillAmountFromInvoice(initialInvoiceId);
         }
         syncReservationHidden(initialInvoiceId);
-    }
-
-    if (hasOldPaid || $('#paid_amount').val()) {
-        recalculateBalance();
     }
 });
 </script>

@@ -121,8 +121,6 @@ class PaymentController extends Controller
             'invoice_id' => 'nullable|exists:invoices,id',
             'reservation_id' => 'nullable|exists:reservations,id',
             'amount' => 'required|numeric|min:0.01',
-            'paid_amount'=> 'required|numeric|min:0.01',
-            'balance' => 'required|numeric|min:0',
             'payment_method' => 'required|in:cash,credit_card,debit_card,bank_transfer,cheque',
             'payment_date' => 'required|date',
             // transaction_id is only required for non-cash methods
@@ -136,10 +134,14 @@ class PaymentController extends Controller
         }
 
         // If only invoice_id is provided, automatically link to the associated reservation
-        if (!empty($validated['invoice_id']) && empty($validated['reservation_id'])) {
+        // Also ensure amount matches the invoice total (full payment enforcement)
+        if (!empty($validated['invoice_id'])) {
             $invoice = \App\Models\Invoice::find($validated['invoice_id']);
-            if ($invoice && $invoice->reservation_id) {
-                $validated['reservation_id'] = $invoice->reservation_id;
+            if ($invoice) {
+                $validated['amount'] = $invoice->total_amount;
+                if (empty($validated['reservation_id']) && $invoice->reservation_id) {
+                    $validated['reservation_id'] = $invoice->reservation_id;
+                }
             }
         }
 
@@ -148,24 +150,14 @@ class PaymentController extends Controller
             $validated['status'] = 'completed';
             $validated['transaction_id'] = null; // No transaction ID for cash
         } else {
-            // Online/bank payments are set to 'pending' until verified
+            // Electronic payments are set to 'pending' until verified
             $validated['status'] = 'pending';
         }
 
         $payment = Payment::create($validated);
 
-        // Synchronize Invoice status based on the new payment
-        if (isset($validated['invoice_id'])) {
-            $invoice = Invoice::find($validated['invoice_id']);
-            if ($invoice) {
-                if ($validated['payment_method'] === 'cash' && $validated['status'] === 'completed') {
-                    $invoice->status = 'paid';
-                } else {
-                    $invoice->status = 'sent';
-                }
-                $invoice->save();
-            }
-        }
+        return redirect()->route('payments.index')
+            ->with('success', 'Payment recorded successfully.');
 
         return redirect()->route('payments.index')
             ->with('success', 'Payment recorded successfully.');
@@ -245,33 +237,17 @@ class PaymentController extends Controller
             return back()->withErrors(['invoice_id' => 'Please select an invoice or reservation.'])->withInput();
         }
 
-        if (!empty($validated['invoice_id']) && empty($validated['reservation_id'])) {
+        if (!empty($validated['invoice_id'])) {
             $invoice = Invoice::find($validated['invoice_id']);
-            if ($invoice && $invoice->reservation_id) {
-                $validated['reservation_id'] = $invoice->reservation_id;
+            if ($invoice) {
+                $validated['amount'] = $invoice->total_amount;
+                if (empty($validated['reservation_id']) && $invoice->reservation_id) {
+                    $validated['reservation_id'] = $invoice->reservation_id;
+                }
             }
         }
 
         $payment->update($validated);
-
-        // Automatically update invoice status based on the new payment status
-        if (!empty($validated['invoice_id'])) {
-            $invoice = Invoice::find($validated['invoice_id']);
-            if ($invoice) {
-                switch ($validated['status']) {
-                    case 'completed':
-                        $invoice->status = 'paid';
-                        break;
-                    case 'failed':
-                        $invoice->status = 'overdue';
-                        break;
-                    case 'refunded':
-                        $invoice->status = 'cancelled';
-                        break;
-                }
-                $invoice->save();
-            }
-        }
 
         return redirect()->route('payments.index')
             ->with('success', 'Payment updated successfully.');

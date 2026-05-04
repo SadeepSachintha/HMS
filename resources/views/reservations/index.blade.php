@@ -118,16 +118,21 @@
                                                     <i class="fas fa-eye"></i>
                                                 </a>
                                                 @if(!auth()->user()->isGuest())
-                                                <a href="{{ route('reservations.edit', $reservation) }}" class="btn btn-sm btn-primary" title="Edit">
-                                                    <i class="fas fa-edit"></i>
-                                                </a>
-                                                <form action="{{ route('reservations.destroy', $reservation) }}" method="POST" class="d-inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-sm btn-danger" title="Delete" onclick="return confirm('Are you sure?')">
-                                                        <i class="fas fa-trash"></i>
-                                                    </button>
-                                                </form>
+                                                    @if($reservation->invoice && $reservation->invoice->status !== 'paid')
+                                                        <a href="{{ route('payments.create', ['invoice_id' => $reservation->invoice->id]) }}" class="btn btn-sm btn-success" title="Record Payment">
+                                                            <i class="fas fa-money-bill-wave"></i>
+                                                        </a>
+                                                    @endif
+                                                    <a href="{{ route('reservations.edit', $reservation) }}" class="btn btn-sm btn-primary" title="Edit">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                    <form action="{{ route('reservations.destroy', $reservation) }}" method="POST" class="d-inline">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-sm btn-danger" title="Delete" onclick="return confirm('Are you sure?')">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    </form>
                                                 @endif
                                             </div>
                                         </td>

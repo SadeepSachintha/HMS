@@ -20,10 +20,12 @@ A comprehensive, enterprise-grade Hotel Management System built on **Laravel 12*
 ### 👤 Advanced Role-Based Management
 - **Guest Portal**: A dedicated environment for guests to manage their own bookings, view payment history, and update profiles.
 - **Internal Roles**: Granular access control for **Admin**, **Manager**, and **Staff** roles using Spatie Laravel-Permission.
-- **Automated Workflows**: Automatic creation of customer profiles upon guest registration and seamless linking of user accounts to customer records.
+- **Automated Workflows**: Automatic creation of customer profiles upon guest registration and **automated invoice generation** triggered by reservation confirmation.
 
 ### 💳 Financials & Reporting
-- **Invoicing & Payments**: Professional invoice generation with support for multiple payment methods (Cash, Card, Bank Transfer).
+- **Automated Invoicing**: Professional invoices are generated automatically as soon as a reservation is confirmed, ensuring zero-touch billing.
+- **Full Payment Policy**: Simplified payment logic that enforces full invoice settlement in a single transaction, eliminating the complexity of partial payments.
+- **Manual Recording**: Support for recording manual payments via Cash, Card, Bank Transfer, and Cheque with instant status synchronization.
 - **PDF Generation**: Downloadable PDF receipts for payments and formal invoices for billing using DomPDF.
 - **Analytics**: Comprehensive reporting module with Excel and PDF exports for revenue analysis and occupancy trends.
 
