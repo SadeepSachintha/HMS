@@ -9,8 +9,9 @@ A comprehensive, enterprise-grade Hotel Management System built on **Laravel 12*
 ### 🌟 Premium Aesthetics & UX
 - **Stunning Landing Page**: A high-end public website with a deep navy and gold aesthetic, featuring glassmorphism, smooth animations, and high-quality hero sections.
 - **Standardized Dark Theme**: A unified, high-contrast dark dashboard for administration and staff, ensuring maximum readability and a premium "luxury" feel.
+- **Streamlined Navigation**: A newly redesigned collapsible sidebar that groups complex management modules into logical categories (Front Office, Room Management, Services, etc.), maximizing workspace efficiency.
 - **Modern Dashboard**: A clean, intuitive management portal for staff and administrators with real-time stats and interactive elements.
-- **Responsive Design**: Fully optimized for desktops, tablets, and mobile devices.
+- **Responsive Design**: Fully optimized for desktops, tablets, and mobile devices with a smart toggle navigation for smaller screens.
 
 ### 🛎️ Intelligent Reservation System
 - **Smart Booking Flow**: A dynamic booking form that automatically checks room availability based on selected dates.

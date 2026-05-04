@@ -35,57 +35,85 @@
                         <span>Dashboard</span>
                     </a>
                 </li>
-                @endif
-                <li class="{{ Request::is('reservations*') ? 'active' : '' }}">
-                    <a href="{{ route('reservations.index') }}">
-                        <i class="fas fa-calendar-alt"></i>
-                        <span>Reservations</span>
+
+                <!-- Front Office -->
+                <li class="{{ Request::is('reservations*') || Request::is('customers*') ? 'active' : '' }}">
+                    <a href="#frontOfficeSubmenu" data-bs-toggle="collapse" aria-expanded="{{ Request::is('reservations*') || Request::is('customers*') ? 'true' : 'false' }}" class="dropdown-toggle">
+                        <i class="fas fa-concierge-bell"></i>
+                        <span>Front Office</span>
                     </a>
+                    <ul class="collapse list-unstyled {{ Request::is('reservations*') || Request::is('customers*') ? 'show' : '' }}" id="frontOfficeSubmenu">
+                        <li class="{{ Request::is('reservations*') ? 'active' : '' }}">
+                            <a href="{{ route('reservations.index') }}">
+                                <i class="fas fa-calendar-alt"></i>
+                                <span>Reservations</span>
+                            </a>
+                        </li>
+                        <li class="{{ Request::is('customers*') ? 'active' : '' }}">
+                            <a href="{{ route('customers.index') }}">
+                                <i class="fas fa-users"></i>
+                                <span>Customers</span>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
-                @if(!auth()->user()->isGuest())
-                <li class="{{ Request::is('customers*') ? 'active' : '' }}">
-                    <a href="{{ route('customers.index') }}">
-                        <i class="fas fa-users"></i>
-                        <span>Customers</span>
-                    </a>
-                </li>
-                <li class="{{ Request::is('rooms*') ? 'active' : '' }}">
-                    <a href="{{ route('rooms.index') }}">
+
+                <!-- Room Management -->
+                <li class="{{ Request::is('rooms*') || Request::is('room-types*') ? 'active' : '' }}">
+                    <a href="#roomSubmenu" data-bs-toggle="collapse" aria-expanded="{{ Request::is('rooms*') || Request::is('room-types*') ? 'true' : 'false' }}" class="dropdown-toggle">
                         <i class="fas fa-bed"></i>
-                        <span>Rooms</span>
+                        <span>Room Management</span>
                     </a>
+                    <ul class="collapse list-unstyled {{ Request::is('rooms*') || Request::is('room-types*') ? 'show' : '' }}" id="roomSubmenu">
+                        <li class="{{ Request::is('rooms*') ? 'active' : '' }}">
+                            <a href="{{ route('rooms.index') }}">
+                                <i class="fas fa-door-closed"></i>
+                                <span>Rooms</span>
+                            </a>
+                        </li>
+                        <li class="{{ Request::is('room-types*') ? 'active' : '' }}">
+                            <a href="{{ route('room-types.index') }}">
+                                <i class="fas fa-door-open"></i>
+                                <span>Room Types</span>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
-                <li class="{{ Request::is('room-types*') ? 'active' : '' }}">
-                    <a href="{{ route('room-types.index') }}">
-                        <i class="fas fa-door-open"></i>
-                        <span>Room Types</span>
+
+                <!-- Hotel Services -->
+                <li class="{{ Request::is('food-items*') || Request::is('events*') || Request::is('event-locations*') ? 'active' : '' }}">
+                    <a href="#servicesSubmenu" data-bs-toggle="collapse" aria-expanded="{{ Request::is('food-items*') || Request::is('events*') || Request::is('event-locations*') ? 'true' : 'false' }}" class="dropdown-toggle">
+                        <i class="fas fa-hand-holding-heart"></i>
+                        <span>Services</span>
                     </a>
+                    <ul class="collapse list-unstyled {{ Request::is('food-items*') || Request::is('events*') || Request::is('event-locations*') ? 'show' : '' }}" id="servicesSubmenu">
+                        <li class="{{ Request::is('food-items*') ? 'active' : '' }}">
+                            <a href="{{ route('food-items.index') }}">
+                                <i class="fas fa-utensils"></i>
+                                <span>Food Menu</span>
+                            </a>
+                        </li>
+                        <li class="{{ Request::is('events*') ? 'active' : '' }}">
+                            <a href="{{ route('events.index') }}">
+                                <i class="fas fa-calendar-day"></i>
+                                <span>Events</span>
+                            </a>
+                        </li>
+                        <li class="{{ Request::is('event-locations*') ? 'active' : '' }}">
+                            <a href="{{ route('event-locations.index') }}">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>Locations</span>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
-                <li class="{{ Request::is('food-items*') ? 'active' : '' }}">
-                    <a href="{{ route('food-items.index') }}">
-                        <i class="fas fa-utensils"></i>
-                        <span>Food Menu</span>
-                    </a>
-                </li>
-                <li class="{{ Request::is('events*') ? 'active' : '' }}">
-                    <a href="{{ route('events.index') }}">
-                        <i class="fas fa-calendar-day"></i>
-                        <span>Events</span>
-                    </a>
-                </li>
-                <li class="{{ Request::is('event-locations*') ? 'active' : '' }}">
-                    <a href="{{ route('event-locations.index') }}">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <span>Event Locations</span>
-                    </a>
-                </li>
-                @endif
+
                 <li class="{{ Request::is('payments*') || Request::is('invoices*') ? 'active' : '' }}">
-                    <a href="#billingSubmenu" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <a href="#billingSubmenu" data-bs-toggle="collapse" aria-expanded="{{ Request::is('payments*') || Request::is('invoices*') ? 'true' : 'false' }}" class="dropdown-toggle">
                         <i class="fas fa-file-invoice-dollar"></i>
                         <span>Billing</span>
                     </a>
-                    <ul class="collapse list-unstyled" id="billingSubmenu">
+                    <ul class="collapse list-unstyled {{ Request::is('payments*') || Request::is('invoices*') ? 'show' : '' }}" id="billingSubmenu">
                         <li>
                             <a href="{{ route('invoices.index') }}">
                                 <i class="fas fa-file-invoice"></i>
@@ -100,25 +128,51 @@
                         </li>
                     </ul>
                 </li>
+
                 @role('admin,manager')
-                <li class="{{ Request::is('staff*') ? 'active' : '' }}">
-                    <a href="{{ route('staff.index') }}">
-                        <i class="fas fa-user-tie"></i>
-                        <span>Staff</span>
+                <!-- Administration -->
+                <li class="{{ Request::is('staff*') || Request::is('users*') || Request::is('reports*') ? 'active' : '' }}">
+                    <a href="#adminSubmenu" data-bs-toggle="collapse" aria-expanded="{{ Request::is('staff*') || Request::is('users*') || Request::is('reports*') ? 'true' : 'false' }}" class="dropdown-toggle">
+                        <i class="fas fa-user-shield"></i>
+                        <span>Administration</span>
                     </a>
-                </li>
-                <li class="{{ Request::is('users*') ? 'active' : '' }}">
-                    <a class="nav-link" href="{{ route('users.index') }}">
-                        <i class="fas fa-users"></i> User Management
-                    </a>
-                </li>
-                <li class="{{ Request::is('reports*') ? 'active' : '' }}">
-                    <a href="{{ route('reports.index') }}">
-                        <i class="fas fa-chart-bar"></i>
-                        <span>Reports</span>
-                    </a>
+                    <ul class="collapse list-unstyled {{ Request::is('staff*') || Request::is('users*') || Request::is('reports*') ? 'show' : '' }}" id="adminSubmenu">
+                        <li class="{{ Request::is('staff*') ? 'active' : '' }}">
+                            <a href="{{ route('staff.index') }}">
+                                <i class="fas fa-user-tie"></i>
+                                <span>Staff</span>
+                            </a>
+                        </li>
+                        <li class="{{ Request::is('users*') ? 'active' : '' }}">
+                            <a href="{{ route('users.index') }}">
+                                <i class="fas fa-users-cog"></i>
+                                <span>Users</span>
+                            </a>
+                        </li>
+                        <li class="{{ Request::is('reports*') ? 'active' : '' }}">
+                            <a href="{{ route('reports.index') }}">
+                                <i class="fas fa-chart-bar"></i>
+                                <span>Reports</span>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
                 @endrole
+                @else
+                <!-- Guest View -->
+                <li class="{{ Request::is('reservations*') ? 'active' : '' }}">
+                    <a href="{{ route('reservations.index') }}">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>My Reservations</span>
+                    </a>
+                </li>
+                <li class="{{ Request::is('payments*') || Request::is('invoices*') ? 'active' : '' }}">
+                    <a href="{{ route('invoices.index') }}">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                        <span>My Invoices</span>
+                    </a>
+                </li>
+                @endif
             </ul>
         </nav>
         @endauth
@@ -128,6 +182,9 @@
             <nav class="navbar navbar-expand-md navbar-dark">
                 <div class="container-fluid">
                     @auth
+                    <button type="button" id="sidebarCollapse" class="btn">
+                        <i class="fas fa-align-left"></i>
+                    </button>
                     @else
                     <a class="navbar-brand" href="{{ url('/') }}">
                         <i class="fas fa-hotel me-2"></i>{{ config('app.name', 'Hotel Management System') }}
@@ -243,6 +300,12 @@
     <script src="{{ asset('js/alerts.js') }}"></script>
     <script src="{{ asset('js/delete-confirmation.js') }}"></script>
     <script>
+        $(document).ready(function () {
+            $('#sidebarCollapse').on('click', function () {
+                $('#sidebar, #content').toggleClass('active');
+            });
+        });
+
         // Auto-dismiss alerts after 3 seconds
         document.addEventListener('DOMContentLoaded', function() {
             const alerts = document.querySelectorAll('.alert');

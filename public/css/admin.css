@@ -8,8 +8,9 @@
     --card-bg: rgba(255, 255, 255, 0.05);
     --border-color: rgba(212, 175, 55, 0.2);
     --sidebar-width: 260px;
+    --sidebar-collapsed-width: 0px;
     --sidebar-bg: #0A1128;
-    --header-bg: rgba(10, 17, 40, 0.8);
+    --header-bg: rgba(10, 17, 40, 0.95);
 }
 
 body {
@@ -35,8 +36,11 @@ h1, h2, h3, h4, h5, h6, .brand-text {
 
 .sidebar .sidebar-header {
     background: #070D20;
-    padding: 25px;
+    padding: 20px 25px;
     border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .sidebar .sidebar-header h3 {
@@ -79,8 +83,57 @@ h1, h2, h3, h4, h5, h6, .brand-text {
 
 .sidebar ul ul a {
     padding-left: 55px !important;
-    background: transparent;
-    font-size: 0.9rem;
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+    background: rgba(255, 255, 255, 0.02);
+    font-size: 0.85rem;
+    border-left: none;
+}
+
+.sidebar ul ul a:hover {
+    background: rgba(212, 175, 55, 0.1);
+}
+
+.sidebar ul li a.dropdown-toggle::after {
+    display: inline-block;
+    margin-left: auto;
+    vertical-align: middle;
+    content: "";
+    border-top: 0.3em solid;
+    border-right: 0.3em solid transparent;
+    border-bottom: 0;
+    border-left: 0.3em solid transparent;
+    transition: transform 0.3s ease;
+}
+
+.sidebar ul li a.dropdown-toggle[aria-expanded="true"]::after {
+    transform: rotate(180deg);
+}
+
+/* Toggle Sidebar */
+#sidebar.active {
+    margin-left: calc(-1 * var(--sidebar-width));
+}
+
+#content.active {
+    margin-left: 0;
+    width: 100%;
+}
+
+@media (max-width: 768px) {
+    #sidebar {
+        margin-left: calc(-1 * var(--sidebar-width));
+    }
+    #sidebar.active {
+        margin-left: 0;
+    }
+    #content {
+        margin-left: 0;
+        width: 100%;
+    }
+    #content.active {
+        margin-left: var(--sidebar-width);
+    }
 }
 
 /* Content Area */
@@ -99,10 +152,25 @@ main {
 
 .navbar {
     background: var(--header-bg) !important;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
     border-bottom: 1px solid var(--border-color);
-    padding: 15px 30px;
+    padding: 10px 25px;
+}
+
+#sidebarCollapse {
+    background: transparent;
+    border: none;
+    color: var(--secondary-color);
+    font-size: 1.2rem;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+#sidebarCollapse:hover {
+    background: rgba(212, 175, 55, 0.1);
+    border-radius: 4px;
 }
 
 .navbar-light .navbar-nav .nav-link {
