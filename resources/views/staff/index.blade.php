@@ -112,7 +112,7 @@
                                 <div class="d-flex align-items-center" style="height: 100%;">
                                     <a href="{{ request()->fullUrlWithQuery(['sort' => 'status', 'order' => request('sort') == 'status' && request('order') == 'asc' ? 'desc' : 'asc']) }}"
                                         class="text-decoration-none text-white d-flex align-items-center justify-content-between w-100">
-                                        Status
+                                        STATUS
                                         <div class="d-flex flex-column">
                                             <i class="fas fa-sort-up {{ request('sort') == 'status' && request('order') == 'asc' ? 'text-primary' : 'text-muted' }}"
                                                 style="font-size: 0.7em;"></i>
@@ -137,7 +137,7 @@
                                 <td>
                                     <span
                                         class="badge bg-{{ $member->status === 'active' ? 'success' : ($member->status === 'inactive' ? 'danger' : 'warning') }}">
-                                        {{ ucfirst($member->status) }}
+                                        {{ strtoupper(str_replace('_', ' ', $member->status)) }}
                                     </span>
                                 </td>
                                 <td class="text-end">
