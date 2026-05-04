@@ -109,9 +109,6 @@
                                 </div>
                             </th>
                             <th>
-                                <div class="d-flex align-items-center" style="height: 100%;">Phone</div>
-                            </th>
-                            <th>
                                 <div class="d-flex align-items-center" style="height: 100%;">
                                     <a href="{{ request()->fullUrlWithQuery(['sort' => 'status', 'order' => request('sort') == 'status' && request('order') == 'asc' ? 'desc' : 'asc']) }}"
                                         class="text-decoration-none text-white d-flex align-items-center justify-content-between w-100">
@@ -125,8 +122,8 @@
                                     </a>
                                 </div>
                             </th>
-                            <th>
-                                <div class="d-flex align-items-center" style="height: 100%;">Actions</div>
+                            <th class="text-end" style="width: 1%; white-space: nowrap;">
+                                <div class="d-flex align-items-center justify-content-end" style="height: 100%;">Actions</div>
                             </th>
                         </tr>
                     </thead>
@@ -137,36 +134,37 @@
                                 <td>{{ $member->name }}</td>
                                 <td>{{ $member->position }}</td>
                                 <td>{{ $member->department }}</td>
-                                <td>{{ $member->phone }}</td>
                                 <td>
                                     <span
                                         class="badge bg-{{ $member->status === 'active' ? 'success' : ($member->status === 'inactive' ? 'danger' : 'warning') }}">
                                         {{ ucfirst($member->status) }}
                                     </span>
                                 </td>
-                                <td>
-                                    <a href="{{ route('staff.show', $member) }}" class="btn btn-sm btn-info">
-                                        <i class="fas fa-eye"></i>
-                                    </a>
-                                    @role('admin,manager')
-                                        <a href="{{ route('staff.edit', $member) }}" class="btn btn-sm btn-warning">
-                                            <i class="fas fa-edit"></i>
+                                <td class="text-end">
+                                    <div class="d-flex justify-content-end gap-1">
+                                        <a href="{{ route('staff.show', $member) }}" class="btn btn-sm btn-info">
+                                            <i class="fas fa-eye"></i>
                                         </a>
-                                        <form action="{{ route('staff.destroy', $member) }}" method="POST"
-                                            class="d-inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-danger"
-                                                onclick="return confirm('Are you sure you want to delete this staff member?')">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </form>
-                                    @endrole
+                                        @role('admin,manager')
+                                            <a href="{{ route('staff.edit', $member) }}" class="btn btn-sm btn-warning">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <form action="{{ route('staff.destroy', $member) }}" method="POST"
+                                                class="d-inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-sm btn-danger"
+                                                    onclick="return confirm('Are you sure you want to delete this staff member?')">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        @endrole
+                                    </div>
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="text-center">
+                                <td colspan="6" class="text-center">
                                     @if (request('search') || request('status'))
                                         No staff members found matching your criteria.
                                     @else

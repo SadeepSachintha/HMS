@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 04, 2026 at 07:19 AM
+-- Generation Time: May 04, 2026 at 10:36 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -599,12 +599,13 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `status`, `role`, `two_factor_secret`, `two_factor_recovery_codes`, `two_factor_confirmed_at`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1, 'Sadeep', 'manager@gmail.com', NULL, 'Manager@123', 1, 'admin', NULL, NULL, NULL, NULL, '2025-06-28 10:22:23', '2025-07-11 07:01:47'),
+(1, 'Sadeep', 'manager@gmail.com', NULL, '$2y$10$S0KcDklENqcrfwy/q//JleI.VRI8rHGTANUxiBClY.ZR4LCgT7V2q', 1, 'manager', NULL, NULL, NULL, NULL, '2025-06-28 10:22:23', '2026-05-04 06:03:33'),
 (3, 'Chamari Jayasuriya', 'chamari.j@gmail.com', NULL, '$2y$10$geOOWjmojwcIwfuG02jVXe8dbONm2EtK8PGF5UGzrsVSor/geieXu', 0, 'staff', NULL, NULL, NULL, NULL, NULL, '2025-07-10 07:52:20'),
 (4, 'Thilina Fernando', 'thilina.f@gmail.com', NULL, '$2y$10$Tsd38I0MO4iaTJk4FJIdv.qXfxvLfwhN2sRxsCp9g4HCFjmnWjAmu', 1, 'staff', NULL, NULL, NULL, NULL, NULL, '2025-07-09 12:58:39'),
 (5, 'Dilani Rajapaksha', 'dilani.r@gmail.com', NULL, '$2y$10$XheS3ITU9VTWcASfgw.yPeUSy1lEAakPhn9DS1MIa.N0x9488QlhO', 0, 'staff', NULL, NULL, NULL, NULL, NULL, '2025-07-10 07:51:04'),
-(10, 'Sachintha Soysa', 'admin@gmail.com', NULL, '$2y$10$B3oPaz0d0ZIUPzZ4BU2wN.a7h39UsFcyP0plYc01s101qFmo1Myb2', 1, 'manager', NULL, NULL, NULL, NULL, '2025-07-08 03:05:24', '2025-07-08 18:41:17'),
-(11, 'Ravindu Senanayake', 'ravindu.s@gmail.com', NULL, '$2y$10$6jrC1fyiArPgBQXMauO7nOM.5XBWUXRk7B1p4t9ZYmfMPzG0.gl0e', 1, 'staff', NULL, NULL, NULL, NULL, '2025-07-11 06:36:48', '2025-07-11 06:59:04');
+(10, 'Sachintha Soysa', 'admin@gmail.com', NULL, '$2y$10$/9Slo1fHjlnHDqwauXHTl.4twIwDAA9w/eL8Q4Kmp5avPbs6wz10u', 1, 'admin', NULL, NULL, NULL, NULL, '2025-07-08 03:05:24', '2026-05-04 06:03:33'),
+(11, 'Ravindu Senanayake', 'ravindu.s@gmail.com', NULL, '$2y$10$6jrC1fyiArPgBQXMauO7nOM.5XBWUXRk7B1p4t9ZYmfMPzG0.gl0e', 1, 'staff', NULL, NULL, NULL, NULL, '2025-07-11 06:36:48', '2025-07-11 06:59:04'),
+(12, 'Test User', 'test@example.com', NULL, '$2y$10$LOt63fD1op5df5DGDcK78e0fKFUHYb7yY389uWLLhxPou2JnH.sPu', 1, 'admin', NULL, NULL, NULL, NULL, '2026-05-04 06:01:27', '2026-05-04 06:01:27');
 
 --
 -- Indexes for dumped tables
@@ -876,7 +877,7 @@ ALTER TABLE `system_notifications`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- Constraints for dumped tables

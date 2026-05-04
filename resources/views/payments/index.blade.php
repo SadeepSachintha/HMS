@@ -64,16 +64,6 @@
                                 </a>
                             </th>
                             <th>
-                                <a href="{{ request()->fullUrlWithQuery(['sort' => 'balance', 'order' => request('sort') == 'balance' && request('order') == 'asc' ? 'desc' : 'asc']) }}"
-                                   class="text-decoration-none text-white d-flex align-items-center justify-content-between">
-                                    Balance
-                                    <div class="d-flex flex-column">
-                                        <i class="fas fa-sort-up {{ request('sort') == 'balance' && request('order') == 'asc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
-                                        <i class="fas fa-sort-down {{ request('sort') == 'balance' && request('order') == 'desc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
-                                    </div>
-                                </a>
-                            </th>
-                            <th>
                                 <a href="{{ request()->fullUrlWithQuery(['sort' => 'payment_method', 'order' => request('sort') == 'payment_method' && request('order') == 'asc' ? 'desc' : 'asc']) }}"
                                    class="text-decoration-none text-white d-flex align-items-center justify-content-between">
                                     Method
@@ -103,7 +93,7 @@
                                     </div>
                                 </a>
                             </th>
-                            <th>Actions</th>
+                            <th class="text-end" style="width: 1%; white-space: nowrap;">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -121,7 +111,6 @@
                                 </td>
                                 <td>LKR{{ number_format($payment->amount, 2) }}</td>
                                 <td>LKR{{ number_format($payment->paid_amount, 2) }}</td>
-                                <td>LKR{{ number_format($payment->balance, 2) }}</td>
                                 <td>{{ $payment->payment_method === 'check' ? 'Cheque' : ucfirst(str_replace('_', ' ', $payment->payment_method)) }}</td>
                                 <td>{{ $payment->payment_date->format('Y-m-d H:i') }}</td>
                                 <td>
@@ -129,25 +118,27 @@
                                         {{ ucfirst($payment->status) }}
                                     </span>
                                 </td>
-                                <td>
-                                    <a href="{{ route('payments.show', $payment) }}" class="btn btn-sm btn-info" title="View">
-                                        <i class="fas fa-eye"></i>
-                                    </a>
-                                    <a href="{{ route('payments.edit', $payment) }}" class="btn btn-sm btn-warning" title="Edit">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    <form action="{{ route('payments.destroy', $payment) }}" method="POST" class="d-inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-danger" title="Delete" onclick="return confirm('Are you sure you want to delete this payment record?')">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </form>
+                                <td class="text-end">
+                                    <div class="d-flex justify-content-end gap-1">
+                                        <a href="{{ route('payments.show', $payment) }}" class="btn btn-sm btn-info" title="View">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="{{ route('payments.edit', $payment) }}" class="btn btn-sm btn-warning" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <form action="{{ route('payments.destroy', $payment) }}" method="POST" class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-danger" title="Delete" onclick="return confirm('Are you sure you want to delete this payment record?')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="9" class="text-center">No payment records found.</td>
+                                <td colspan="8" class="text-center">No payment records found.</td>
                             </tr>
                         @endforelse
                     </tbody>
