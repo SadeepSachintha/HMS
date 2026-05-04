@@ -18,6 +18,7 @@ A comprehensive, enterprise-grade Hotel Management System built on **Laravel 12*
 - **Smart Booking Flow** — Dynamic form checks real-time room availability based on selected check-in and check-out dates via AJAX.
 - **Guest Portal** — Registered guests can view and manage their own reservations and invoice history.
 - **Status Management** — Robust status handling (Pending → Confirmed → Checked-In → Checked-Out → Cancelled) with colored badge indicators.
+- **Reservation ID Tracking** — Every booking is assigned a unique tracking ID (e.g., `#RES-00042`) for precise operational management.
 - **Automated Customer Profiles** — A customer record is automatically created and linked to a user account upon guest registration via email.
 
 ### 🎭 Event & Facility Management
@@ -42,6 +43,7 @@ A comprehensive, enterprise-grade Hotel Management System built on **Laravel 12*
 - **Full Payment Policy** — Enforces full invoice settlement in a single transaction (no partial payments).
 - **Payment Methods** — Cash, Card, Bank Transfer, and Cheque supported with manual payment recording.
 - **Invoice Status Sync** — Invoice status automatically updates to *Paid* when payment is recorded.
+- **Quick Payment Workflow** — Integrated "Record Payment" actions directly within the reservation list for instant invoice settlement.
 - **PDF Receipts** — Instant generation via DomPDF.
 - **Excel Reports** — Export data to `.xlsx` via Laravel Excel.
 
