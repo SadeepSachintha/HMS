@@ -53,7 +53,7 @@
                                 <tr>
                                     <th>
                                         <a href="{{ request()->fullUrlWithQuery(['sort' => 'name', 'order' => request('sort') == 'name' && request('order') == 'asc' ? 'desc' : 'asc']) }}"
-                                           class="text-decoration-none text-dark d-flex align-items-center justify-content-between">
+                                           class="text-decoration-none text-white d-flex align-items-center justify-content-between">
                                             Name
                                             <div class="d-flex flex-column">
                                                 <i class="fas fa-sort-up {{ request('sort') == 'name' && request('order') == 'asc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
@@ -63,7 +63,7 @@
                                     </th>
                                     <th>
                                         <a href="{{ request()->fullUrlWithQuery(['sort' => 'start_date', 'order' => request('sort') == 'start_date' && request('order') == 'asc' ? 'desc' : 'asc']) }}"
-                                           class="text-decoration-none text-dark d-flex align-items-center justify-content-between">
+                                           class="text-decoration-none text-white d-flex align-items-center justify-content-between">
                                             Start Time
                                             <div class="d-flex flex-column">
                                                 <i class="fas fa-sort-up {{ request('sort') == 'start_date' && request('order') == 'asc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
@@ -73,7 +73,7 @@
                                     </th>
                                     <th>
                                         <a href="{{ request()->fullUrlWithQuery(['sort' => 'end_date', 'order' => request('sort') == 'end_date' && request('order') == 'asc' ? 'desc' : 'asc']) }}"
-                                           class="text-decoration-none text-dark d-flex align-items-center justify-content-between">
+                                           class="text-decoration-none text-white d-flex align-items-center justify-content-between">
                                             End Time
                                             <div class="d-flex flex-column">
                                                 <i class="fas fa-sort-up {{ request('sort') == 'end_date' && request('order') == 'asc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
@@ -83,7 +83,7 @@
                                     </th>
                                     <th>
                                         <a href="{{ request()->fullUrlWithQuery(['sort' => 'location', 'order' => request('sort') == 'location' && request('order') == 'asc' ? 'desc' : 'asc']) }}"
-                                           class="text-decoration-none text-dark d-flex align-items-center justify-content-between">
+                                           class="text-decoration-none text-white d-flex align-items-center justify-content-between">
                                             Location
                                             <div class="d-flex flex-column">
                                                 <i class="fas fa-sort-up {{ request('sort') == 'location' && request('order') == 'asc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
@@ -93,7 +93,7 @@
                                     </th>
                                     <th>
                                         <a href="{{ request()->fullUrlWithQuery(['sort' => 'status', 'order' => request('sort') == 'status' && request('order') == 'asc' ? 'desc' : 'asc']) }}"
-                                           class="text-decoration-none text-dark d-flex align-items-center justify-content-between">
+                                           class="text-decoration-none text-white d-flex align-items-center justify-content-between">
                                             Status
                                             <div class="d-flex flex-column">
                                                 <i class="fas fa-sort-up {{ request('sort') == 'status' && request('order') == 'asc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>

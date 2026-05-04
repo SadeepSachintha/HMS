@@ -3,7 +3,7 @@
 @section('content')
 <div class="container-fluid">
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">{{ $title }}</h1>
+        <h1 class="h3 mb-0 text-white">{{ $title }}</h1>
         <div>
             <button type="button" class="btn btn-sm btn-success shadow-sm me-2" onclick="exportPdf()">
                 <i class="fas fa-download fa-sm text-white-50"></i> Export PDF
@@ -61,7 +61,7 @@
                                     <div class="col mr-2">
                                         <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                             Occupancy Rate</div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $data['occupancy_rate'] }}%</div>
+                                        <div class="h5 mb-0 font-weight-bold text-white">{{ $data['occupancy_rate'] }}%</div>
                                     </div>
                                     <div class="col-auto">
                                         <i class="fas fa-bed fa-2x text-gray-300"></i>
@@ -77,7 +77,7 @@
                                     <div class="col mr-2">
                                         <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
                                             Total Rooms</div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $data['total_rooms'] }}</div>
+                                        <div class="h5 mb-0 font-weight-bold text-white">{{ $data['total_rooms'] }}</div>
                                     </div>
                                     <div class="col-auto">
                                         <i class="fas fa-door-open fa-2x text-gray-300"></i>
@@ -93,7 +93,7 @@
                                     <div class="col mr-2">
                                         <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
                                             Occupied Rooms</div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $data['occupied_rooms'] }}</div>
+                                        <div class="h5 mb-0 font-weight-bold text-white">{{ $data['occupied_rooms'] }}</div>
                                     </div>
                                     <div class="col-auto">
                                         <i class="fas fa-key fa-2x text-gray-300"></i>
@@ -115,7 +115,7 @@
                                     <div class="col mr-2">
                                         <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                             Total Revenue</div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800">LKR{{ number_format($data['total_revenue'], 2) }}</div>
+                                        <div class="h5 mb-0 font-weight-bold text-white">LKR{{ number_format($data['total_revenue'], 2) }}</div>
                                     </div>
                                     <div class="col-auto">
                                         <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
@@ -131,7 +131,7 @@
                                     <div class="col mr-2">
                                         <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
                                             Average Revenue</div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800">${{ number_format($data['average_revenue'], 2) }}</div>
+                                        <div class="h5 mb-0 font-weight-bold text-white">${{ number_format($data['average_revenue'], 2) }}</div>
                                     </div>
                                     <div class="col-auto">
                                         <i class="fas fa-chart-line fa-2x text-gray-300"></i>
@@ -147,7 +147,7 @@
                                     <div class="col mr-2">
                                         <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
                                             Total Payments</div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $data['payment_count'] }}</div>
+                                        <div class="h5 mb-0 font-weight-bold text-white">{{ $data['payment_count'] }}</div>
                                     </div>
                                     <div class="col-auto">
                                         <i class="fas fa-receipt fa-2x text-gray-300"></i>

@@ -105,14 +105,14 @@ a {
 .table-responsive {
     margin: 15px 0;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-    background-color: #fff;
+    /* background-color: #fff; */ /* Removed to fix dark theme visibility */
     border-radius: 5px;
 }
 
 .table {
     width: 100%;
     border-collapse: collapse;
-    background-color: #fff;
+    /* background-color: #fff; */ /* Removed to fix dark theme visibility */
     margin-bottom: 0;
 }
 

@@ -17,7 +17,7 @@
                     <h3 class="h4 mb-3">User List</h3>
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover table-striped align-middle">
-                            <thead class="table-light">
+                            <thead>
                                 <tr>
                                     <th>User ID</th>
                                     <th>Name</th>

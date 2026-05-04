@@ -39,7 +39,7 @@
                         <tr>
                             <th>
                                 <a href="{{ request()->fullUrlWithQuery(['sort' => 'invoice_number', 'order' => request('sort') == 'invoice_number' && request('order') == 'asc' ? 'desc' : 'asc']) }}"
-                                   class="text-decoration-none text-dark d-flex align-items-center justify-content-between">
+                                   class="text-decoration-none text-white d-flex align-items-center justify-content-between">
                                     Invoice #
                                     <div class="d-flex flex-column">
                                         <i class="fas fa-sort-up {{ request('sort') == 'invoice_number' && request('order') == 'asc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
@@ -50,7 +50,7 @@
                             <th>Customer</th>
                             <th>
                                 <a href="{{ request()->fullUrlWithQuery(['sort' => 'issue_date', 'order' => request('sort') == 'issue_date' && request('order') == 'asc' ? 'desc' : 'asc']) }}"
-                                   class="text-decoration-none text-dark d-flex align-items-center justify-content-between">
+                                   class="text-decoration-none text-white d-flex align-items-center justify-content-between">
                                     Issue Date
                                     <div class="d-flex flex-column">
                                         <i class="fas fa-sort-up {{ request('sort') == 'issue_date' && request('order') == 'asc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
@@ -60,7 +60,7 @@
                             </th>
                             <th>
                                 <a href="{{ request()->fullUrlWithQuery(['sort' => 'due_date', 'order' => request('sort') == 'due_date' && request('order') == 'asc' ? 'desc' : 'asc']) }}"
-                                   class="text-decoration-none text-dark d-flex align-items-center justify-content-between">
+                                   class="text-decoration-none text-white d-flex align-items-center justify-content-between">
                                     Due Date
                                     <div class="d-flex flex-column">
                                         <i class="fas fa-sort-up {{ request('sort') == 'due_date' && request('order') == 'asc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
@@ -70,7 +70,7 @@
                             </th>
                             <th>
                                 <a href="{{ request()->fullUrlWithQuery(['sort' => 'total', 'order' => request('sort') == 'total' && request('order') == 'asc' ? 'desc' : 'asc']) }}"
-                                   class="text-decoration-none text-dark d-flex align-items-center justify-content-between">
+                                   class="text-decoration-none text-white d-flex align-items-center justify-content-between">
                                     Amount
                                     <div class="d-flex flex-column">
                                         <i class="fas fa-sort-up {{ request('sort') == 'total' && request('order') == 'asc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
@@ -80,7 +80,7 @@
                             </th>
                             <th>
                                 <a href="{{ request()->fullUrlWithQuery(['sort' => 'status', 'order' => request('sort') == 'status' && request('order') == 'asc' ? 'desc' : 'asc']) }}"
-                                   class="text-decoration-none text-dark d-flex align-items-center justify-content-between">
+                                   class="text-decoration-none text-white d-flex align-items-center justify-content-between">
                                     Status
                                     <div class="d-flex flex-column">
                                         <i class="fas fa-sort-up {{ request('sort') == 'status' && request('order') == 'asc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>

@@ -103,13 +103,13 @@
                                         <td>{{ $reservation->number_of_guests }}</td>
                                         <td>
                                             <span class="badge bg-{{
-                                                $reservation->status === 'confirmed' ? 'success' :
-                                                ($reservation->status === 'pending' ? 'warning' :
-                                                ($reservation->status === 'checked_in' ? 'info' :
-                                                ($reservation->status === 'checked_out' ? 'secondary' :
-                                                ($reservation->status === 'cancelled' ? 'danger' : 'secondary'))))
+                                                strtolower($reservation->status) === 'confirmed' ? 'success' :
+                                                (strtolower($reservation->status) === 'pending' ? 'warning' :
+                                                (strtolower($reservation->status) === 'checked_in' ? 'info' :
+                                                (strtolower($reservation->status) === 'checked_out' ? 'secondary' :
+                                                (strtolower($reservation->status) === 'cancelled' ? 'danger' : 'secondary'))))
                                             }}">
-                                                {{ ucfirst(str_replace('_', ' ', $reservation->status)) }}
+                                                {{ ucfirst(strtolower(str_replace('_', ' ', $reservation->status))) }}
                                             </span>
                                         </td>
                                         <td>

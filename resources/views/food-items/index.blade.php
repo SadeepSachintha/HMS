@@ -39,12 +39,12 @@
 
                         <div class="table-responsive">
                             <table class="table table-hover table-striped">
-                                <thead class="table-light">
+                                <thead>
                                     <tr>
                                         <th>
                                             <div class="d-flex align-items-center" style="height: 100%;">
                                                 <a href="{{ request()->fullUrlWithQuery(['sort' => 'name', 'order' => request('sort') == 'name' && request('order') == 'asc' ? 'desc' : 'asc']) }}"
-                                                    class="text-decoration-none text-dark d-flex align-items-center justify-content-between w-100">
+                                                    class="text-decoration-none text-white d-flex align-items-center justify-content-between w-100">
                                                     Name
                                                     <div class="d-flex flex-column">
                                                         <i class="fas fa-sort-up {{ request('sort') == 'name' && request('order') == 'asc' ? 'text-primary' : 'text-muted' }}"
@@ -58,7 +58,7 @@
                                         <th>
                                             <div class="d-flex align-items-center" style="height: 100%;">
                                                 <a href="{{ request()->fullUrlWithQuery(['sort' => 'category', 'order' => request('sort') == 'category' && request('order') == 'asc' ? 'desc' : 'asc']) }}"
-                                                    class="text-decoration-none text-dark d-flex align-items-center justify-content-between w-100">
+                                                    class="text-decoration-none text-white d-flex align-items-center justify-content-between w-100">
                                                     Category
                                                     <div class="d-flex flex-column">
                                                         <i class="fas fa-sort-up {{ request('sort') == 'category' && request('order') == 'asc' ? 'text-primary' : 'text-muted' }}"
@@ -72,7 +72,7 @@
                                         <th>
                                             <div class="d-flex align-items-center" style="height: 100%;">
                                                 <a href="{{ request()->fullUrlWithQuery(['sort' => 'price', 'order' => request('sort') == 'price' && request('order') == 'asc' ? 'desc' : 'asc']) }}"
-                                                    class="text-decoration-none text-dark d-flex align-items-center justify-content-between w-100">
+                                                    class="text-decoration-none text-white d-flex align-items-center justify-content-between w-100">
                                                     Price
                                                     <div class="d-flex flex-column">
                                                         <i class="fas fa-sort-up {{ request('sort') == 'price' && request('order') == 'asc' ? 'text-primary' : 'text-muted' }}"
@@ -86,7 +86,7 @@
                                         <th>
                                             <div class="d-flex align-items-center" style="height: 100%;">
                                                 <a href="{{ request()->fullUrlWithQuery(['sort' => 'is_available', 'order' => request('sort') == 'is_available' && request('order') == 'asc' ? 'desc' : 'asc']) }}"
-                                                    class="text-decoration-none text-dark d-flex align-items-center justify-content-between w-100">
+                                                    class="text-decoration-none text-white d-flex align-items-center justify-content-between w-100">
                                                     Status
                                                     <div class="d-flex flex-column">
                                                         <i class="fas fa-sort-up {{ request('sort') == 'is_available' && request('order') == 'asc' ? 'text-primary' : 'text-muted' }}"

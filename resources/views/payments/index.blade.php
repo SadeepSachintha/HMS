@@ -34,7 +34,7 @@
                         <tr>
                             <th>
                                 <a href="{{ request()->fullUrlWithQuery(['sort' => 'id', 'order' => request('sort') == 'id' && request('order') == 'asc' ? 'desc' : 'asc']) }}"
-                                   class="text-decoration-none text-dark d-flex align-items-center justify-content-between">
+                                   class="text-decoration-none text-white d-flex align-items-center justify-content-between">
                                     ID
                                     <div class="d-flex flex-column">
                                         <i class="fas fa-sort-up {{ request('sort') == 'id' && request('order') == 'asc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
@@ -45,7 +45,7 @@
                             <th>Invoice</th>
                             <th>
                                 <a href="{{ request()->fullUrlWithQuery(['sort' => 'amount', 'order' => request('sort') == 'amount' && request('order') == 'asc' ? 'desc' : 'asc']) }}"
-                                   class="text-decoration-none text-dark d-flex align-items-center justify-content-between">
+                                   class="text-decoration-none text-white d-flex align-items-center justify-content-between">
                                     Amount
                                     <div class="d-flex flex-column">
                                         <i class="fas fa-sort-up {{ request('sort') == 'amount' && request('order') == 'asc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
@@ -55,7 +55,7 @@
                             </th>
                             <th>
                                 <a href="{{ request()->fullUrlWithQuery(['sort' => 'paid_amount', 'order' => request('sort') == 'paid_amount' && request('order') == 'asc' ? 'desc' : 'asc']) }}"
-                                   class="text-decoration-none text-dark d-flex align-items-center justify-content-between">
+                                   class="text-decoration-none text-white d-flex align-items-center justify-content-between">
                                     Paid Amount
                                     <div class="d-flex flex-column">
                                         <i class="fas fa-sort-up {{ request('sort') == 'paid_amount' && request('order') == 'asc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
@@ -65,7 +65,7 @@
                             </th>
                             <th>
                                 <a href="{{ request()->fullUrlWithQuery(['sort' => 'balance', 'order' => request('sort') == 'balance' && request('order') == 'asc' ? 'desc' : 'asc']) }}"
-                                   class="text-decoration-none text-dark d-flex align-items-center justify-content-between">
+                                   class="text-decoration-none text-white d-flex align-items-center justify-content-between">
                                     Balance
                                     <div class="d-flex flex-column">
                                         <i class="fas fa-sort-up {{ request('sort') == 'balance' && request('order') == 'asc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
@@ -75,7 +75,7 @@
                             </th>
                             <th>
                                 <a href="{{ request()->fullUrlWithQuery(['sort' => 'payment_method', 'order' => request('sort') == 'payment_method' && request('order') == 'asc' ? 'desc' : 'asc']) }}"
-                                   class="text-decoration-none text-dark d-flex align-items-center justify-content-between">
+                                   class="text-decoration-none text-white d-flex align-items-center justify-content-between">
                                     Method
                                     <div class="d-flex flex-column">
                                         <i class="fas fa-sort-up {{ request('sort') == 'payment_method' && request('order') == 'asc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
@@ -85,7 +85,7 @@
                             </th>
                             <th>
                                 <a href="{{ request()->fullUrlWithQuery(['sort' => 'payment_date', 'order' => request('sort') == 'payment_date' && request('order') == 'asc' ? 'desc' : 'asc']) }}"
-                                   class="text-decoration-none text-dark d-flex align-items-center justify-content-between">
+                                   class="text-decoration-none text-white d-flex align-items-center justify-content-between">
                                     Date
                                     <div class="d-flex flex-column">
                                         <i class="fas fa-sort-up {{ request('sort') == 'payment_date' && request('order') == 'asc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
@@ -95,7 +95,7 @@
                             </th>
                             <th>
                                 <a href="{{ request()->fullUrlWithQuery(['sort' => 'status', 'order' => request('sort') == 'status' && request('order') == 'asc' ? 'desc' : 'asc']) }}"
-                                   class="text-decoration-none text-dark d-flex align-items-center justify-content-between">
+                                   class="text-decoration-none text-white d-flex align-items-center justify-content-between">
                                     Status
                                     <div class="d-flex flex-column">
                                         <i class="fas fa-sort-up {{ request('sort') == 'status' && request('order') == 'asc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>

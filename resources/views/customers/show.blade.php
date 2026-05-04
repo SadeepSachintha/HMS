@@ -3,7 +3,7 @@
 @section('content')
 <div class="container-fluid">
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Customer Details</h1>
+        <h1 class="h3 mb-0 text-white">Customer Details</h1>
         <div>
             <a href="{{ route('customers.edit', $customer->id) }}" class="btn btn-primary">
                 <i class="fas fa-edit fa-sm text-white-50"></i> Edit Customer

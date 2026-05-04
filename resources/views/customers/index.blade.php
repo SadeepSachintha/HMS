@@ -3,7 +3,7 @@
 @section('content')
 <div class="container-fluid">
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Customers</h1>
+        <h1 class="h3 mb-0 text-white">Customers</h1>
         <a href="{{ route('customers.create') }}" class="d-none d-sm-inline-block btn btn-primary shadow-sm">
             <i class="fas fa-plus fa-sm text-white-50"></i> Add New Customer
         </a>
@@ -42,7 +42,7 @@
                         <tr>
                             <th>
                                 <a href="{{ request()->fullUrlWithQuery(['sort' => 'id', 'order' => request('sort') == 'id' && request('order') == 'asc' ? 'desc' : 'asc']) }}"
-                                   class="text-decoration-none text-dark d-flex align-items-center justify-content-between">
+                                   class="text-decoration-none text-white d-flex align-items-center justify-content-between">
                                     ID
                                     <div class="d-flex flex-column">
                                         <i class="fas fa-sort-up {{ request('sort') == 'id' && request('order') == 'asc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
@@ -52,7 +52,7 @@
                             </th>
                             <th>
                                 <a href="{{ request()->fullUrlWithQuery(['sort' => 'name', 'order' => request('sort') == 'name' && request('order') == 'asc' ? 'desc' : 'asc']) }}"
-                                   class="text-decoration-none text-dark d-flex align-items-center justify-content-between">
+                                   class="text-decoration-none text-white d-flex align-items-center justify-content-between">
                                     Name
                                     <div class="d-flex flex-column">
                                         <i class="fas fa-sort-up {{ request('sort') == 'name' && request('order') == 'asc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
@@ -62,7 +62,7 @@
                             </th>
                             <th>
                                 <a href="{{ request()->fullUrlWithQuery(['sort' => 'email', 'order' => request('sort') == 'email' && request('order') == 'asc' ? 'desc' : 'asc']) }}"
-                                   class="text-decoration-none text-dark d-flex align-items-center justify-content-between">
+                                   class="text-decoration-none text-white d-flex align-items-center justify-content-between">
                                     Email
                                     <div class="d-flex flex-column">
                                         <i class="fas fa-sort-up {{ request('sort') == 'email' && request('order') == 'asc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
@@ -72,7 +72,7 @@
                             </th>
                             <th>
                                 <a href="{{ request()->fullUrlWithQuery(['sort' => 'phone', 'order' => request('sort') == 'phone' && request('order') == 'asc' ? 'desc' : 'asc']) }}"
-                                   class="text-decoration-none text-dark d-flex align-items-center justify-content-between">
+                                   class="text-decoration-none text-white d-flex align-items-center justify-content-between">
                                     Phone
                                     <div class="d-flex flex-column">
                                         <i class="fas fa-sort-up {{ request('sort') == 'phone' && request('order') == 'asc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
