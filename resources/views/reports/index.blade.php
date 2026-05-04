@@ -1,57 +1,117 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container-fluid">
-    <div class="row">
+<div class="container-fluid py-4">
+    <div class="row g-4">
         <!-- Sidebar/Menu for Report Types -->
-        <div class="col-md-3 mb-4">
-            <div class="list-group">
-                <a href="#" class="list-group-item list-group-item-action active" id="report-occupancy">Occupancy Report</a>
-                <a href="#" class="list-group-item list-group-item-action" id="report-revenue">Revenue Report</a>
-                <a href="#" class="list-group-item list-group-item-action" id="report-reservations">Reservations Report</a>
+        <div class="col-xl-3 col-lg-4">
+            <div class="glass-card h-100">
+                <div class="card-header bg-transparent border-bottom-0 pb-0 pt-4 px-4">
+                    <h5 class="section-title mb-0">Report Categories</h5>
+                </div>
+                <div class="card-body p-3">
+                    <div class="list-group list-group-flush border-0 custom-report-list">
+                        <a href="#" class="list-group-item list-group-item-action active mb-2 rounded-3 border-0 d-flex align-items-center" id="report-occupancy">
+                            <i class="fas fa-bed me-3"></i> Occupancy Report
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action mb-2 rounded-3 border-0 d-flex align-items-center" id="report-revenue">
+                            <i class="fas fa-hand-holding-usd me-3"></i> Revenue Report
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action mb-2 rounded-3 border-0 d-flex align-items-center" id="report-reservations">
+                            <i class="fas fa-calendar-check me-3"></i> Reservations Report
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
+
         <!-- Main Content Area -->
-        <div class="col-md-9">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary" id="report-title">Occupancy Report</h6>
+        <div class="col-xl-9 col-lg-8">
+            <div class="glass-card shadow-lg mb-4 h-100">
+                <div class="card-header bg-transparent d-flex justify-content-between align-items-center py-4 px-4">
+                    <h4 class="section-title mb-0" id="report-title">Occupancy Report</h4>
+                    <div id="download-buttons" class="btn-group" style="display: none;">
+                        <button type="button" class="btn btn-outline-primary btn-sm px-3" onclick="exportExcel()">
+                            <i class="fas fa-file-excel me-2"></i> Excel
+                        </button>
+                        <button type="button" class="btn btn-outline-primary btn-sm px-3" onclick="exportPdf()">
+                            <i class="fas fa-file-pdf me-2"></i> PDF
+                        </button>
+                    </div>
                 </div>
-                <div class="card-body">
+                <div class="card-body px-4 pb-4">
                     <!-- Date Range Filter -->
-                    <form id="report-filter-form" class="row g-3 mb-4 align-items-end">
-                        <div class="col-md-4">
-                            <label for="from_date" class="form-label">From</label>
-                            <input type="date" class="form-control" id="from_date" name="from_date">
-                        </div>
-                        <div class="col-md-4">
-                            <label for="to_date" class="form-label">To</label>
-                            <input type="date" class="form-control" id="to_date" name="to_date">
-                        </div>
-                        <div class="col-md-4">
-                            <button type="button" class="btn btn-success mt-4" id="search-report">Search</button>
-                        </div>
-                    </form>
-                    <!-- Placeholder for DataTable -->
-                    <div id="report-table-container">
-                        <!-- DataTable will be rendered here based on report type -->
-                        <div class="alert alert-info">Select a report type and date range, then click Search to view the report.</div>
+                    <div class="filter-section p-4 rounded-4 bg-dark-soft mb-4 border border-secondary border-opacity-10">
+                        <form id="report-filter-form" class="row g-4 align-items-end">
+                            <div class="col-md-5">
+                                <label for="from_date" class="form-label small text-uppercase letter-spacing-1">Start Date</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-transparent border-end-0"><i class="fas fa-calendar-alt text-secondary"></i></span>
+                                    <input type="date" class="form-control border-start-0" id="from_date" name="from_date">
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <label for="to_date" class="form-label small text-uppercase letter-spacing-1">End Date</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-transparent border-end-0"><i class="fas fa-calendar-day text-secondary"></i></span>
+                                    <input type="date" class="form-control border-start-0" id="to_date" name="to_date">
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <button type="button" class="btn btn-primary w-100 py-2 shadow-sm" id="search-report">
+                                    <i class="fas fa-search me-2"></i>Search
+                                </button>
+                            </div>
+                        </form>
                     </div>
 
-                    <!-- Download buttons (initially hidden) -->
-                    <div id="download-buttons" class="mt-3" style="display: none;">
-                        <button type="button" class="btn btn-success me-2" onclick="exportExcel()">
-                            <i class="fas fa-file-excel"></i> Export Excel
-                        </button>
-                        <button type="button" class="btn btn-danger" onclick="exportPdf()">
-                            <i class="fas fa-file-pdf"></i> Export PDF
-                        </button>
+                    <!-- Placeholder for DataTable -->
+                    <div id="report-table-container" class="table-responsive custom-scrollbar">
+                        <div class="text-center py-5">
+                            <div class="stat-icon-wrapper bg-soft-gold mx-auto mb-4">
+                                <i class="fas fa-chart-line fa-2x"></i>
+                            </div>
+                            <h5 class="text-muted fw-normal">Select a report type and date range to begin</h5>
+                            <p class="text-muted small">Choose parameters above and click search to view insights</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    .custom-report-list .list-group-item {
+        background: transparent;
+        color: var(--text-muted);
+        padding: 12px 20px;
+        transition: all 0.3s ease;
+    }
+    .custom-report-list .list-group-item:hover {
+        background: rgba(212, 175, 55, 0.05);
+        color: var(--secondary-color);
+    }
+    .custom-report-list .list-group-item.active {
+        background: rgba(212, 175, 55, 0.1);
+        color: var(--secondary-color);
+        border-left: 4px solid var(--secondary-color) !important;
+        font-weight: 600;
+    }
+    .bg-dark-soft {
+        background: rgba(0, 0, 0, 0.2);
+    }
+    .letter-spacing-1 {
+        letter-spacing: 1px;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+        height: 6px;
+    }
+    #report-table thead th {
+        border-top: none;
+        background: rgba(212, 175, 55, 0.05) !important;
+    }
+</style>
 @endsection
 
 @push('scripts')
@@ -107,14 +167,13 @@ function renderTable(type, data) {
         paging: true
     };
     let table = $('#report-table').DataTable(dtOptions);
-    // For revenue report, add total row
     if (type === 'revenue' && data.total !== undefined) {
         $(table.table().footer()).remove();
-        $('#report-table').append('<tfoot><tr><th colspan="3" style="text-align:right">Total</th><th>' + data.total + '</th></tr></tfoot>');
+        $('#report-table').append('<tfoot><tr><th colspan="3" style="text-align:right">Total</th><th>LKR ' + parseFloat(data.total).toLocaleString() + '</th></tr></tfoot>');
     }
 
     // Show download buttons after table is rendered
-    $('#download-buttons').show();
+    $('#download-buttons').fadeIn();
 }
 
 $(document).ready(function() {
@@ -127,7 +186,15 @@ $(document).ready(function() {
             $(this).addClass('active');
             $('#report-title').text($(this).text());
             currentReportType = type;
-            $('#report-table-container').html('<div class="alert alert-info">Select a date range and click Search to view the ' + $(this).text() + '.</div>');
+            $('#report-table-container').html(`
+                <div class="text-center py-5">
+                    <div class="stat-icon-wrapper bg-soft-gold mx-auto mb-4">
+                        <i class="fas fa-chart-line fa-2x"></i>
+                    </div>
+                    <h5 class="text-muted fw-normal">Select a date range to begin the ${$(this).text()}</h5>
+                    <p class="text-muted small">Choose parameters above and click search to view insights</p>
+                </div>
+            `);
         });
     });
 
@@ -147,6 +214,16 @@ $(document).ready(function() {
                 from_date: from,
                 to_date: to,
                 _token: '{{ csrf_token() }}'
+            },
+            beforeSend: function() {
+                $('#report-table-container').html(`
+                    <div class="text-center py-5">
+                        <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <h5 class="text-muted">Generating Report...</h5>
+                    </div>
+                `);
             },
             success: function(response) {
                 if (response.success) {

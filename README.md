@@ -30,10 +30,12 @@ A comprehensive, enterprise-grade Hotel Management System built on **Laravel 12*
 
 ### 💳 Financials & Reporting
 - **Automated Invoicing**: Professional invoices are generated automatically as soon as a reservation is confirmed, ensuring zero-touch billing.
+- **Advanced Reporting Engine**: A newly overhauled reports module featuring a **premium glassmorphism UI**, interactive report categories, and a real-time loading feedback system for a seamless management experience.
+- **Comprehensive Analytics**: Generate detailed insights for **Occupancy**, **Revenue**, and **Reservations** with custom date range filtering.
 - **Full Payment Policy**: Simplified payment logic that enforces full invoice settlement in a single transaction, eliminating the complexity of partial payments.
 - **Manual Recording**: Support for recording manual payments via Cash, Card, Bank Transfer, and Cheque with instant status synchronization.
-- **PDF Generation**: Downloadable PDF receipts for payments and formal invoices for billing using DomPDF.
-- **Interactive Analytics**: Comprehensive reporting module with interactive charts for revenue analysis and occupancy trends using **Chart.js**.
+- **Professional Exports**: Instant generation of high-quality **PDF Receipts** and **Excel Reports** for external accounting and audit purposes.
+- **Interactive Data Visualization**: Integrated **Chart.js** analytics provide visual heatmaps of hotel performance and financial trends directly on the dashboard.
 
 ### 📺 Real-Time Operations
 - **Live Updates**: Dashboard statistics and room statuses update in real-time using Laravel broadcasting and Pusher/Reverb events.
