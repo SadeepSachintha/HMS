@@ -49,12 +49,10 @@
 
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="room_id" class="form-label">Room</label>
-                                    <select name="room_id" id="room_id" class="form-control @error('room_id') is-invalid @enderror" required disabled>
-                                        <option value="">Select Dates First</option>
-                                        {{-- Rooms will be populated dynamically via AJAX --}}
-                                    </select>
-                                    @error('room_id')
+                                    <label for="check_in_date" class="form-label">Check-in Date</label>
+                                    <input type="date" class="form-control @error('check_in_date') is-invalid @enderror"
+                                           id="check_in_date" name="check_in_date" value="{{ old('check_in_date') }}" required>
+                                    @error('check_in_date')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
@@ -64,10 +62,10 @@
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="check_in_date" class="form-label">Check-in Date</label>
-                                    <input type="date" class="form-control @error('check_in_date') is-invalid @enderror"
-                                           id="check_in_date" name="check_in_date" value="{{ old('check_in_date') }}" required>
-                                    @error('check_in_date')
+                                    <label for="check_out_date" class="form-label">Check-out Date</label>
+                                    <input type="date" class="form-control @error('check_out_date') is-invalid @enderror"
+                                           id="check_out_date" name="check_out_date" value="{{ old('check_out_date') }}" required>
+                                    @error('check_out_date')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
@@ -75,10 +73,12 @@
 
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="check_out_date" class="form-label">Check-out Date</label>
-                                    <input type="date" class="form-control @error('check_out_date') is-invalid @enderror"
-                                           id="check_out_date" name="check_out_date" value="{{ old('check_out_date') }}" required>
-                                    @error('check_out_date')
+                                    <label for="room_id" class="form-label">Room</label>
+                                    <select name="room_id" id="room_id" class="form-control @error('room_id') is-invalid @enderror" required disabled>
+                                        <option value="">Select Dates First</option>
+                                        {{-- Rooms will be populated dynamically via AJAX --}}
+                                    </select>
+                                    @error('room_id')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
@@ -97,27 +97,9 @@
                                     @enderror
                                 </div>
                             </div>
-
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="status" class="form-label">Status</label>
-                                    @if(auth()->user()->isGuest())
-                                        <input type="text" class="form-control" value="Pending" readonly>
-                                        <input type="hidden" name="status" value="pending">
-                                    @else
-                                        <select name="status" id="status" class="form-control @error('status') is-invalid @enderror" required>
-                                            <option value="pending" {{ old('status') == 'pending' ? 'selected' : '' }}>Pending</option>
-                                            <option value="confirmed" {{ old('status') == 'confirmed' ? 'selected' : '' }}>Confirmed</option>
-                                            <option value="checked_in" {{ old('status') == 'checked_in' ? 'selected' : '' }}>Checked In</option>
-                                            <option value="checked_out" {{ old('status') == 'checked_out' ? 'selected' : '' }}>Checked Out</option>
-                                            <option value="cancelled" {{ old('status') == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
-                                        </select>
-                                        @error('status')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    @endif
-                                </div>
-                            </div>
+                            
+                            {{-- Hidden Status - Defaults to pending as requested --}}
+                            <input type="hidden" name="status" value="pending">
                         </div>
 
                         <div class="row">
@@ -168,8 +150,14 @@
                 roomSelect.innerHTML = '<option value="">Loading...</option>';
                 roomSelect.disabled = true;
 
-                fetch(`/reservations/available-rooms?check_in=${checkIn}&check_out=${checkOut}`)
-                    .then(response => response.json())
+                // Using absolute URL path to avoid issues with subdirectories
+                fetch(`{{ route('reservations.available-rooms') }}?check_in=${checkIn}&check_out=${checkOut}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
                     .then(data => {
                         roomSelect.innerHTML = '<option value="">Select Room</option>';
                         data.forEach(room => {
@@ -187,6 +175,7 @@
                         console.error('Error fetching rooms:', error);
                         roomSelect.innerHTML = '<option value="">Error loading rooms</option>';
                     });
+
             } else {
                 roomSelect.innerHTML = '<option value="">Select Dates First</option>';
                 roomSelect.disabled = true;
