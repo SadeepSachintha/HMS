@@ -110,7 +110,15 @@
                                         <td>{{ $event->name }}</td>
                                         <td>{{ $event->start_time->format('Y-m-d H:i') }}</td>
                                         <td>{{ $event->end_time->format('Y-m-d H:i') }}</td>
-                                        <td>{{ $event->location }}</td>
+                                        <td>
+                                            @if($event->location_id)
+                                                <a href="{{ route('event-locations.show', $event->location_id) }}" class="text-decoration-none">
+                                                    {{ $event->location_rel->name ?? $event->location }}
+                                                </a>
+                                            @else
+                                                {{ $event->location }}
+                                            @endif
+                                        </td>
                                         <td>
                                             <span class="badge bg-{{ $event->status === 'scheduled' ? 'primary' : ($event->status === 'in_progress' ? 'warning' : ($event->status === 'completed' ? 'success' : 'danger')) }}">
                                                 {{ ucfirst(str_replace('_', ' ', $event->status)) }}

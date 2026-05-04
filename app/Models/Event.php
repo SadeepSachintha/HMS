@@ -15,6 +15,7 @@ class Event extends Model
         'start_time',
         'end_time',
         'location',
+        'location_id',
         'max_attendees',
         'price',
         'customer_id',
@@ -43,5 +44,13 @@ class Event extends Model
         return $this->belongsToMany(Staff::class)
             ->withPivot('role')
             ->withTimestamps();
+    }
+
+    /**
+     * Get the location assigned to the event.
+     */
+    public function location_rel()
+    {
+        return $this->belongsTo(EventLocation::class, 'location_id');
     }
 }

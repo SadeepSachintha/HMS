@@ -18,7 +18,8 @@ use App\Http\Controllers\{
     AlertController,
     WebsiteController,
     HomeController,
-    UserController
+    UserController,
+    EventLocationController
 };
 use App\Http\Controllers\Auth\LoginController;
 
@@ -101,6 +102,7 @@ Route::middleware(['auth', 'role:admin,manager,staff'])->group(function () {
     Route::resource('room-types', RoomTypeController::class);
     Route::delete('/room-types/images/{id}', [RoomTypeController::class, 'deleteImage'])->name('room-types.images.destroy');
     Route::resource('food-items', FoodItemController::class);
+    Route::resource('event-locations', EventLocationController::class);
 
     // Events Management
     Route::resource('events', EventController::class);

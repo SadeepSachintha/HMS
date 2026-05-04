@@ -51,9 +51,16 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="location" class="form-label">Location</label>
-                            <input type="text" class="form-control @error('location') is-invalid @enderror" id="location" name="location" value="{{ old('location', $event->location) }}" required>
-                            @error('location')
+                            <label for="location_id" class="form-label">Location</label>
+                            <select class="form-select @error('location_id') is-invalid @enderror" id="location_id" name="location_id" required>
+                                <option value="">Select Location</option>
+                                @foreach($locations as $location)
+                                    <option value="{{ $location->id }}" {{ old('location_id', $event->location_id) == $location->id ? 'selected' : '' }}>
+                                        {{ $location->name }} (Capacity: {{ $location->capacity ?? 'N/A' }})
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('location_id')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>

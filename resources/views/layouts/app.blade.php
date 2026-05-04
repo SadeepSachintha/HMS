@@ -73,6 +73,12 @@
                         <span>Events</span>
                     </a>
                 </li>
+                <li class="{{ Request::is('event-locations*') ? 'active' : '' }}">
+                    <a href="{{ route('event-locations.index') }}">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Event Locations</span>
+                    </a>
+                </li>
                 @endif
                 <li class="{{ Request::is('payments*') || Request::is('invoices*') ? 'active' : '' }}">
                     <a href="#billingSubmenu" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">

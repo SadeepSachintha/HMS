@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Event;
 use App\Models\Customer;
+use App\Models\EventLocation;
 use Illuminate\Http\Request;
 
 class EventController extends Controller
@@ -15,7 +16,7 @@ class EventController extends Controller
 
     public function index(Request $request)
     {
-        $query = Event::query();
+        $query = Event::with('location_rel');
 
         // Search functionality
         if ($request->has('search') && !empty($request->search)) {
@@ -64,7 +65,8 @@ class EventController extends Controller
     {
         $customers = Customer::all();
         $staff = \App\Models\Staff::active()->get();
-        return view('events.create', compact('customers', 'staff'));
+        $locations = EventLocation::active()->get();
+        return view('events.create', compact('customers', 'staff', 'locations'));
     }
 
     public function store(Request $request)
@@ -74,7 +76,8 @@ class EventController extends Controller
             'description' => 'nullable|string',
             'start_time' => 'required|date',
             'end_time' => 'required|date|after:start_time',
-            'location' => 'required|string|max:255',
+            'location' => 'nullable|string|max:255',
+            'location_id' => 'required|exists:event_locations,id',
             'max_attendees' => 'nullable|integer|min:1',
             'price' => 'nullable|numeric|min:0',
             'customer_id' => 'required|exists:customers,id',
@@ -84,6 +87,12 @@ class EventController extends Controller
             'staff_ids.*' => 'exists:staff,id',
             'staff_roles' => 'nullable|array',
         ]);
+
+        // If location_id is provided, use its name as the 'location' string for fallback
+        if ($request->location_id) {
+            $loc = EventLocation::find($request->location_id);
+            $validated['location'] = $loc->name;
+        }
 
         $event = Event::create($validated);
 
@@ -111,8 +120,9 @@ class EventController extends Controller
     public function edit(Event $event)
     {
         $customers = \App\Models\Customer::all();
-        $assignedStaff = $event->staff; // Get assigned staff
-        return view('events.edit', compact('event', 'customers', 'assignedStaff'));
+        $assignedStaff = $event->staff;
+        $locations = EventLocation::active()->get();
+        return view('events.edit', compact('event', 'customers', 'assignedStaff', 'locations'));
     }
 
     public function update(Request $request, Event $event)
@@ -120,12 +130,18 @@ class EventController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after:start_date',
-            'location' => 'required|string|max:255',
-            'capacity' => 'required|integer|min:1',
-            'status' => 'required|in:scheduled,ongoing,completed,cancelled'
+            'start_time' => 'required|date',
+            'end_time' => 'required|date|after:start_time',
+            'location' => 'nullable|string|max:255',
+            'location_id' => 'required|exists:event_locations,id',
+            'max_attendees' => 'nullable|integer|min:1',
+            'status' => 'required|in:scheduled,in_progress,completed,cancelled'
         ]);
+
+        if ($request->location_id) {
+            $loc = EventLocation::find($request->location_id);
+            $validated['location'] = $loc->name;
+        }
 
         $event->update($validated);
 
@@ -149,7 +165,7 @@ class EventController extends Controller
                 'title' => $event->name,
                 'start' => $event->start_time->format('Y-m-d H:i:s'),
                 'end' => $event->end_time->format('Y-m-d H:i:s'),
-                'location' => $event->location,
+                'location' => $event->location_rel->name ?? $event->location,
                 'status' => $event->status,
                 'color' => $this->getEventColor($event->status)
             ];

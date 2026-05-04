@@ -17,6 +17,11 @@ A comprehensive, enterprise-grade Hotel Management System built on **Laravel 12*
 - **Calendar Management**: Interactive calendar for tracking room occupancy and hosted events at a glance.
 - **Case-Insensitive Statuses**: Robust status handling (Pending, Confirmed, Checked-In, etc.) ensures colored badges display correctly regardless of data input format.
 
+### 🎭 Event & Facility Management
+- **Centralized Event Tracking**: Comprehensive management of hotel-hosted events, including scheduling, pricing, and attendee tracking.
+- **Location Management**: Standardized management of hotel facilities (e.g., Training Rooms, Lounges, Conference Halls) with bi-directional linking to events and venue-specific scheduling views.
+- **Staff Assignment**: Easily assign staff members to specific event roles to ensure smooth operational execution.
+
 ### 👤 Advanced Role-Based Management
 - **Guest Portal**: A dedicated environment for guests to manage their own bookings, view payment history, and update profiles.
 - **Internal Roles**: Granular access control for **Admin**, **Manager**, and **Staff** roles using Spatie Laravel-Permission.

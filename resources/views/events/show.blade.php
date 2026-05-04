@@ -46,7 +46,15 @@
                                         </tr>
                                         <tr>
                                             <th>Location:</th>
-                                            <td>{{ $event->location }}</td>
+                                            <td>
+                                                @if($event->location_id)
+                                                    <a href="{{ route('event-locations.show', $event->location_id) }}" class="text-decoration-none">
+                                                        {{ $event->location_rel->name ?? $event->location }}
+                                                    </a>
+                                                @else
+                                                    {{ $event->location }}
+                                                @endif
+                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>
