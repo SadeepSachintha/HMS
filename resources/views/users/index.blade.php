@@ -9,9 +9,9 @@
                     <h2 class="mb-0">User Management</h2>
                     <form method="GET" action="" class="d-flex align-items-center gap-2 ms-auto">
                         <input type="text" name="search" class="form-control me-2" style="min-width: 250px;" placeholder="Search by name, email, role..." value="{{ request('search') }}">
-                        <button class="btn btn-outline-secondary" type="submit"><i class="fa fa-search"></i></button>
+                        <button class="btn btn-outline-secondary" type="submit"><i class="fas fa-search"></i></button>
                     </form>
-                    <a href="{{ route('users.create') }}" class="btn btn-primary ms-2"><i class="fa fa-plus me-1"></i> Add User</a>
+                    <a href="{{ route('users.create') }}" class="btn btn-primary ms-2"><i class="fas fa-plus me-1"></i> Add User</a>
                 </div>
                 <div class="card-body">
                     <h3 class="h4 mb-3">User List</h3>
@@ -47,9 +47,9 @@
                                         </form>
                                     </td>
                                     <td>
-                                        <a href="{{ route('users.show', $user) }}" class="btn btn-sm btn-info me-1" title="View"><i class="fa fa-eye"></i></a>
-                                        <a href="{{ route('users.edit', $user) }}" class="btn btn-sm btn-primary me-1" title="Edit"><i class="fa fa-edit"></i></a>
-                                        <button type="button" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#resetPasswordModal{{ $user->id }}" title="Reset Password"><i class="fa fa-key"></i></button>
+                                        <a href="{{ route('users.show', $user) }}" class="btn btn-sm btn-info me-1" title="View"><i class="fas fa-eye"></i></a>
+                                        <a href="{{ route('users.edit', $user) }}" class="btn btn-sm btn-primary me-1" title="Edit"><i class="fas fa-edit"></i></a>
+                                        <button type="button" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#resetPasswordModal{{ $user->id }}" title="Reset Password"><i class="fas fa-key"></i></button>
                                         <!-- Reset Password Modal -->
                                         <div class="modal fade" id="resetPasswordModal{{ $user->id }}" tabindex="-1" aria-labelledby="resetPasswordModalLabel{{ $user->id }}" aria-hidden="true">
                                           <div class="modal-dialog">

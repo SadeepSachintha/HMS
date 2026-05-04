@@ -103,7 +103,7 @@
                 </li>
                 <li class="{{ Request::is('users*') ? 'active' : '' }}">
                     <a class="nav-link" href="{{ route('users.index') }}">
-                        <i class="fa fa-users"></i> User Management
+                        <i class="fas fa-users"></i> User Management
                     </a>
                 </li>
                 <li class="{{ Request::is('reports*') ? 'active' : '' }}">

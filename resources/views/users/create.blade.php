@@ -5,7 +5,7 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <a href="{{ route('users.index') }}" class="btn btn-secondary mb-3">
-                <i class="fa fa-arrow-left me-1"></i> Back to List
+                <i class="fas fa-arrow-left me-1"></i> Back to List
             </a>
             <div class="card">
                 <div class="card-header">
@@ -56,8 +56,8 @@
                             </div>
                         </div>
                         <div class="mt-4">
-                            <button type="submit" class="btn btn-primary"><i class="fa fa-save me-1"></i> Create User</button>
-                            <a href="{{ route('users.index') }}" class="btn btn-outline-secondary ms-2"><i class="fa fa-times me-1"></i> Cancel</a>
+                            <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i> Create User</button>
+                            <a href="{{ route('users.index') }}" class="btn btn-outline-secondary ms-2"><i class="fas fa-times me-1"></i> Cancel</a>
                         </div>
                     </form>
                 </div>

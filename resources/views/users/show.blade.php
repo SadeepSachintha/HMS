@@ -5,7 +5,7 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <a href="{{ route('users.index') }}" class="btn btn-secondary mb-3">
-                    <i class="fa fa-arrow-left me-1"></i> Back to List
+                    <i class="fas fa-arrow-left me-1"></i> Back to List
                 </a>
                 <div class="card">
                     <div class="card-header">
@@ -51,7 +51,7 @@
                         </div>
                         <div class="mt-4">
                             <a href="{{ route('users.edit', $user) }}" class="btn btn-primary me-2">
-                                <i class="fa fa-edit me-1"></i> Edit User
+                                <i class="fas fa-edit me-1"></i> Edit User
                             </a>
                         </div>
                     </div>
