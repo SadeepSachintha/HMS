@@ -1,6 +1,6 @@
 # 🏨 Hotel Management System (HMS)
 
-A comprehensive, enterprise-grade Hotel Management System built on **Laravel 12**. Designed for both hotel guests and internal management, the system features a premium dark-mode UI with deep navy & gold aesthetics, a rich feature set, and a fully offline-capable architecture.
+A comprehensive, enterprise-grade Hotel Management System built on **Laravel 8**. Designed for both hotel guests and internal management, the system features a premium dark-mode UI with deep navy & gold aesthetics, a rich feature set, and a fully offline-capable architecture.
 
 ---
 
@@ -36,7 +36,7 @@ A comprehensive, enterprise-grade Hotel Management System built on **Laravel 12*
 | **Staff** | Reservations, customers, rooms, events, food, billing |
 | **Guest** | My Reservations, My Invoices only |
 
-- Powered by **Spatie Laravel-Permission**.
+- Powered by a **Custom Role Middleware**.
 - Middleware-protected routes per role group.
 
 ### 💳 Billing & Financials
@@ -95,14 +95,14 @@ A comprehensive, enterprise-grade Hotel Management System built on **Laravel 12*
 
 | Layer | Technology |
 |---|---|
-| **Framework** | Laravel 12 (PHP 8.2+) |
+| **Framework** | Laravel 8 (PHP 7.3+) |
 | **Templating** | Blade |
 | **Styling** | Vanilla CSS Design System (admin.css + module-scoped CSS), Bootstrap 5 |
 | **Visualizations** | Chart.js 4.4+ |
 | **Interactivity** | JavaScript (ES6+), jQuery, AJAX |
 | **Calendar** | FullCalendar 6 |
 | **Database** | MySQL 8.0+ / MariaDB |
-| **Auth & Roles** | Laravel Breeze + Spatie Laravel-Permission |
+| **Auth & Roles** | Laravel UI (Bootstrap) + Custom Role Middleware |
 | **PDF Export** | DomPDF (barryvdh/laravel-dompdf) |
 | **Excel Export** | Laravel Excel (maatwebsite/excel) |
 | **Asset Strategy** | Fully localized — no CDN dependencies |
@@ -149,7 +149,7 @@ HMS/
 
 1. **Clone & Navigate**:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/SadeepSachintha/HMS.git
    cd HMS
    ```
 
