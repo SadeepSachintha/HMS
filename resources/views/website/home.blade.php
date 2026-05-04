@@ -47,6 +47,34 @@
         </div>
     </nav>
 
+    <!-- Flash Messages -->
+    <div class="container" style="position: relative; z-index: 1050; margin-top: 100px;">
+        @if(session('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+        @if(session('error'))
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{ session('error') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+        @if(session('warning'))
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                {{ session('warning') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+        @if(session('info'))
+            <div class="alert alert-info alert-dismissible fade show" role="alert">
+                {{ session('info') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+    </div>
+
     <!-- Hero Section -->
     <section class="hero-section">
         <div class="hero-overlay"></div>
@@ -221,6 +249,22 @@
                     document.querySelector('.navbar-custom').style.background = 'rgba(10, 17, 40, 0.7)';
                     document.querySelector('.navbar-custom').style.boxShadow = 'none';
                 }
+            });
+        });
+    </script>
+    <!-- Auto-dismiss alerts -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                setTimeout(function() {
+                    const closeButton = alert.querySelector('.btn-close');
+                    if (closeButton) {
+                        closeButton.click();
+                    } else {
+                        alert.remove();
+                    }
+                }, 5000); // 5 seconds for visibility on landing page
             });
         });
     </script>
