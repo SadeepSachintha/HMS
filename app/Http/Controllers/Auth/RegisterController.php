@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use App\Models\Customer;
 
 class RegisterController extends Controller
 {
@@ -64,11 +65,20 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
+        $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
+            'role' => 'guest',
+            'status' => 1,
         ]);
+
+        Customer::firstOrCreate(
+            ['email' => $data['email']],
+            ['name' => $data['name']]
+        );
+
+        return $user;
     }
 
     /**
@@ -78,6 +88,15 @@ class RegisterController extends Controller
      */
     public function showRegistrationForm()
     {
-        return view('auth.register-new');
+        return view('auth.register');
+    }
+
+    protected function registered(\Illuminate\Http\Request $request, $user)
+    {
+        if ($user->isGuest()) {
+            return redirect()->route('reservations.index');
+        }
+
+        return redirect($this->redirectTo);
     }
 }

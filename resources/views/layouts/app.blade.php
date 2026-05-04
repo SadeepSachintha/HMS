@@ -28,18 +28,21 @@
             </div>
 
             <ul class="list-unstyled components">
+                @if(!auth()->user()->isGuest())
                 <li class="{{ Request::is('dashboard*') ? 'active' : '' }}">
                     <a href="{{ route('dashboard') }}">
                         <i class="fas fa-tachometer-alt"></i>
                         <span>Dashboard</span>
                     </a>
                 </li>
+                @endif
                 <li class="{{ Request::is('reservations*') ? 'active' : '' }}">
                     <a href="{{ route('reservations.index') }}">
                         <i class="fas fa-calendar-alt"></i>
                         <span>Reservations</span>
                     </a>
                 </li>
+                @if(!auth()->user()->isGuest())
                 <li class="{{ Request::is('customers*') ? 'active' : '' }}">
                     <a href="{{ route('customers.index') }}">
                         <i class="fas fa-users"></i>
@@ -70,6 +73,7 @@
                         <span>Events</span>
                     </a>
                 </li>
+                @endif
                 <li class="{{ Request::is('payments*') || Request::is('invoices*') ? 'active' : '' }}">
                     <a href="#billingSubmenu" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                         <i class="fas fa-file-invoice-dollar"></i>

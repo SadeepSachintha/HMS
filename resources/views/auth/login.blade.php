@@ -12,116 +12,147 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
     <style>
         body {
-            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            background-color: #050814;
             height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
         }
 
         .login-container {
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            background-color: #0A1128;
+            border-radius: 12px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
             overflow: hidden;
             max-width: 900px;
-            width: 100%;
+            width: 90%;
             display: flex;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            color: #fff;
         }
 
         .login-image {
-            background: url('https://images.pexels.com/photos/338504/pexels-photo-338504.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2') no-repeat center;
+            background: url('{{ asset('images/website/hero_bg.png') }}') no-repeat center;
             background-size: cover;
             flex: 1;
             display: none;
+            position: relative;
+        }
+        
+        .login-image::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(to right, rgba(10, 17, 40, 0.2), rgba(10, 17, 40, 0.9));
         }
 
         .login-form {
-            padding: 40px;
+            padding: 50px 40px;
             flex: 1;
         }
 
         .login-logo {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
         }
 
         .login-logo i {
             font-size: 3rem;
-            color: #1a73e8;
+            color: #D4AF37;
         }
 
         .login-logo h2 {
-            margin-top: 10px;
-            color: #333;
-            font-weight: 600;
+            margin-top: 15px;
+            color: #D4AF37;
+            font-weight: 700;
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .text-muted {
+            color: #b0b5c1 !important;
+        }
+
+        .form-label {
+            color: #e0e0e0;
+            font-weight: 500;
         }
 
         .form-control {
-            border-radius: 8px;
+            border-radius: 6px;
             padding: 12px;
             margin-bottom: 20px;
-            border: 1px solid #ddd;
-            transition: box-shadow 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background-color: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            transition: all 0.3s;
         }
 
         .form-control:focus {
-            box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.3);
-            border-color: #1a73e8;
+            box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.3);
+            border-color: #D4AF37;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+        
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.4);
         }
 
         .btn-login {
-            background-color: #1a73e8;
+            background-color: #D4AF37;
             border: none;
-            border-radius: 8px;
-            color: white;
+            border-radius: 6px;
+            color: #0A1128;
             padding: 12px;
             font-weight: 600;
             width: 100%;
             margin-top: 15px;
-            transition: background-color 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
         }
 
         .btn-login:hover {
-            background-color: #1557b0;
-        }
-
-        .forgot-password {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        .forgot-password a {
-            color: #1a73e8;
-            text-decoration: none;
+            background-color: #bfa030;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
         }
 
         .register-link {
-            border-top: 1px solid #eee;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
             padding-top: 20px;
-            margin-top: 20px;
+            margin-top: 30px;
+            color: #b0b5c1;
         }
 
         .register-link a {
-            color: #1a73e8;
+            color: #D4AF37;
             text-decoration: none;
             font-weight: 500;
+            transition: color 0.3s;
         }
 
         .register-link a:hover {
+            color: #F7E7CE;
             text-decoration: underline;
         }
 
         .remember-me {
             display: flex;
             align-items: center;
+            color: #b0b5c1;
         }
 
         .remember-me input {
             margin-right: 8px;
+            cursor: pointer;
         }
 
         @media (min-width: 768px) {
@@ -131,7 +162,7 @@
         }
 
         .validation-error {
-            color: #dc3545;
+            color: #ff6b6b;
             font-size: 0.875rem;
             margin-top: -15px;
             margin-bottom: 15px;
@@ -148,29 +179,29 @@
         }
 
         .input-group .form-control:focus + .btn-outline-secondary {
-            border-color: #1a73e8;
+            border-color: #D4AF37;
         }
 
         .input-group .btn-outline-secondary {
-            border-color: #ddd;
+            border-color: rgba(255, 255, 255, 0.1);
             border-left: none;
             padding: 12px 16px;
-            color: #666;
-            background-color: white;
+            color: #b0b5c1;
+            background-color: rgba(255, 255, 255, 0.05);
             transition: all 0.3s ease;
         }
 
         .input-group .btn-outline-secondary:hover,
         .input-group .btn-outline-secondary:focus {
-            color: #1a73e8;
-            background-color: #f8f9fa;
-            border-color: #ddd;
+            color: #D4AF37;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.1);
             box-shadow: none;
         }
 
         .input-group .form-control:focus,
         .input-group .btn-outline-secondary:focus {
-            box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.3);
+            box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.3);
             z-index: 1;
         }
     </style>

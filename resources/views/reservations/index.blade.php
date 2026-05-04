@@ -6,7 +6,7 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Reservations</h5>
+                    <h5 class="mb-0">{{ auth()->user()->isGuest() ? 'My Reservations' : 'Reservations' }}</h5>
                     <div class="d-flex align-items-center">
                         <form method="GET" action="{{ route('reservations.index') }}" class="d-flex me-3">
                             <input type="text" name="search" class="form-control form-control-sm me-2"
@@ -117,6 +117,7 @@
                                                 <a href="{{ route('reservations.show', $reservation) }}" class="btn btn-sm btn-info" title="View">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
+                                                @if(!auth()->user()->isGuest())
                                                 <a href="{{ route('reservations.edit', $reservation) }}" class="btn btn-sm btn-primary" title="Edit">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
@@ -127,6 +128,7 @@
                                                         <i class="fas fa-trash"></i>
                                                     </button>
                                                 </form>
+                                                @endif
                                             </div>
                                         </td>
                                     </tr>

@@ -16,6 +16,7 @@ use App\Http\Controllers\ReportController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\AlertController;
+use App\Http\Controllers\WebsiteController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,11 +34,11 @@ Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('login', [LoginController::class, 'login']);
 Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 
+// Public Website Route
+Route::get('/', [WebsiteController::class, 'index'])->name('website.home');
+
 // Dashboard Route
-Route::middleware(['auth'])->group(function () {
-    Route::get('/', function () {
-        return redirect()->route('dashboard');
-    });
+Route::middleware(['auth', 'role:admin,manager,staff'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard/refresh-stats', [DashboardController::class, 'refreshStats'])->name('dashboard.refresh-stats');
     Route::get('/dashboard/occupancy', [DashboardController::class, 'getOccupancyStats'])->name('dashboard.occupancy');
@@ -65,29 +66,38 @@ Route::middleware(['auth', 'role:admin,manager,staff'])->group(function () {
 });
 
 // Reservations Routes
+Route::get('/reservations/available-rooms', [ReservationController::class, 'availableRooms'])->name('reservations.available-rooms');
 Route::get('/reservations/calendar', [ReservationController::class, 'calendar'])->name('reservations.calendar');
 Route::get('/reservations/events', [ReservationController::class, 'events'])->name('reservations.events');
 Route::get('/reservations/{reservation}/details', [ReservationController::class, 'details'])->name('reservations.details');
 Route::resource('reservations', ReservationController::class);
 
 // Customers Routes
-Route::resource('customers', CustomerController::class);
+Route::middleware(['auth', 'role:admin,manager,staff'])->group(function () {
+    Route::resource('customers', CustomerController::class);
+});
 
 // Rooms Routes
-Route::resource('rooms', RoomController::class);
-Route::resource('room-types', RoomTypeController::class);
-Route::delete('/room-types/images/{id}', [RoomTypeController::class, 'deleteImage'])->name('room-types.images.destroy');
+Route::middleware(['auth', 'role:admin,manager,staff'])->group(function () {
+    Route::resource('rooms', RoomController::class);
+    Route::resource('room-types', RoomTypeController::class);
+    Route::delete('/room-types/images/{id}', [RoomTypeController::class, 'deleteImage'])->name('room-types.images.destroy');
+});
 
 // Food Menu Routes
-Route::resource('food-items', FoodItemController::class);
+Route::middleware(['auth', 'role:admin,manager,staff'])->group(function () {
+    Route::resource('food-items', FoodItemController::class);
+});
 
 // Events Routes
-Route::resource('events', EventController::class);
-Route::get('/events/calendar', [EventController::class, 'calendar'])->name('events.calendar');
+Route::middleware(['auth', 'role:admin,manager,staff'])->group(function () {
+    Route::resource('events', EventController::class);
+    Route::get('/events/calendar', [EventController::class, 'calendar'])->name('events.calendar');
 
-// Event staff assignment routes
-Route::post('/events/{event}/staff/assign', [App\Http\Controllers\EventController::class, 'assignStaff'])->name('events.staff.assign');
-Route::delete('/events/{event}/staff/{staff}/remove', [App\Http\Controllers\EventController::class, 'removeStaff'])->name('events.staff.remove');
+    // Event staff assignment routes
+    Route::post('/events/{event}/staff/assign', [App\Http\Controllers\EventController::class, 'assignStaff'])->name('events.staff.assign');
+    Route::delete('/events/{event}/staff/{staff}/remove', [App\Http\Controllers\EventController::class, 'removeStaff'])->name('events.staff.remove');
+});
 
 // Staff Routes
 // Only manager and admin can create/edit staff
@@ -106,9 +116,12 @@ Route::middleware(['auth', 'role:admin,manager,staff'])->group(function () {
 // Billing & Payments Routes
 Route::resource('payments', PaymentController::class);
 Route::get('payments/{payment}/receipt', [PaymentController::class, 'receipt'])->name('payments.receipt');
-Route::resource('invoices', InvoiceController::class);
-Route::put('invoices/{invoice}/update-status-notes', [InvoiceController::class, 'updateStatusNotes'])->name('invoices.update-status-notes');
-Route::get('invoices/{invoice}/download', [InvoiceController::class, 'download'])->name('invoices.download');
+
+Route::middleware(['auth', 'role:admin,manager,staff'])->group(function () {
+    Route::resource('invoices', InvoiceController::class);
+    Route::put('invoices/{invoice}/update-status-notes', [InvoiceController::class, 'updateStatusNotes'])->name('invoices.update-status-notes');
+    Route::get('invoices/{invoice}/download', [InvoiceController::class, 'download'])->name('invoices.download');
+});
 
 // Reports: Main page and AJAX data (admin, manager, staff)
 Route::middleware(['auth', 'role:admin,manager,staff'])->group(function () {

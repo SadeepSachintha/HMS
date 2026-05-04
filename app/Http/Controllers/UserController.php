@@ -30,7 +30,7 @@ class UserController extends Controller
     // Show the form for creating a new user
     public function create()
     {
-        $roles = ['admin', 'manager', 'staff'];
+        $roles = ['admin', 'manager', 'staff', 'guest'];
         return view('users.create', compact('roles'));
     }
 
@@ -40,7 +40,7 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'role' => 'required|in:admin,manager,staff',
+            'role' => 'required|in:admin,manager,staff,guest',
             'password' => 'required|string|min:6|confirmed',
         ]);
         $user = User::create([
@@ -62,7 +62,7 @@ class UserController extends Controller
     // Show the form for editing the specified user
     public function edit(User $user)
     {
-        $roles = ['admin', 'manager', 'staff'];
+        $roles = ['admin', 'manager', 'staff', 'guest'];
         return view('users.edit', compact('user', 'roles'));
     }
 
@@ -72,7 +72,7 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $user->id,
-            'role' => 'required|in:admin,manager,staff',
+            'role' => 'required|in:admin,manager,staff,guest',
         ]);
 
         $user->update([

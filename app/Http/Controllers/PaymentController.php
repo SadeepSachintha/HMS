@@ -18,6 +18,16 @@ class PaymentController extends Controller
     {
         $query = Payment::with(['invoice.customer', 'reservation']);
 
+        if (auth()->user()->isGuest()) {
+            $query->where(function ($q) {
+                $q->whereHas('reservation.customer', function ($cq) {
+                    $cq->where('email', auth()->user()->email);
+                })->orWhereHas('invoice.customer', function ($cq) {
+                    $cq->where('email', auth()->user()->email);
+                });
+            });
+        }
+
         // Search functionality
         if ($request->has('search') && !empty($request->search)) {
             $search = $request->search;
@@ -70,6 +80,9 @@ class PaymentController extends Controller
 
     public function create(Request $request)
     {
+        if (auth()->user()->isGuest()) {
+            abort(403);
+        }
         $invoices = Invoice::with(['customer', 'reservation'])->orderBy('invoice_date', 'desc')->get();
         $reservations = \App\Models\Reservation::with('customer')->orderBy('id', 'desc')->get();
         $selectedInvoiceId = $request->get('invoice_id');
@@ -78,6 +91,9 @@ class PaymentController extends Controller
 
     public function store(Request $request)
     {
+        if (auth()->user()->isGuest()) {
+            abort(403);
+        }
         $validated = $request->validate([
             'invoice_id' => 'nullable|exists:invoices,id',
             'reservation_id' => 'nullable|exists:reservations,id',
@@ -138,11 +154,22 @@ class PaymentController extends Controller
     public function show(Payment $payment)
     {
         $payment->load(['invoice.customer', 'invoice.payments', 'reservation.customer']);
+        
+        if (auth()->user()->isGuest()) {
+            $isOwner = false;
+            if ($payment->reservation && $payment->reservation->customer->email === auth()->user()->email) $isOwner = true;
+            if ($payment->invoice && $payment->invoice->customer->email === auth()->user()->email) $isOwner = true;
+            if (!$isOwner) abort(403);
+        }
+        
         return view('payments.show', compact('payment'));
     }
 
     public function edit(Payment $payment)
     {
+        if (auth()->user()->isGuest()) {
+            abort(403);
+        }
         $payment->load(['invoice.customer', 'reservation.customer']);
         $invoices = \App\Models\Invoice::with('customer')->orderBy('invoice_date', 'desc')->get();
         $reservations = \App\Models\Reservation::with('customer')->orderBy('id', 'desc')->get();
@@ -151,6 +178,9 @@ class PaymentController extends Controller
 
     public function update(Request $request, Payment $payment)
     {
+        if (auth()->user()->isGuest()) {
+            abort(403);
+        }
         $request->merge([
             'invoice_id' => $request->input('invoice_id') ?: null,
             'reservation_id' => $request->input('reservation_id') ?: null,
@@ -201,6 +231,9 @@ class PaymentController extends Controller
 
     public function destroy(Payment $payment)
     {
+        if (auth()->user()->isGuest()) {
+            abort(403);
+        }
         $payment->delete();
 
         return redirect()->route('payments.index')

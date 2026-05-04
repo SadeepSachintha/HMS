@@ -37,4 +37,13 @@ class LoginController extends Controller
     {
         $this->middleware('guest')->except('logout');
     }
+
+    protected function authenticated(\Illuminate\Http\Request $request, $user)
+    {
+        if ($user->isGuest()) {
+            return redirect()->route('reservations.index');
+        }
+
+        return redirect()->intended($this->redirectTo);
+    }
 }

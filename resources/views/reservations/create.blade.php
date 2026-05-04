@@ -28,30 +28,31 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="customer_id" class="form-label">Customer</label>
-                                    <select name="customer_id" id="customer_id" class="form-control @error('customer_id') is-invalid @enderror" required>
-                                        <option value="">Select Customer</option>
-                                        @foreach($customers as $customer)
-                                            <option value="{{ $customer->id }}" {{ old('customer_id') == $customer->id ? 'selected' : '' }}>
-                                                {{ $customer->name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    @error('customer_id')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                    @if(isset($guestCustomer))
+                                        <input type="text" class="form-control" value="{{ $guestCustomer->name }}" readonly>
+                                        <input type="hidden" name="customer_id" value="{{ $guestCustomer->id }}">
+                                    @else
+                                        <select name="customer_id" id="customer_id" class="form-control @error('customer_id') is-invalid @enderror" required>
+                                            <option value="">Select Customer</option>
+                                            @foreach($customers as $customer)
+                                                <option value="{{ $customer->id }}" {{ old('customer_id') == $customer->id ? 'selected' : '' }}>
+                                                    {{ $customer->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        @error('customer_id')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    @endif
                                 </div>
                             </div>
 
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="room_id" class="form-label">Room</label>
-                                    <select name="room_id" id="room_id" class="form-control @error('room_id') is-invalid @enderror" required>
-                                        <option value="">Select Room</option>
-                                        @foreach($rooms as $room)
-                                            <option value="{{ $room->id }}" data-room-type="{{ $room->roomType->name }}" data-capacity="{{ $room->roomType->capacity }}" {{ old('room_id') == $room->id ? 'selected' : '' }}>
-                                                Room {{ $room->number }} ({{ $room->roomType->name }})
-                                            </option>
-                                        @endforeach
+                                    <select name="room_id" id="room_id" class="form-control @error('room_id') is-invalid @enderror" required disabled>
+                                        <option value="">Select Dates First</option>
+                                        {{-- Rooms will be populated dynamically via AJAX --}}
                                     </select>
                                     @error('room_id')
                                         <div class="invalid-feedback">{{ $message }}</div>
@@ -100,16 +101,21 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="status" class="form-label">Status</label>
-                                    <select name="status" id="status" class="form-control @error('status') is-invalid @enderror" required>
-                                        <option value="pending" {{ old('status') == 'pending' ? 'selected' : '' }}>Pending</option>
-                                        <option value="confirmed" {{ old('status') == 'confirmed' ? 'selected' : '' }}>Confirmed</option>
-                                        <option value="checked_in" {{ old('status') == 'checked_in' ? 'selected' : '' }}>Checked In</option>
-                                        <option value="checked_out" {{ old('status') == 'checked_out' ? 'selected' : '' }}>Checked Out</option>
-                                        <option value="cancelled" {{ old('status') == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
-                                    </select>
-                                    @error('status')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                    @if(auth()->user()->isGuest())
+                                        <input type="text" class="form-control" value="Pending" readonly>
+                                        <input type="hidden" name="status" value="pending">
+                                    @else
+                                        <select name="status" id="status" class="form-control @error('status') is-invalid @enderror" required>
+                                            <option value="pending" {{ old('status') == 'pending' ? 'selected' : '' }}>Pending</option>
+                                            <option value="confirmed" {{ old('status') == 'confirmed' ? 'selected' : '' }}>Confirmed</option>
+                                            <option value="checked_in" {{ old('status') == 'checked_in' ? 'selected' : '' }}>Checked In</option>
+                                            <option value="checked_out" {{ old('status') == 'checked_out' ? 'selected' : '' }}>Checked Out</option>
+                                            <option value="cancelled" {{ old('status') == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+                                        </select>
+                                        @error('status')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -142,11 +148,49 @@
             maxDay.setDate(checkInDate.getDate() + 14);
             document.getElementById('check_out_date').setAttribute('min', nextDay.toISOString().split('T')[0]);
             document.getElementById('check_out_date').setAttribute('max', maxDay.toISOString().split('T')[0]);
+            fetchAvailableRooms();
         });
+        
+        document.getElementById('check_out_date').addEventListener('change', fetchAvailableRooms);
+
         // On page load, trigger change event if check-in date is already set
         const checkInInput = document.getElementById('check_in_date');
         if (checkInInput.value) {
             checkInInput.dispatchEvent(new Event('change'));
+        }
+
+        function fetchAvailableRooms() {
+            const checkIn = document.getElementById('check_in_date').value;
+            const checkOut = document.getElementById('check_out_date').value;
+            const roomSelect = document.getElementById('room_id');
+
+            if (checkIn && checkOut) {
+                roomSelect.innerHTML = '<option value="">Loading...</option>';
+                roomSelect.disabled = true;
+
+                fetch(`/reservations/available-rooms?check_in=${checkIn}&check_out=${checkOut}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        roomSelect.innerHTML = '<option value="">Select Room</option>';
+                        data.forEach(room => {
+                            const option = document.createElement('option');
+                            option.value = room.id;
+                            option.setAttribute('data-room-type', room.room_type.name);
+                            option.setAttribute('data-capacity', room.room_type.capacity);
+                            option.textContent = `Room ${room.number} (${room.room_type.name})`;
+                            roomSelect.appendChild(option);
+                        });
+                        roomSelect.disabled = false;
+                        updateMaxGuests(); // Update guest max based on new selection
+                    })
+                    .catch(error => {
+                        console.error('Error fetching rooms:', error);
+                        roomSelect.innerHTML = '<option value="">Error loading rooms</option>';
+                    });
+            } else {
+                roomSelect.innerHTML = '<option value="">Select Dates First</option>';
+                roomSelect.disabled = true;
+            }
         }
 
         // Room type max guests logic

@@ -20,6 +20,13 @@ class ReservationController extends Controller
     {
         $query = Reservation::with(['room', 'customer']);
 
+        // Filter for guest users
+        if (auth()->user()->isGuest()) {
+            $query->whereHas('customer', function($q) {
+                $q->where('email', auth()->user()->email);
+            });
+        }
+
         // Search functionality
         if ($request->has('search') && !empty($request->search)) {
             $search = $request->search;
@@ -71,11 +78,16 @@ class ReservationController extends Controller
     public function create()
     {
         $customers = Customer::orderBy('name')->get();
+        $guestCustomer = null;
+        if (auth()->user()->isGuest()) {
+            $guestCustomer = Customer::where('email', auth()->user()->email)->first();
+        }
+        
         $rooms = Room::with('roomType')
             ->where('status', 'available')
             ->orderBy('number')
             ->get();
-        return view('reservations.create', compact('customers', 'rooms'));
+        return view('reservations.create', compact('customers', 'rooms', 'guestCustomer'));
     }
 
     public function store(StoreReservationRequest $request)
@@ -99,6 +111,10 @@ class ReservationController extends Controller
 
     public function edit(Reservation $reservation)
     {
+        if (auth()->user()->isGuest() && $reservation->customer->email !== auth()->user()->email) {
+            abort(403);
+        }
+
         $customers = Customer::orderBy('name')->get();
         $rooms = Room::with('roomType')->orderBy('number')->get();
         return view('reservations.edit', compact('reservation', 'customers', 'rooms'));
@@ -116,6 +132,10 @@ class ReservationController extends Controller
 
     public function destroy(Reservation $reservation)
     {
+        if (auth()->user()->isGuest()) {
+            abort(403, 'Guests cannot delete reservations.');
+        }
+
         $reservation->delete();
 
         return redirect()->route('reservations.index')
@@ -163,6 +183,38 @@ class ReservationController extends Controller
 
     public function details(Reservation $reservation)
     {
+        if (auth()->user()->isGuest() && $reservation->customer->email !== auth()->user()->email) {
+            abort(403);
+        }
         return $reservation->load(['room.roomType', 'customer']);
+    }
+
+    public function availableRooms(Request $request)
+    {
+        $request->validate([
+            'check_in' => 'required|date',
+            'check_out' => 'required|date|after:check_in',
+        ]);
+
+        $checkIn = date('Y-m-d', strtotime($request->check_in));
+        $checkOut = date('Y-m-d', strtotime($request->check_out));
+
+        // Get rooms that are NOT booked for the given dates
+        $bookedRoomIds = Reservation::where('status', '!=', 'cancelled')
+            ->where(function($query) use ($checkIn, $checkOut) {
+                $query->where(function($q) use ($checkIn, $checkOut) {
+                    $q->where('check_in_date', '<', $checkOut)
+                      ->where('check_out_date', '>', $checkIn);
+                });
+            })
+            ->pluck('room_id');
+
+        $rooms = Room::with('roomType')
+            ->where('status', 'available')
+            ->whereNotIn('id', $bookedRoomIds)
+            ->orderBy('number')
+            ->get();
+
+        return response()->json($rooms);
     }
 }
