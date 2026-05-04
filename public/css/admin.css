@@ -85,7 +85,16 @@ h1, h2, h3, h4, h5, h6, .brand-text {
 
 /* Content Area */
 #content {
+    margin-left: var(--sidebar-width);
+    width: calc(100% - var(--sidebar-width));
     background-color: var(--bg-dark);
+    min-height: 100vh;
+    transition: all 0.3s ease;
+}
+
+main {
+    padding-left: 25px !important;
+    padding-right: 25px !important;
 }
 
 .navbar {
