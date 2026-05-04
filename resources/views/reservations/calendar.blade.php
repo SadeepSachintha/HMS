@@ -1,7 +1,8 @@
 @extends('layouts.app')
 
 @section('styles')
-<link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css' rel='stylesheet' />
+{{-- <link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css' rel='stylesheet' /> --}}
+<link href="{{ asset('css/vendor/fullcalendar.min.css') }}" rel="stylesheet" />
 <style>
     .fc-event {
         cursor: pointer;
@@ -181,7 +182,7 @@
 @endsection
 
 @section('scripts')
-<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
+<script src="{{ asset('js/vendor/fullcalendar.min.js') }}"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     var calendarEl = document.getElementById('calendar');

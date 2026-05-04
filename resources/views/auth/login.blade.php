@@ -6,14 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HMS Login</title>
 
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- Styles -->
+    <link href="{{ asset('css/vendor/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/vendor/all.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/vendor/fonts.css') }}" rel="stylesheet">
 
     <style>
         body {
@@ -273,8 +269,8 @@
         </div>
     </div>
 
-    <!-- Bootstrap JS Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Scripts -->
+    <script src="{{ asset('js/vendor/bootstrap.bundle.min.js') }}"></script>
 
     <script>
         // Password toggle visibility

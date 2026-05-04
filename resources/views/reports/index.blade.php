@@ -55,15 +55,15 @@
 @endsection
 
 @push('scripts')
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.bootstrap5.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
-<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.bootstrap5.min.css">
+<script src="{{ asset('js/vendor/jquery.min.js') }}"></script>
+<link rel="stylesheet" href="{{ asset('css/vendor/dataTables.bootstrap5.min.css') }}">
+<script src="{{ asset('js/vendor/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('js/vendor/dataTables.bootstrap5.min.js') }}"></script>
+<script src="{{ asset('js/vendor/dataTables.buttons.min.js') }}"></script>
+<script src="{{ asset('js/vendor/buttons.bootstrap5.min.js') }}"></script>
+<script src="{{ asset('js/vendor/buttons.html5.min.js') }}"></script>
+<script src="{{ asset('js/vendor/buttons.print.min.js') }}"></script>
+<link rel="stylesheet" href="{{ asset('css/vendor/buttons.bootstrap5.min.css') }}">
 <script>
 let currentReportType = 'occupancy';
 

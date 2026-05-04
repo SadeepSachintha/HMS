@@ -40,12 +40,16 @@ A comprehensive, full-featured Hotel Management System built on Laravel 12. This
 - Downloadable PDF receipts and invoices.
 - Comprehensive reporting (PDF and Excel exports) for revenue, occupancy, and general analytics.
 
+### 📱 Offline-Ready for Demos
+- **Localized Assets**: All CSS, JS, and Font files (Bootstrap, FontAwesome, Google Fonts) are hosted locally within the project.
+- **No Internet Required**: Perfect for offline demo sessions, ensuring the premium UI and functionality remain intact without external connectivity.
+
 ## Technology Stack
 
 - **Backend:** Laravel 12 (PHP 8.2+)
 - **Frontend:** Blade Templating, Bootstrap 5, Vanilla CSS (Premium Custom Design)
 - **Database:** MySQL
-- **Icons & Fonts:** FontAwesome 6, Google Fonts (Playfair Display & Inter)
+- **Icons & Fonts:** FontAwesome 6 (Local), Google Fonts (Local: Playfair Display & Inter)
 
 ## Getting Started
 

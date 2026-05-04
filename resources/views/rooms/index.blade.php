@@ -4,7 +4,7 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
-            <div class="card shadow">
+            <div class="card">
                 <div class="card-header">
                     <div class="d-flex justify-content-between align-items-center">
                         <h2 class="mb-0">Rooms</h2>
@@ -39,13 +39,13 @@
                     @endif
 
                     <div class="table-responsive">
-                        <table class="table table-hover table-striped" id="rooms-table">
-                            <thead class="table-light">
+                        <table class="table table-hover" id="rooms-table">
+                            <thead>
                                 <tr>
                                     <th>
                                         <div class="d-flex align-items-center" style="height: 100%;">
                                             <a href="{{ request()->fullUrlWithQuery(['sort' => 'number', 'order' => request('sort') == 'number' && request('order') == 'asc' ? 'desc' : 'asc']) }}"
-                                               class="text-decoration-none text-dark d-flex align-items-center justify-content-between w-100">
+                                               class="text-decoration-none d-flex align-items-center justify-content-between w-100">
                                                 Room Number
                                                 <div class="d-flex flex-column">
                                                     <i class="fas fa-sort-up {{ request('sort') == 'number' && request('order') == 'asc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
@@ -58,7 +58,7 @@
                                     <th>
                                         <div class="d-flex align-items-center" style="height: 100%;">
                                             <a href="{{ request()->fullUrlWithQuery(['sort' => 'floor', 'order' => request('sort') == 'floor' && request('order') == 'asc' ? 'desc' : 'asc']) }}"
-                                               class="text-decoration-none text-dark d-flex align-items-center justify-content-between w-100">
+                                               class="text-decoration-none d-flex align-items-center justify-content-between w-100">
                                                 Floor
                                                 <div class="d-flex flex-column">
                                                     <i class="fas fa-sort-up {{ request('sort') == 'floor' && request('order') == 'asc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
@@ -70,7 +70,7 @@
                                     <th>
                                         <div class="d-flex align-items-center" style="height: 100%;">
                                             <a href="{{ request()->fullUrlWithQuery(['sort' => 'status', 'order' => request('sort') == 'status' && request('order') == 'asc' ? 'desc' : 'asc']) }}"
-                                               class="text-decoration-none text-dark d-flex align-items-center justify-content-between w-100">
+                                               class="text-decoration-none d-flex align-items-center justify-content-between w-100">
                                                 Status
                                                 <div class="d-flex flex-column">
                                                     <i class="fas fa-sort-up {{ request('sort') == 'status' && request('order') == 'asc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
@@ -198,7 +198,7 @@
 @endsection
 
 @push('scripts')
-<script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+<script src="{{ asset('js/vendor/pusher.min.js') }}"></script>
 <script>
     // Initialize Pusher
     const pusher = new Pusher('{{ env('PUSHER_APP_KEY') }}', {
