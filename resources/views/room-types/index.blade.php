@@ -2,17 +2,16 @@
 
 @section('content')
 <div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="page-title mb-0">Room Types</h2>
+        <a href="{{ route('room-types.create') }}" class="btn btn-primary">
+            <i class="fas fa-plus me-1"></i> Add New Room Type
+        </a>
+    </div>
+
     <div class="row">
         <div class="col-12">
             <div class="card shadow">
-                <div class="card-header">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h2 class="mb-0">Room Types</h2>
-                        <a href="{{ route('room-types.create') }}" class="btn btn-primary">
-                            <i class="fas fa-plus me-1"></i> Add New Room Type
-                        </a>
-                    </div>
-                </div>
 
                 <div class="card-body">
                     <div class="table-responsive">

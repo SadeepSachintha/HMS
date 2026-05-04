@@ -2,32 +2,29 @@
 
 @section('content')
 <div class="container-fluid">
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-white">Customers</h1>
-        <a href="{{ route('customers.create') }}" class="d-none d-sm-inline-block btn btn-primary shadow-sm">
-            <i class="fas fa-plus me-1"></i> Add New Customer
-        </a>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="page-title mb-0">Customers</h2>
+        <div class="d-flex align-items-center">
+            <form method="GET" action="{{ route('customers.index') }}" class="d-flex me-3">
+                <input type="text" name="search" class="form-control form-control-sm me-2"
+                       placeholder="Search by name, email, or phone..."
+                       value="{{ request('search') }}">
+                <button type="submit" class="btn btn-sm btn-outline-primary">
+                    <i class="fas fa-search"></i>
+                </button>
+                @if(request('search'))
+                    <a href="{{ route('customers.index') }}" class="btn btn-sm btn-outline-secondary ms-2">
+                        <i class="fas fa-times"></i>
+                    </a>
+                @endif
+            </form>
+            <a href="{{ route('customers.create') }}" class="btn btn-primary">
+                <i class="fas fa-plus me-1"></i> Add New Customer
+            </a>
+        </div>
     </div>
 
     <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <div class="d-flex justify-content-between align-items-center">
-                <h6 class="m-0 font-weight-bold text-primary">Customer List</h6>
-                <form method="GET" action="{{ route('customers.index') }}" class="d-flex">
-                    <input type="text" name="search" class="form-control form-control-sm me-2"
-                           placeholder="Search by name, email, or phone..."
-                           value="{{ request('search') }}">
-                    <button type="submit" class="btn btn-sm btn-outline-primary">
-                        <i class="fas fa-search"></i>
-                    </button>
-                    @if(request('search'))
-                        <a href="{{ route('customers.index') }}" class="btn btn-sm btn-outline-secondary ms-2">
-                            <i class="fas fa-times"></i>
-                        </a>
-                    @endif
-                </form>
-            </div>
-        </div>
         <div class="card-body">
             @if(request('search'))
                 <div class="alert alert-info">

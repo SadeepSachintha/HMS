@@ -3,7 +3,7 @@
 @section('content')
     <div class="container-fluid">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2>Staff Management</h2>
+            <h2 class="page-title mb-0">Staff Management</h2>
             <div class="d-flex align-items-center">
                 <form method="GET" action="{{ route('staff.index') }}" class="d-flex me-3">
                     <input type="text" name="search" class="form-control form-control-sm me-2"

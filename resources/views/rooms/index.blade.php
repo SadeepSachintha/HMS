@@ -2,32 +2,31 @@
 
 @section('content')
 <div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="page-title mb-0">Rooms</h2>
+        <div class="d-flex align-items-center">
+            <form method="GET" action="{{ route('rooms.index') }}" class="d-flex me-3">
+                <input type="text" name="search" class="form-control form-control-sm me-2"
+                       placeholder="Search by number, type, or floor..."
+                       value="{{ request('search') }}">
+                <button type="submit" class="btn btn-sm btn-outline-primary">
+                    <i class="fas fa-search"></i>
+                </button>
+                @if(request('search'))
+                    <a href="{{ route('rooms.index') }}" class="btn btn-sm btn-outline-secondary ms-2">
+                        <i class="fas fa-times"></i>
+                    </a>
+                @endif
+            </form>
+            <a href="{{ route('rooms.create') }}" class="btn btn-primary">
+                <i class="fas fa-plus me-1"></i> Add New Room
+            </a>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-12">
             <div class="card">
-                <div class="card-header">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h2 class="mb-0">Rooms</h2>
-                        <div class="d-flex align-items-center">
-                            <form method="GET" action="{{ route('rooms.index') }}" class="d-flex me-3">
-                                <input type="text" name="search" class="form-control form-control-sm me-2"
-                                       placeholder="Search by number, type, or floor..."
-                                       value="{{ request('search') }}">
-                                <button type="submit" class="btn btn-sm btn-outline-primary">
-                                    <i class="fas fa-search"></i>
-                                </button>
-                                @if(request('search'))
-                                    <a href="{{ route('rooms.index') }}" class="btn btn-sm btn-outline-secondary ms-2">
-                                        <i class="fas fa-times"></i>
-                                    </a>
-                                @endif
-                            </form>
-                            <a href="{{ route('rooms.create') }}" class="btn btn-primary">
-                                <i class="fas fa-plus me-1"></i> Add New Room
-                            </a>
-                        </div>
-                    </div>
-                </div>
 
                 <div class="card-body">
 

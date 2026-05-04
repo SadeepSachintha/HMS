@@ -2,6 +2,7 @@
 
 @section('content')
 <div class="container-fluid py-4">
+    <h2 class="page-title mb-4">Reports & Analytics</h2>
     <div class="row g-4">
         <!-- Sidebar/Menu for Report Types -->
         <div class="col-xl-3 col-lg-4">

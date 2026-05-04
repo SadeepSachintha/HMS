@@ -1,29 +1,30 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="page-title mb-0">{{ auth()->user()->isGuest() ? 'My Reservations' : 'Reservations' }}</h2>
+        <div class="d-flex align-items-center">
+            <form method="GET" action="{{ route('reservations.index') }}" class="d-flex me-3">
+                <input type="text" name="search" class="form-control form-control-sm me-2"
+                       placeholder="Search by customer, room, or dates..."
+                       value="{{ request('search') }}">
+                <button type="submit" class="btn btn-sm btn-outline-primary">
+                    <i class="fas fa-search"></i>
+                </button>
+                @if(request('search'))
+                    <a href="{{ route('reservations.index') }}" class="btn btn-sm btn-outline-secondary ms-2">
+                        <i class="fas fa-times"></i>
+                    </a>
+                @endif
+            </form>
+            <a href="{{ route('reservations.create') }}" class="btn btn-primary"><i class="fas fa-plus me-1"></i>New Reservation</a>
+        </div>
+    </div>
+
+    <div class="row">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">{{ auth()->user()->isGuest() ? 'My Reservations' : 'Reservations' }}</h5>
-                    <div class="d-flex align-items-center">
-                        <form method="GET" action="{{ route('reservations.index') }}" class="d-flex me-3">
-                            <input type="text" name="search" class="form-control form-control-sm me-2"
-                                   placeholder="Search by customer, room, or dates..."
-                                   value="{{ request('search') }}">
-                            <button type="submit" class="btn btn-sm btn-outline-primary">
-                                <i class="fas fa-search"></i>
-                            </button>
-                            @if(request('search'))
-                                <a href="{{ route('reservations.index') }}" class="btn btn-sm btn-outline-secondary ms-2">
-                                    <i class="fas fa-times"></i>
-                                </a>
-                            @endif
-                        </form>
-                        <a href="{{ route('reservations.create') }}" class="btn btn-primary"><i class="fas fa-plus me-1"></i>New Reservation</a>
-                    </div>
-                </div>
 
                 <div class="card-body">
                     @if(request('search'))

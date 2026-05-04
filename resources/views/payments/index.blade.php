@@ -3,7 +3,7 @@
 @section('content')
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Payment Records</h2>
+        <h2 class="page-title mb-0">Payment Records</h2>
         <form method="GET" action="{{ route('payments.index') }}" class="d-flex">
             <input type="text" name="search" class="form-control form-control-sm me-2"
                    placeholder="Search by ID, amount, method, status, invoice, or customer..."

@@ -34,6 +34,12 @@ h6,
     font-family: 'Playfair Display', serif;
 }
 
+.page-title {
+    color: var(--secondary-color) !important;
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+}
+
 /* Sidebar */
 .sidebar {
     width: var(--sidebar-width);

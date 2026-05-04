@@ -2,19 +2,18 @@
 
 @section('content')
 <div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="page-title mb-0">Notifications</h2>
+        @if($notifications->count() > 0)
+            <button class="btn btn-secondary" id="mark-all-read">
+                <i class="fas fa-check-double me-1"></i> Mark All as Read
+            </button>
+        @endif
+    </div>
+
     <div class="row">
         <div class="col-12">
             <div class="card shadow">
-                <div class="card-header">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h2 class="mb-0">Notifications</h2>
-                        @if($notifications->count() > 0)
-                            <button class="btn btn-secondary" id="mark-all-read">
-                                <i class="fas fa-check-double me-1"></i> Mark All as Read
-                            </button>
-                        @endif
-                    </div>
-                </div>
 
                 <div class="card-body">
                     @if($notifications->count() > 0)

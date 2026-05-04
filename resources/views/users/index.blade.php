@@ -1,20 +1,31 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="page-title mb-0">User Management</h2>
+        <div class="d-flex align-items-center">
+            <form method="GET" action="{{ route('users.index') }}" class="d-flex me-3">
+                <input type="text" name="search" class="form-control form-control-sm me-2"
+                       placeholder="Search by name, email, role..."
+                       value="{{ request('search') }}">
+                <button type="submit" class="btn btn-sm btn-outline-primary">
+                    <i class="fas fa-search"></i>
+                </button>
+                @if(request('search'))
+                    <a href="{{ route('users.index') }}" class="btn btn-sm btn-outline-secondary ms-2">
+                        <i class="fas fa-times"></i>
+                    </a>
+                @endif
+            </form>
+            <a href="{{ route('users.create') }}" class="btn btn-primary"><i class="fas fa-plus me-1"></i> Add User</a>
+        </div>
+    </div>
+
+    <div class="row">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header d-flex flex-wrap justify-content-between align-items-center">
-                    <h2 class="mb-0">User Management</h2>
-                    <form method="GET" action="" class="d-flex align-items-center gap-2 ms-auto">
-                        <input type="text" name="search" class="form-control me-2" style="min-width: 250px;" placeholder="Search by name, email, role..." value="{{ request('search') }}">
-                        <button class="btn btn-outline-secondary" type="submit"><i class="fas fa-search"></i></button>
-                    </form>
-                    <a href="{{ route('users.create') }}" class="btn btn-primary ms-2"><i class="fas fa-plus me-1"></i> Add User</a>
-                </div>
                 <div class="card-body">
-                    <h3 class="h4 mb-3">User List</h3>
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover table-striped align-middle">
                             <thead>

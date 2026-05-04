@@ -7,12 +7,12 @@ A comprehensive, enterprise-grade Hotel Management System built on **Laravel 12*
 ## 🚀 Key Features
 
 ### 🌟 Premium Aesthetics & UX
+- **Unified Premium Header System** — All administrative modules feature a standardized top-aligned header with gold titles, integrated search, and primary action buttons for a cohesive, high-end feel.
+- **Gold Design Language** — Consistent use of the `#D4AF37` gold secondary color for typography, icons, and primary UI elements to reinforce the luxury brand identity.
 - **Stunning Landing Page** — High-end public website with glassmorphism, smooth animations, and hero sections using the deep navy & gold design language.
 - **Unified Dark Theme** — All admin/staff dashboards use a consistent, high-contrast dark theme for maximum readability and a luxury feel.
 - **Scoped Module Stylesheets** — Per-module CSS files (e.g., `events.css`) allow targeted visual customizations without polluting the global design system.
-- **Collapsible Sidebar Navigation** — Grouped into logical categories: *Front Office*, *Room Management*, *Services*, *Billing*, and *Administration*.
-- **Premium Analytics Dashboard** — Glassmorphism cards, real-time stat widgets, and interactive Chart.js visualizations for revenue, occupancy, and reservations.
-- **Standardized Data Interaction** — Globally standardized table row interactions with high-contrast, dark-theme compatible hover highlights for better data readability.
+- **Standardized Data Interaction** — Globally standardized table layouts and row interactions with high-contrast, dark-theme compatible hover highlights.
 - **Responsive Design** — Fully optimized for desktops, tablets, and mobile devices.
 
 ### 🛎️ Front Office & Reservations
