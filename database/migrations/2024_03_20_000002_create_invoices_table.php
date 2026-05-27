@@ -13,6 +13,7 @@ return new class extends Migration
             $table->string('invoice_number')->unique();
             $table->foreignId('customer_id')->constrained()->onDelete('cascade');
             $table->foreignId('event_id')->nullable()->constrained()->onDelete('set null');
+            $table->foreignId('reservation_id')->nullable()->constrained()->onDelete('cascade');
             $table->date('invoice_date');
             $table->date('due_date');
             $table->decimal('subtotal', 10, 2);

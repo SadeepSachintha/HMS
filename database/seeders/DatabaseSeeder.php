@@ -22,6 +22,13 @@ class DatabaseSeeder extends Seeder
             'capacity' => 2
         ]);
 
+        \App\Models\RoomTypeImage::create([
+            'room_type_id' => $standard->id,
+            'image_path' => 'rooms/standard.png',
+            'caption' => 'Comfortable Standard Room',
+            'display_order' => 1
+        ]);
+
         $deluxe = RoomType::create([
             'name' => 'Deluxe Room',
             'description' => 'Spacious room with premium amenities',
@@ -29,11 +36,25 @@ class DatabaseSeeder extends Seeder
             'capacity' => 3
         ]);
 
+        \App\Models\RoomTypeImage::create([
+            'room_type_id' => $deluxe->id,
+            'image_path' => 'rooms/deluxe.png',
+            'caption' => 'Spacious Deluxe Room',
+            'display_order' => 1
+        ]);
+
         $suite = RoomType::create([
             'name' => 'Suite',
             'description' => 'Luxury suite with separate living area',
             'price_per_night' => 300.00,
             'capacity' => 4
+        ]);
+
+        \App\Models\RoomTypeImage::create([
+            'room_type_id' => $suite->id,
+            'image_path' => 'rooms/suite.png',
+            'caption' => 'Luxurious Suite',
+            'display_order' => 1
         ]);
 
         // Create 15 rooms (7 Standard, 5 Deluxe, 3 Suite)
@@ -105,7 +126,7 @@ class DatabaseSeeder extends Seeder
                 'check_in_date' => $checkIn,
                 'check_out_date' => $checkOut,
                 'number_of_guests' => rand(1, 4),
-                'status' => ['confirmed', 'pending', 'completed'][rand(0, 2)]
+                'status' => ['confirmed', 'pending', 'checked_out'][rand(0, 2)]
             ]);
 
             // Create payment for some reservations
