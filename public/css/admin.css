@@ -292,6 +292,15 @@ main {
     color: var(--text-color) !important;
 }
 
+.table tfoot th,
+.table tfoot td {
+    background-color: rgba(255, 255, 255, 0.04) !important;
+    border-top: 1px solid var(--border-color) !important;
+    border-bottom: none !important;
+    color: var(--secondary-color) !important;
+    font-weight: 600;
+}
+
 /* Forms */
 .form-control,
 .form-select {
