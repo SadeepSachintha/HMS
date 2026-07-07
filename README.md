@@ -64,6 +64,11 @@ A comprehensive, enterprise-grade Hotel Management System built on **Laravel 8**
 - **Zero CDN Dependencies** — All assets (Bootstrap 5, Chart.js, FontAwesome 6, Google Fonts, DataTables, SweetAlert2) are locally hosted in `public/`.
 - **Air-Gap Friendly** — Fully functional in offline environments, ideal for on-site hotel deployments and demos.
 
+### 📝 Code Quality & Documentation
+- **Strict PHPDoc Standard** — All controllers, models, observers, middlewares, and services follow standardized PHPDoc blocks with parameter type annotations, return types, and class summaries.
+- **Robust Model Autocomplete** — Models include detailed property declarations (`@property`) for enhanced IDE integration and static analysis.
+- **Detailed Inline Logic Comments** — Complex database workflows (like constraints in event locations or status hooks in payment observers) are thoroughly documented inline.
+
 ---
 
 ## 🗄️ Database Schema

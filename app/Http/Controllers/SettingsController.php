@@ -5,19 +5,43 @@ namespace App\Http\Controllers;
 use App\Models\Setting;
 use Illuminate\Http\Request;
 
+/**
+ * Class SettingsController
+ * 
+ * Handles the storage, display, and retrieval of global application configurations and settings,
+ * such as hotel names, contact info, check-in/out times, and notification preferences.
+ * 
+ * @package App\Http\Controllers
+ */
 class SettingsController extends Controller
 {
+    /**
+     * Create a new controller instance.
+     * Requires authentication middleware for all endpoints.
+     */
     public function __construct()
     {
         $this->middleware('auth');
     }
 
+    /**
+     * Display the application settings configuration page.
+     *
+     * @return \Illuminate\View\View
+     */
     public function index()
     {
         $settings = Setting::first();
         return view('settings.index', compact('settings'));
     }
 
+    /**
+     * Update the global system settings in storage.
+     * Creates a new setting entry if none exists.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function update(Request $request)
     {
         $request->validate([
@@ -29,6 +53,7 @@ class SettingsController extends Controller
         ]);
 
         $settings = Setting::first();
+        // If settings record doesn't exist, instantiate a new one
         if (!$settings) {
             $settings = new Setting();
         }

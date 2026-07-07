@@ -5,6 +5,24 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Class Setting
+ * 
+ * Represents the global system/hotel configuration options.
+ * 
+ * @property int $id
+ * @property string $hotel_name
+ * @property string $contact_email
+ * @property string $contact_phone
+ * @property string $check_in_time
+ * @property string $check_out_time
+ * @property bool $email_notifications
+ * @property bool $sms_notifications
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * 
+ * @package App\Models
+ */
 class Setting extends Model
 {
     use HasFactory;

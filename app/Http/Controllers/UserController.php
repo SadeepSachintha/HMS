@@ -7,9 +7,23 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
+/**
+ * Class UserController
+ * 
+ * Handles user account management for the system.
+ * Allows admins and managers to list, create, edit, delete, reset passwords,
+ * and toggle active status for users.
+ * 
+ * @package App\Http\Controllers
+ */
 class UserController extends Controller
 {
-    // Display a listing of the users
+    /**
+     * Display a listing of the users with optional search filter.
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\View\View
+     */
     public function index(Request $request)
     {
         $query = User::query();
@@ -27,14 +41,23 @@ class UserController extends Controller
         return view('users.index', compact('users'));
     }
 
-    // Show the form for creating a new user
+    /**
+     * Show the form for creating a new user account.
+     * 
+     * @return \Illuminate\View\View
+     */
     public function create()
     {
         $roles = ['admin', 'manager', 'staff', 'guest'];
         return view('users.create', compact('roles'));
     }
 
-    // Store a newly created user in storage
+    /**
+     * Store a newly created user in database storage.
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -53,20 +76,36 @@ class UserController extends Controller
         return redirect()->route('users.index')->with('success', 'User created successfully.');
     }
 
-    // Display the specified user
+    /**
+     * Display the specified user profile details.
+     * 
+     * @param  \App\Models\User  $user
+     * @return \Illuminate\View\View
+     */
     public function show(User $user)
     {
         return view('users.show', compact('user'));
     }
 
-    // Show the form for editing the specified user
+    /**
+     * Show the form for editing the specified user account.
+     * 
+     * @param  \App\Models\User  $user
+     * @return \Illuminate\View\View
+     */
     public function edit(User $user)
     {
         $roles = ['admin', 'manager', 'staff', 'guest'];
         return view('users.edit', compact('user', 'roles'));
     }
 
-    // Update the specified user in storage
+    /**
+     * Update the specified user details in database storage.
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\User  $user
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function update(Request $request, User $user)
     {
         $request->validate([
@@ -84,14 +123,25 @@ class UserController extends Controller
         return redirect()->route('users.index')->with('success', 'User updated successfully.');
     }
 
-    // Remove the specified user from storage
+    /**
+     * Remove the specified user account from database storage.
+     * 
+     * @param  \App\Models\User  $user
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function destroy(User $user)
     {
         $user->delete();
         return redirect()->route('users.index')->with('success', 'User deleted successfully.');
     }
 
-    // Admin resets the user's password directly
+    /**
+     * Force reset the user's password directly by an administrator.
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\User  $user
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function resetPassword(Request $request, User $user)
     {
         $request->validate([
@@ -102,7 +152,12 @@ class UserController extends Controller
         return redirect()->route('users.index')->with('success', 'Password reset successfully.');
     }
 
-    // Toggle user status (active/inactive)
+    /**
+     * Toggle the user status between active and inactive.
+     * 
+     * @param  \App\Models\User  $user
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function toggleStatus(User $user)
     {
         $user->status = !$user->status;

@@ -5,6 +5,25 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Class SystemNotification
+ * 
+ * Represents an in-app notification delivered to a user.
+ * 
+ * @property int $id
+ * @property int $user_id
+ * @property string $title
+ * @property string $message
+ * @property string $type
+ * @property bool $is_read
+ * @property string|null $link
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * 
+ * @property-read \App\Models\User $user
+ * 
+ * @package App\Models
+ */
 class SystemNotification extends Model
 {
     use HasFactory;
@@ -25,7 +44,9 @@ class SystemNotification extends Model
     ];
 
     /**
-     * Get the user that the notification belongs to.
+     * Get the user account associated with the notification.
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function user()
     {
