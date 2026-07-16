@@ -15,6 +15,7 @@
     
     <!-- Custom CSS -->
     <link href="{{ asset('css/website.css') }}" rel="stylesheet">
+    <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon"/>
 </head>
 <body>
 
@@ -215,11 +216,11 @@
                     <ul class="footer-contact list-unstyled">
                         <li>
                             <i class="fas fa-map-marker-alt"></i>
-                            <span>123 Luxury Avenue, Prestige District, Grand City, 10001</span>
+                            <span>No. 456, Galle Road, Colombo 03, Sri Lanka</span>
                         </li>
                         <li>
                             <i class="fas fa-phone-alt"></i>
-                            <span>+1 (555) 123-4567</span>
+                            <span>+94 11 234 5678</span>
                         </li>
                         <li>
                             <i class="fas fa-envelope"></i>

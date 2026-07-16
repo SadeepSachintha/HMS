@@ -322,6 +322,7 @@
         });
     </script>
     @stack('scripts')
+    @yield('scripts')
 
     <!-- Inactivity Warning Modal -->
     <div class="modal fade" id="inactivityModal" tabindex="-1" aria-labelledby="inactivityModalLabel" aria-hidden="true">
