@@ -107,7 +107,7 @@
                     <div class="room-card">
                         <div class="room-img-wrapper">
                             <img src="{{ asset($roomType->main_image_url) }}" alt="{{ $roomType->name }}">
-                            <div class="room-price">${{ number_format($roomType->price_per_night, 2) }} / Night</div>
+                            <div class="room-price">LKR {{ number_format($roomType->price_per_night, 2) }} / Night</div>
                         </div>
                         <div class="room-details">
                             <h3>{{ $roomType->name }}</h3>
