@@ -50,7 +50,7 @@ class WebsiteController extends Controller
     public function events()
     {
         // Fetch active and scheduled events
-        $events = Event::with('location')
+        $events = Event::with('location_rel')
             ->whereIn('status', ['scheduled', 'in_progress', 'completed'])
             ->orderBy('start_time', 'asc')
             ->get();

@@ -21,7 +21,7 @@
         .menu-hero {
             position: relative;
             padding: 150px 0 80px;
-            background: linear-gradient(to bottom, rgba(5, 8, 20, 0.8), rgba(5, 8, 20, 0.95)), url('{{ asset("storage/defaults/room-placeholder.jpg") }}');
+            background: linear-gradient(to bottom, rgba(5, 8, 20, 0.8), rgba(5, 8, 20, 0.95)), url('{{ asset("storage/defaults/menu_hero_bg.png") }}');
             background-size: cover;
             background-position: center;
             text-align: center;
