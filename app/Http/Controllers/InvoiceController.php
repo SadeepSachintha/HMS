@@ -99,6 +99,12 @@ class InvoiceController extends Controller
             'total_amount' => 'required|numeric|min:0',
             'notes' => 'nullable|string',
 
+            // Main charge fields
+            'main_charge' => 'nullable|array',
+            'main_charge.description' => 'nullable|string',
+            'main_charge.quantity' => 'nullable|integer|min:1',
+            'main_charge.unit_price' => 'nullable|numeric|min:0',
+
             // Instant payment recording fields
             'record_payment' => 'nullable|boolean',
             'payment_method' => 'required_if:record_payment,1|nullable|string|in:cash,credit_card,debit_card,bank_transfer,cheque',
@@ -113,9 +119,21 @@ class InvoiceController extends Controller
             }
         }
 
-        // We create the invoice. We don't save record_payment, payment_method, amount_paid to invoice model directly
-        $invoiceData = collect($validated)->except(['record_payment', 'payment_method', 'amount_paid'])->toArray();
+        // We create the invoice. We don't save record_payment, payment_method, amount_paid, and main_charge to invoice model directly
+        $invoiceData = collect($validated)->except(['record_payment', 'payment_method', 'amount_paid', 'main_charge'])->toArray();
         $invoice = Invoice::create($invoiceData);
+
+        // Save main charge as invoice item
+        if ($request->has('main_charge')) {
+            $mainCharge = $request->input('main_charge');
+            if (!empty($mainCharge['description']) && !empty($mainCharge['quantity']) && isset($mainCharge['unit_price'])) {
+                $invoice->items()->create([
+                    'description' => $mainCharge['description'],
+                    'quantity' => $mainCharge['quantity'],
+                    'unit_price' => $mainCharge['unit_price'],
+                ]);
+            }
+        }
 
         // Save invoice items
         if ($request->has('items')) {
