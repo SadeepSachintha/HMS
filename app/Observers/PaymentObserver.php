@@ -28,6 +28,11 @@ class PaymentObserver
                 case 'completed':
                     // Successful full payments mark the invoice as Paid
                     $payment->invoice->update(['status' => 'paid']);
+
+                    // Automatically confirm the associated reservation if it's currently pending
+                    if ($payment->invoice->reservation && $payment->invoice->reservation->status === 'pending') {
+                        $payment->invoice->reservation->update(['status' => 'confirmed']);
+                    }
                     break;
                 case 'failed':
                     // Unsuccessful payments tag the invoice as Overdue
@@ -38,6 +43,11 @@ class PaymentObserver
                     $payment->invoice->update(['status' => 'cancelled']);
                     break;
             }
+        }
+
+        // Also check if payment is linked directly to a reservation
+        if ($payment->status === 'completed' && $payment->reservation && $payment->reservation->status === 'pending') {
+            $payment->reservation->update(['status' => 'confirmed']);
         }
     }
 
