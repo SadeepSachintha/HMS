@@ -53,4 +53,12 @@ class Event extends Model
     {
         return $this->belongsTo(EventLocation::class, 'location_id');
     }
+
+    /**
+     * Get the invoice associated with the event.
+     */
+    public function invoice()
+    {
+        return $this->hasOne(Invoice::class);
+    }
 }

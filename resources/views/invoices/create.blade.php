@@ -36,6 +36,7 @@
                                     <optgroup label="Events">
                                         @foreach ($events as $event)
                                             <option value="event-{{ $event->id }}"
+                                                data-customer-id="{{ $event->customer_id }}"
                                                 data-description="Event: {{ $event->name }}"
                                                 data-unit-price="{{ $event->price ?? 0 }}">
                                                 Event: {{ $event->name }}
@@ -54,6 +55,7 @@
                                                 $totalPrice = $nights * $pricePerNight;
                                             @endphp
                                             <option value="reservation-{{ $reservation->id }}"
+                                                data-customer-id="{{ $reservation->customer_id }}"
                                                 data-unit-price="{{ $pricePerNight }}"
                                                 data-quantity="{{ $nights }}"
                                                 data-reservation-id="{{ $reservation->id }}"
@@ -226,6 +228,69 @@
     <script>
         $(document).ready(function() {
             let itemCount = 1;
+
+            // Dynamically filter Event or Reservation context dropdown based on selected Customer
+            const contextSourceSelect = $('#invoice-context-source');
+            const originalGroups = contextSourceSelect.find('optgroup').clone();
+            const defaultOption = contextSourceSelect.find('option[value=""]').clone();
+
+            function filterContextSources(customerId) {
+                // Clear the current dropdown
+                contextSourceSelect.empty();
+                contextSourceSelect.append(defaultOption.clone());
+
+                if (!customerId) {
+                    contextSourceSelect.prop('disabled', true);
+                    return;
+                }
+
+                contextSourceSelect.prop('disabled', false);
+
+                // Clone and filter original groups
+                originalGroups.each(function() {
+                    const group = $(this).clone();
+                    const options = group.find('option');
+                    
+                    // Filter options inside this group
+                    const filteredOptions = options.filter(function() {
+                        return String($(this).data('customer-id')) === String(customerId);
+                    });
+
+                    if (filteredOptions.length > 0) {
+                        group.empty().append(filteredOptions);
+                        contextSourceSelect.append(group);
+                    }
+                });
+
+                // Clear main charge row and update totals since the source might have changed or cleared
+                $('#main-charge-row').hide();
+                $('.main-charge-description').val('');
+                $('.main-charge-quantity').val('1');
+                $('.main-charge-unit-price').val('0.00');
+                $('.main-charge-total').val('0.00');
+                updateTotals();
+            }
+
+            $('#customer_id').on('change', function() {
+                const customerId = $(this).val();
+                filterContextSources(customerId);
+            });
+
+            // Initialize on load if a customer is already selected (e.g. old input)
+            const initialCustomerId = $('#customer_id').val();
+            if (initialCustomerId) {
+                const initialSelectedVal = contextSourceSelect.val() || 
+                                          ( "{{ old('reservation_id') }}" ? "reservation-{{ old('reservation_id') }}" : "" ) ||
+                                          ( "{{ old('event_id') }}" ? "event-{{ old('event_id') }}" : "" );
+                
+                filterContextSources(initialCustomerId);
+                
+                if (initialSelectedVal) {
+                    contextSourceSelect.val(initialSelectedVal).trigger('change');
+                }
+            } else {
+                filterContextSources('');
+            }
 
             // Show and fill main charge row when event/reservation is selected
             $('#invoice-context-source').on('change', function() {

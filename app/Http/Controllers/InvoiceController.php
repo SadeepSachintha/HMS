@@ -66,6 +66,7 @@ class InvoiceController extends Controller
     {
         $customers = \App\Models\Customer::orderBy('name')->get();
         $events = \App\Models\Event::whereIn('status', ['scheduled', 'in_progress'])
+            ->whereDoesntHave('invoice')
             ->orderBy('start_time', 'desc')->get();
         $reservations = \App\Models\Reservation::with(['customer', 'room.roomType'])
             ->whereIn('status', ['pending', 'confirmed'])
