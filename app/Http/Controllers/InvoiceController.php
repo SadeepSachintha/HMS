@@ -62,7 +62,7 @@ class InvoiceController extends Controller
         return view('invoices.index', compact('invoices'));
     }
 
-    public function create()
+    public function create(Request $request)
     {
         $customers = \App\Models\Customer::orderBy('name')->get();
         $events = \App\Models\Event::whereIn('status', ['scheduled', 'in_progress'])
@@ -74,7 +74,15 @@ class InvoiceController extends Controller
             ->orderBy('id', 'desc')
             ->get();
         $foodItems = \App\Models\FoodItem::where('is_available', 1)->orderBy('name')->get();
-        return view('invoices.create', compact('customers', 'events', 'reservations', 'foodItems'));
+
+        $preselectedCustomerId = $request->query('customer_id');
+        $preselectedReservationId = $request->query('reservation_id');
+        $preselectedEventId = $request->query('event_id');
+
+        return view('invoices.create', compact(
+            'customers', 'events', 'reservations', 'foodItems',
+            'preselectedCustomerId', 'preselectedReservationId', 'preselectedEventId'
+        ));
     }
 
     public function store(Request $request)
@@ -89,7 +97,12 @@ class InvoiceController extends Controller
             'tax_rate' => 'required|numeric|min:0',
             'tax_amount' => 'required|numeric|min:0',
             'total_amount' => 'required|numeric|min:0',
-            'notes' => 'nullable|string'
+            'notes' => 'nullable|string',
+
+            // Instant payment recording fields
+            'record_payment' => 'nullable|boolean',
+            'payment_method' => 'required_if:record_payment,1|nullable|string|in:cash,credit_card,debit_card,bank_transfer,cheque',
+            'amount_paid' => 'required_if:record_payment,1|nullable|numeric|min:0'
         ]);
 
         // Prevent duplicate invoice for reservation
@@ -100,7 +113,9 @@ class InvoiceController extends Controller
             }
         }
 
-        $invoice = Invoice::create($validated);
+        // We create the invoice. We don't save record_payment, payment_method, amount_paid to invoice model directly
+        $invoiceData = collect($validated)->except(['record_payment', 'payment_method', 'amount_paid'])->toArray();
+        $invoice = Invoice::create($invoiceData);
 
         // Save invoice items
         if ($request->has('items')) {
@@ -113,6 +128,19 @@ class InvoiceController extends Controller
                     ]);
                 }
             }
+        }
+
+        // Create instant payment if requested
+        if ($request->boolean('record_payment')) {
+            \App\Models\Payment::create([
+                'invoice_id' => $invoice->id,
+                'reservation_id' => $validated['reservation_id'] ?? null,
+                'amount' => $validated['amount_paid'],
+                'payment_method' => $validated['payment_method'],
+                'payment_date' => now(),
+                'status' => 'completed',
+                'notes' => 'Auto-recorded during invoice creation.'
+            ]);
         }
 
         return redirect()->route('invoices.index')

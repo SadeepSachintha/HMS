@@ -15,10 +15,19 @@
                 <p><strong>Status:</strong> {{ ucfirst($reservation->status) }}</p>
             </div>
         </div>
-        <div class="mt-4">
-            <a href="{{ route('reservations.edit', $reservation) }}" class="btn btn-primary me-2">
+        <div class="mt-4 d-flex align-items-center gap-2">
+            <a href="{{ route('reservations.edit', $reservation) }}" class="btn btn-primary">
                 <i class="fas fa-edit me-1"></i> Edit Reservation
             </a>
+            @if(!$reservation->invoice)
+                <a href="{{ route('invoices.create', ['customer_id' => $reservation->customer_id, 'reservation_id' => $reservation->id]) }}" class="btn btn-success">
+                    <i class="fas fa-file-invoice-dollar me-1"></i> Generate Invoice
+                </a>
+            @else
+                <a href="{{ route('invoices.show', $reservation->invoice) }}" class="btn btn-info text-white">
+                    <i class="fas fa-eye me-1"></i> View Generated Invoice
+                </a>
+            @endif
         </div>
     </div>
 @endsection

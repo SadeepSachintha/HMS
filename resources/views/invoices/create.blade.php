@@ -199,6 +199,41 @@
                                 @enderror
                             </div>
 
+                            <div class="card mb-4 border-success">
+                                <div class="card-header bg-transparent border-success text-success">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="record_payment" name="record_payment" value="1" {{ old('record_payment') ? 'checked' : '' }}>
+                                        <label class="form-check-label fw-bold" for="record_payment">
+                                            <i class="fas fa-check-circle me-1"></i> Record Payment Immediately
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="card-body" id="payment-fields" style="display: none;">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label for="payment_method" class="form-label">Payment Method</label>
+                                            <select class="form-select @error('payment_method') is-invalid @enderror" id="payment_method" name="payment_method">
+                                                <option value="cash" {{ old('payment_method') == 'cash' ? 'selected' : '' }}>Cash</option>
+                                                <option value="credit_card" {{ old('payment_method') == 'credit_card' ? 'selected' : '' }}>Credit Card</option>
+                                                <option value="debit_card" {{ old('payment_method') == 'debit_card' ? 'selected' : '' }}>Debit Card</option>
+                                                <option value="bank_transfer" {{ old('payment_method') == 'bank_transfer' ? 'selected' : '' }}>Bank Transfer</option>
+                                                <option value="cheque" {{ old('payment_method') == 'cheque' ? 'selected' : '' }}>Cheque</option>
+                                            </select>
+                                            @error('payment_method')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="amount_paid" class="form-label">Amount Paid (LKR)</label>
+                                            <input type="number" step="0.01" min="0" class="form-control @error('amount_paid') is-invalid @enderror" id="amount_paid" name="amount_paid" value="{{ old('amount_paid') }}" placeholder="Full invoice total will be paid">
+                                            @error('amount_paid')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="d-flex justify-content-between">
                                 <a href="{{ route('invoices.index') }}" class="btn btn-secondary">Cancel</a>
                                 <button type="submit" class="btn btn-primary">Create Invoice</button>
@@ -265,12 +300,15 @@
                 filterContextSources(customerId);
             });
 
-            // Initialize on load if a customer is already selected (e.g. old input)
-            const initialCustomerId = $('#customer_id').val();
+            // Initialize on load if a customer is already selected (e.g. old input or query parameters)
+            const initialCustomerId = $('#customer_id').val() || "{{ $preselectedCustomerId ?? '' }}";
             if (initialCustomerId) {
+                $('#customer_id').val(initialCustomerId);
                 const initialSelectedVal = contextSourceSelect.val() || 
-                                          ( "{{ old('reservation_id') }}" ? "reservation-{{ old('reservation_id') }}" : "" ) ||
-                                          ( "{{ old('event_id') }}" ? "event-{{ old('event_id') }}" : "" );
+                                           ( "{{ $preselectedReservationId ?? '' }}" ? "reservation-{{ $preselectedReservationId ?? '' }}" : "" ) ||
+                                           ( "{{ $preselectedEventId ?? '' }}" ? "event-{{ $preselectedEventId ?? '' }}" : "" ) ||
+                                           ( "{{ old('reservation_id') }}" ? "reservation-{{ old('reservation_id') }}" : "" ) ||
+                                           ( "{{ old('event_id') }}" ? "event-{{ old('event_id') }}" : "" );
                 
                 filterContextSources(initialCustomerId);
                 
@@ -401,7 +439,29 @@
                 $('#subtotal-input').val(subtotal.toFixed(2));
                 $('#tax-amount-input').val(taxAmount.toFixed(2));
                 $('#total-amount-input').val(total.toFixed(2));
+
+                if ($('#record_payment').is(':checked')) {
+                    $('#amount_paid').val(total.toFixed(2));
+                }
             }
+
+            function togglePaymentFields() {
+                if ($('#record_payment').is(':checked')) {
+                    $('#payment-fields').slideDown();
+                    const totalVal = parseFloat($('#total-amount-input').val()) || 0;
+                    if (!$('#amount_paid').val() || $('#amount_paid').val() == '0.00' || $('#amount_paid').val() == '') {
+                        $('#amount_paid').val(totalVal.toFixed(2));
+                    }
+                    $('#payment_method').prop('required', true);
+                    $('#amount_paid').prop('required', true);
+                } else {
+                    $('#payment-fields').slideUp();
+                    $('#payment_method').prop('required', false);
+                    $('#amount_paid').prop('required', false);
+                }
+            }
+
+            $('#record_payment').on('change', togglePaymentFields);
 
             // Update totals when tax rate changes
             $('#tax_rate').on('input', updateTotals);
@@ -415,6 +475,7 @@
                 item.find('.item-total').val(total.toFixed(2));
             });
             updateTotals();
+            togglePaymentFields();
 
             // Set reservation_id or event_id based on selection
             $('#invoice-context-source').on('change', function() {
