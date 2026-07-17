@@ -1,2 +1,8 @@
 *
 !.gitignore
+!defaults/
+!defaults/**
+!rooms/
+!rooms/**
+!food-items/
+!food-items/**
