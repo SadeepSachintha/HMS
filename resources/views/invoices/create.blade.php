@@ -118,7 +118,7 @@
                                     <div id="invoice-items">
                                         <div class="invoice-item mb-3">
                                             <div class="row">
-                                                <div class="col-md-4">
+                                                <div class="col-md-3">
                                                     <label class="form-label">Food Item</label>
                                                     <select class="form-select item-source" name="items[0][food_item_id]">
                                                         <option value="">Select Food Item</option>
@@ -127,7 +127,7 @@
                                                         @endforeach
                                                     </select>
                                                 </div>
-                                                <div class="col-md-1">
+                                                <div class="col-md-2">
                                                     <label class="form-label">Qty</label>
                                                     <input type="number" class="form-control quantity" name="items[0][quantity]" value="1" min="1" required>
                                                 </div>
