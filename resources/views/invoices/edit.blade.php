@@ -50,7 +50,7 @@
                                     @foreach($invoice->items as $index => $item)
                                     <div class="invoice-item mb-3">
                                         <div class="row">
-                                            <div class="col-md-5">
+                                            <div class="col-md-4">
                                                 <label class="form-label">Description</label>
                                                 <input type="text" class="form-control" value="{{ $item->description }}" readonly tabindex="-1">
                                             </div>
@@ -58,19 +58,13 @@
                                                 <label class="form-label">Quantity</label>
                                                 <input type="number" class="form-control" value="{{ $item->quantity }}" readonly tabindex="-1">
                                             </div>
-                                            <div class="col-md-2">
-                                                <label class="form-label">Unit Price</label>
-                                                <div class="input-group">
-                                                    <span class="input-group-text">LKR</span>
-                                                    <input type="number" class="form-control" value="{{ $item->unit_price }}" readonly tabindex="-1">
-                                                </div>
+                                            <div class="col-md-3">
+                                                <label class="form-label">Unit Price (LKR)</label>
+                                                <input type="number" class="form-control" value="{{ $item->unit_price }}" readonly tabindex="-1">
                                             </div>
-                                            <div class="col-md-2">
-                                                <label class="form-label">Total</label>
-                                                <div class="input-group">
-                                                    <span class="input-group-text">LKR</span>
-                                                    <input type="text" class="form-control" value="{{ number_format($item->quantity * $item->unit_price, 2) }}" readonly tabindex="-1">
-                                                </div>
+                                            <div class="col-md-3">
+                                                <label class="form-label">Total (LKR)</label>
+                                                <input type="text" class="form-control" value="{{ number_format($item->quantity * $item->unit_price, 2) }}" readonly tabindex="-1">
                                             </div>
                                         </div>
                                     </div>

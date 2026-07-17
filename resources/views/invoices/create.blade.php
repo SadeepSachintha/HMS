@@ -104,18 +104,12 @@
                                                 <input type="number" class="form-control main-charge-quantity" name="main_charge[quantity]" value="1" min="1" readonly>
                                             </div>
                                             <div class="col-md-3">
-                                                <label class="form-label">Unit Price</label>
-                                                <div class="input-group">
-                                                    <span class="input-group-text">LKR</span>
-                                                    <input type="number" class="form-control main-charge-unit-price" name="main_charge[unit_price]" value="0.00" min="0" step="0.01" readonly>
-                                                </div>
+                                                <label class="form-label">Unit Price (LKR)</label>
+                                                <input type="number" class="form-control main-charge-unit-price" name="main_charge[unit_price]" value="0.00" min="0" step="0.01" readonly>
                                             </div>
-                                            <div class="col-md-2">
-                                                <label class="form-label">Total</label>
-                                                <div class="input-group">
-                                                    <span class="input-group-text">LKR</span>
-                                                    <input type="text" class="form-control main-charge-total" readonly>
-                                                </div>
+                                            <div class="col-md-3">
+                                                <label class="form-label">Total (LKR)</label>
+                                                <input type="text" class="form-control main-charge-total" readonly>
                                             </div>
                                         </div>
                                     </div>
@@ -124,7 +118,7 @@
                                     <div id="invoice-items">
                                         <div class="invoice-item mb-3">
                                             <div class="row">
-                                                <div class="col-md-3">
+                                                <div class="col-md-4">
                                                     <label class="form-label">Food Item</label>
                                                     <select class="form-select item-source" name="items[0][food_item_id]">
                                                         <option value="">Select Food Item</option>
@@ -133,23 +127,17 @@
                                                         @endforeach
                                                     </select>
                                                 </div>
-                                                <div class="col-md-2">
-                                                    <label class="form-label">Quantity</label>
+                                                <div class="col-md-1">
+                                                    <label class="form-label">Qty</label>
                                                     <input type="number" class="form-control quantity" name="items[0][quantity]" value="1" min="1" required>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <label class="form-label">Unit Price</label>
-                                                    <div class="input-group">
-                                                        <span class="input-group-text">LKR</span>
-                                                        <input type="number" class="form-control unit-price" name="items[0][unit_price]" value="0.00" min="0" step="0.01" required>
-                                                    </div>
+                                                    <label class="form-label">Unit Price (LKR)</label>
+                                                    <input type="number" class="form-control unit-price" name="items[0][unit_price]" value="0.00" min="0" step="0.01" required>
                                                 </div>
-                                                <div class="col-md-2">
-                                                    <label class="form-label">Total</label>
-                                                    <div class="input-group">
-                                                        <span class="input-group-text">LKR</span>
-                                                        <input type="text" class="form-control item-total" readonly>
-                                                    </div>
+                                                <div class="col-md-3">
+                                                    <label class="form-label">Total (LKR)</label>
+                                                    <input type="text" class="form-control item-total" readonly>
                                                 </div>
                                                 <div class="col-md-1">
                                                     <label class="form-label d-block">&nbsp;</label>
