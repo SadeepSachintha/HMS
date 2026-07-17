@@ -54,16 +54,6 @@
                                 </a>
                             </th>
                             <th>
-                                <a href="{{ request()->fullUrlWithQuery(['sort' => 'paid_amount', 'order' => request('sort') == 'paid_amount' && request('order') == 'asc' ? 'desc' : 'asc']) }}"
-                                   class="text-decoration-none text-white d-flex align-items-center justify-content-between">
-                                    Paid Amount
-                                    <div class="d-flex flex-column">
-                                        <i class="fas fa-sort-up {{ request('sort') == 'paid_amount' && request('order') == 'asc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
-                                        <i class="fas fa-sort-down {{ request('sort') == 'paid_amount' && request('order') == 'desc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
-                                    </div>
-                                </a>
-                            </th>
-                            <th>
                                 <a href="{{ request()->fullUrlWithQuery(['sort' => 'payment_method', 'order' => request('sort') == 'payment_method' && request('order') == 'asc' ? 'desc' : 'asc']) }}"
                                    class="text-decoration-none text-white d-flex align-items-center justify-content-between">
                                     Method
@@ -110,7 +100,6 @@
                                     @endif
                                 </td>
                                 <td>LKR{{ number_format($payment->amount, 2) }}</td>
-                                <td>LKR{{ number_format($payment->paid_amount, 2) }}</td>
                                 <td>{{ $payment->payment_method === 'check' ? 'Cheque' : ucfirst(str_replace('_', ' ', $payment->payment_method)) }}</td>
                                 <td>{{ $payment->payment_date->format('Y-m-d H:i') }}</td>
                                 <td>
@@ -138,7 +127,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="8" class="text-center">No payment records found.</td>
+                                <td colspan="7" class="text-center">No payment records found.</td>
                             </tr>
                         @endforelse
                     </tbody>

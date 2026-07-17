@@ -57,7 +57,7 @@ class PaymentController extends Controller
         $sortOrder = $request->get('order', 'desc');
 
         // Validate sort column against whitelist
-        $allowedSortColumns = ['id', 'amount', 'paid_amount', 'balance', 'payment_method', 'payment_date', 'status', 'created_at'];
+        $allowedSortColumns = ['id', 'amount', 'payment_method', 'payment_date', 'status', 'created_at'];
         if (!in_array($sortBy, $allowedSortColumns)) {
             $sortBy = 'id';
         }
