@@ -18,7 +18,6 @@
                         <table class="table table-hover">
                             <thead>
                                 <tr>
-                                    <th style="width: 100px;">Image</th>
                                     <th>Name</th>
                                     <th>Capacity</th>
                                     <th>Description</th>
@@ -29,15 +28,6 @@
                             <tbody>
                                 @forelse($locations as $location)
                                     <tr>
-                                        <td class="align-middle">
-                                            @if($location->image_path)
-                                                <img src="{{ asset('storage/' . $location->image_path) }}" alt="{{ $location->name }}" class="img-fluid rounded" style="width: 80px; height: 50px; object-fit: cover;">
-                                            @else
-                                                <div class="d-flex align-items-center justify-content-center bg-secondary text-white rounded" style="width: 80px; height: 50px;">
-                                                    <i class="fas fa-map-marker-alt" style="opacity: 0.6;"></i>
-                                                </div>
-                                            @endif
-                                        </td>
                                         <td class="align-middle">
                                             <a href="{{ route('event-locations.show', $location) }}" class="text-decoration-none fw-bold">
                                                 {{ $location->name }}
@@ -70,7 +60,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="6" class="text-center py-4">
+                                        <td colspan="5" class="text-center py-4">
                                             <div class="d-flex flex-column align-items-center">
                                                 <i class="fas fa-map-marker-alt fa-3x text-muted mb-3"></i>
                                                 <h5 class="text-muted">No locations found</h5>

@@ -168,7 +168,11 @@
                 <div class="col-lg-4 col-md-6">
                     <div class="event-card position-relative">
                         <div class="event-image-placeholder">
-                            <i class="fas {{ $event->status === 'completed' ? 'fa-calendar-check' : 'fa-calendar-day' }}"></i>
+                            @if($event->location_rel && $event->location_rel->image_path)
+                                <img src="{{ asset('storage/' . $event->location_rel->image_path) }}" alt="{{ $event->location_rel->name }}" class="w-100 h-100" style="object-fit: cover; position: absolute; top: 0; left: 0;">
+                            @else
+                                <i class="fas {{ $event->status === 'completed' ? 'fa-calendar-check' : 'fa-calendar-day' }}"></i>
+                            @endif
                             
                             @php
                                 $date = \Carbon\Carbon::parse($event->start_time);
@@ -196,9 +200,14 @@
                                     <i class="fas fa-clock"></i>
                                     <span>{{ $date->format('h:i A') }} onwards</span>
                                 </div>
-                                <div class="meta-item">
-                                    <i class="fas fa-map-marker-alt"></i>
-                                    <span>{{ $event->location }}</span>
+                                <div class="meta-item align-items-start">
+                                    <i class="fas fa-map-marker-alt mt-1"></i>
+                                    <span>
+                                        <strong>{{ $event->location_rel->name ?? $event->location }}</strong>
+                                        @if($event->location_rel && $event->location_rel->description)
+                                            <span class="d-block text-muted mt-1" style="font-size: 0.8rem; line-height: 1.4;">{{ $event->location_rel->description }}</span>
+                                        @endif
+                                    </span>
                                 </div>
                                 @if($event->price && $event->price > 0)
                                     <div class="meta-item">
