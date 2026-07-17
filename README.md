@@ -24,7 +24,9 @@ A comprehensive, enterprise-grade Hotel Management System built on **Laravel 8**
 
 ### 🎭 Event & Facility Management
 - **Event Scheduling** — Full CRUD for hotel-hosted events: name, description, start/end times, pricing, attendee limits, and status.
-- **Location Management** — Dedicated `EventLocation` entity for managing hotel facilities (Conference Halls, Training Rooms, Lounges, etc.) with bidirectional linking to events.
+- **Location Management** — Dedicated `EventLocation` entity for managing hotel facilities (Conference Room, Training Room, Rooftop Lounge, etc.) with bidirectional linking to events.
+- **Venue Image Uploads** — Administrative support for uploading, updating, and deleting location banner/room layouts.
+- **Public Venues Showcase** — Dedicated public `/our-events` (Venues) route displays active event locations with high-quality layouts, description texts, and guest capacities.
 - **Staff Assignment** — Assign internal staff members to events with custom role descriptions.
 - **Event Detail View** — Scoped dark-theme table layout preserving rich-text formatting (newlines, spaces) in descriptions and notes.
 
@@ -41,9 +43,11 @@ A comprehensive, enterprise-grade Hotel Management System built on **Laravel 8**
 
 ### 💳 Billing & Financials
 - **Automated Invoicing** — Invoices are auto-generated via a Laravel Observer when a reservation is confirmed; zero manual billing overhead.
+- **Reservation Item Preservation** — The primary event/reservation charge details are automatically created and saved as a distinct invoice item on invoice generation.
 - **Full Payment Policy** — Enforces full invoice settlement in a single transaction (no partial payments).
 - **Payment Methods** — Cash, Card, Bank Transfer, and Cheque supported with manual payment recording.
 - **Invoice Status Sync** — Invoice status automatically updates to *Paid* when payment is recorded.
+- **Automated Status Synchronization** — Recording a payment as completed triggers an automatic transition of the linked invoice to `paid` and the associated reservation to `confirmed`.
 - **Quick Payment Workflow** — Integrated "Record Payment" actions directly within the reservation list for instant invoice settlement.
 - **PDF Receipts** — Instant generation via DomPDF.
 - **Excel Reports** — Export data to `.xlsx` via Laravel Excel.
