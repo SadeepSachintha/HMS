@@ -120,6 +120,7 @@
                                             <div class="row">
                                                 <div class="col-md-3">
                                                     <label class="form-label">Food Item</label>
+                                                    <input type="hidden" class="item-description" name="items[0][description]" value="">
                                                     <select class="form-select item-source" name="items[0][food_item_id]">
                                                         <option value="">Select Food Item</option>
                                                         @foreach($foodItems as $foodItem)
@@ -304,6 +305,15 @@
                 updateTotals();
             });
 
+            function toggleRemoveButtons() {
+                const rows = $('.invoice-item');
+                if (rows.length <= 1) {
+                    rows.find('.remove-item').prop('disabled', true);
+                } else {
+                    rows.find('.remove-item').prop('disabled', false);
+                }
+            }
+
             function bindItemSourceDropdown(item) {
                 item.find('.item-source').on('change', function() {
                     var selected = $(this).find('option:selected');
@@ -312,11 +322,13 @@
                     if (unitPrice !== undefined) {
                         item.find('.unit-price').val(unitPrice).trigger('input');
                     }
+                    item.find('.item-description').val(description || '');
                 });
             }
 
-            // Bind for the first row
+            // Bind for the first row and init button states
             bindItemSourceDropdown($('.invoice-item').first());
+            toggleRemoveButtons();
 
             // Set minimum due date based on invoice date
             $('#invoice_date').change(function() {
@@ -347,12 +359,14 @@
                 bindItemSourceDropdown(newItem);
                 itemCount++;
                 updateTotals();
+                toggleRemoveButtons();
             });
 
             // Remove item
             $(document).on('click', '.remove-item', function() {
                 $(this).closest('.invoice-item').remove();
                 updateTotals();
+                toggleRemoveButtons();
             });
 
             // Calculate item total
