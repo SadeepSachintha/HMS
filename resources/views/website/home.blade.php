@@ -207,6 +207,8 @@
                         <li><a href="{{ url('/') }}">Home</a></li>
                         <li><a href="#featured-rooms">Rooms</a></li>
                         <li><a href="#amenities">Amenities</a></li>
+                        <li><a href="{{ route('food-items.index') }}">Food Menu</a></li>
+                        <li><a href="{{ route('events.index') }}">Events</a></li>
                         <li><a href="{{ route('login') }}">Book Now</a></li>
                     </ul>
                 </div>
