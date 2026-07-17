@@ -61,7 +61,7 @@
                                                 data-reservation-id="{{ $reservation->id }}"
                                                 {{ old('reservation_id') == $reservation->id ? 'selected' : '' }}>
                                                 #{{ $reservation->id }} - {{ $reservation->customer->name }} (Room:
-                                                {{ $reservation->room_id }}) - {{ $nights }} nights - LKR {{ number_format($totalPrice, 2) }}
+                                                {{ $reservation->room->number ?? $reservation->room_id }}) - {{ $nights }} nights - LKR {{ number_format($totalPrice, 2) }}
                                             </option>
                                         @endforeach
                                     </optgroup>
@@ -300,24 +300,6 @@
                 filterContextSources(customerId);
             });
 
-            // Initialize on load if a customer is already selected (e.g. old input or query parameters)
-            const initialCustomerId = $('#customer_id').val() || "{{ $preselectedCustomerId ?? '' }}";
-            if (initialCustomerId) {
-                $('#customer_id').val(initialCustomerId);
-                const initialSelectedVal = contextSourceSelect.val() || 
-                                           ( "{{ $preselectedReservationId ?? '' }}" ? "reservation-{{ $preselectedReservationId ?? '' }}" : "" ) ||
-                                           ( "{{ $preselectedEventId ?? '' }}" ? "event-{{ $preselectedEventId ?? '' }}" : "" ) ||
-                                           ( "{{ old('reservation_id') }}" ? "reservation-{{ old('reservation_id') }}" : "" ) ||
-                                           ( "{{ old('event_id') }}" ? "event-{{ old('event_id') }}" : "" );
-                
-                filterContextSources(initialCustomerId);
-                
-                if (initialSelectedVal) {
-                    contextSourceSelect.val(initialSelectedVal).trigger('change');
-                }
-            } else {
-                filterContextSources('');
-            }
 
             // Show and fill main charge row when event/reservation is selected
             $('#invoice-context-source').on('change', function() {
@@ -476,6 +458,25 @@
             });
             updateTotals();
             togglePaymentFields();
+
+            // Initialize on load if a customer is already selected (e.g. old input or query parameters)
+            const initialCustomerId = $('#customer_id').val() || "{{ $preselectedCustomerId ?? '' }}";
+            if (initialCustomerId) {
+                $('#customer_id').val(initialCustomerId);
+                const initialSelectedVal = contextSourceSelect.val() || 
+                                           ( "{{ $preselectedReservationId ?? '' }}" ? "reservation-{{ $preselectedReservationId ?? '' }}" : "" ) ||
+                                           ( "{{ $preselectedEventId ?? '' }}" ? "event-{{ $preselectedEventId ?? '' }}" : "" ) ||
+                                           ( "{{ old('reservation_id') }}" ? "reservation-{{ old('reservation_id') }}" : "" ) ||
+                                           ( "{{ old('event_id') }}" ? "event-{{ old('event_id') }}" : "" );
+                
+                filterContextSources(initialCustomerId);
+                
+                if (initialSelectedVal) {
+                    contextSourceSelect.val(initialSelectedVal).trigger('change');
+                }
+            } else {
+                filterContextSources('');
+            }
 
             // Set reservation_id or event_id based on selection
             $('#invoice-context-source').on('change', function() {
