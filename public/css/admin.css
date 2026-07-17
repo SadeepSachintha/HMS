@@ -267,11 +267,15 @@ main {
     background-color: transparent !important;
 }
 
+.table th {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--secondary-color) !important;
+    font-weight: 600;
+}
+
 .table thead th {
     background: rgba(255, 255, 255, 0.08) !important;
-    border-bottom: 1px solid var(--border-color);
-    color: var(--secondary-color);
-    font-weight: 600;
     text-transform: uppercase;
     font-size: 0.8rem;
     letter-spacing: 1px;
