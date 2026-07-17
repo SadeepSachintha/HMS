@@ -304,6 +304,27 @@
             $('#sidebarCollapse').on('click', function () {
                 $('#sidebar, #content').toggleClass('active');
             });
+
+            // Global real-time debounced search for list views
+            let searchTimeout = null;
+            const searchInput = $('form[method="GET"] input[name="search"]');
+            if (searchInput.length) {
+                const val = searchInput.val();
+                if (val) {
+                    searchInput.focus();
+                    // Put cursor at the end of the text input
+                    searchInput[0].setSelectionRange(val.length, val.length);
+                }
+                
+                searchInput.on('input', function() {
+                    clearTimeout(searchTimeout);
+                    const form = $(this).closest('form');
+                    
+                    searchTimeout = setTimeout(function() {
+                        form.submit();
+                    }, 700); // 700ms debounce to allow user to finish typing
+                });
+            }
         });
 
         // Auto-dismiss alerts after 3 seconds

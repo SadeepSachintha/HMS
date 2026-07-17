@@ -341,5 +341,11 @@
         form.submit();
         document.body.removeChild(form);
     }
+
+    $(document).ready(function() {
+        $('#room_type_id, #start_date, #end_date').on('change', function() {
+            $(this).closest('form').submit();
+        });
+    });
 </script>
 @endsection

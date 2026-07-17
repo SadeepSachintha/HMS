@@ -184,3 +184,13 @@
     </div>
 </div>
 @endsection
+
+@section('scripts')
+<script>
+$(document).ready(function() {
+    $('select[name="status"]').on('change', function() {
+        $(this).closest('form').submit();
+    });
+});
+</script>
+@endsection
