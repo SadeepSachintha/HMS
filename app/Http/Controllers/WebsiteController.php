@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\RoomType;
 use App\Models\FoodItem;
-use App\Models\Event;
+use App\Models\EventLocation;
 use Illuminate\Http\Request;
 
 /**
@@ -43,18 +43,17 @@ class WebsiteController extends Controller
     }
 
     /**
-     * Display the public events page.
+     * Display the public events/venues page.
      * 
      * @return \Illuminate\View\View
      */
     public function events()
     {
-        // Fetch active and scheduled events
-        $events = Event::with('location_rel')
-            ->whereIn('status', ['scheduled', 'in_progress', 'completed'])
-            ->orderBy('start_time', 'asc')
+        // Fetch active event locations (venues) to showcase
+        $locations = EventLocation::where('status', 'active')
+            ->orderBy('name', 'asc')
             ->get();
 
-        return view('website.events', compact('events'));
+        return view('website.events', compact('locations'));
     }
 }

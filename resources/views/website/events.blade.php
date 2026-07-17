@@ -138,7 +138,7 @@
                         <a class="nav-link" href="{{ route('website.menu') }}">Food Menu</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('website.events') }}">Events</a>
+                        <a class="nav-link" href="{{ route('website.events') }}">Venues</a>
                     </li>
                     <li class="nav-item ms-lg-3 mt-3 mt-lg-0">
                         @auth
@@ -155,75 +155,37 @@
     <!-- Hero Header -->
     <header class="events-hero">
         <div class="container">
-            <h1 class="display-4 text-white font-weight-bold">Events & Celebrations</h1>
-            <p class="lead text-gold" style="color: var(--secondary-color); font-size: 1.25rem;">Experience spectacular moments and grand celebrations hosted at our premium venues</p>
+            <h1 class="display-4 text-white font-weight-bold">Our Premium Venues</h1>
+            <p class="lead text-gold" style="color: var(--secondary-color); font-size: 1.25rem;">Discover our state-of-the-art event locations designed for unforgettable experiences</p>
         </div>
     </header>
 
-    <!-- Events Section -->
+    <!-- Locations Section -->
     <section class="section-padding">
         <div class="container">
             <div class="row g-4">
-                @forelse($events as $event)
+                @forelse($locations as $location)
                 <div class="col-lg-4 col-md-6">
                     <div class="event-card position-relative">
                         <div class="event-image-placeholder">
-                            @if($event->location_rel && $event->location_rel->image_path)
-                                <img src="{{ asset('storage/' . $event->location_rel->image_path) }}" alt="{{ $event->location_rel->name }}" class="w-100 h-100" style="object-fit: cover; position: absolute; top: 0; left: 0;">
+                            @if($location->image_path)
+                                <img src="{{ asset('storage/' . $location->image_path) }}" alt="{{ $location->name }}" class="w-100 h-100" style="object-fit: cover; position: absolute; top: 0; left: 0;">
                             @else
-                                <i class="fas {{ $event->status === 'completed' ? 'fa-calendar-check' : 'fa-calendar-day' }}"></i>
+                                <div class="text-center">
+                                    <i class="fas fa-map-marker-alt text-gold" style="font-size: 3.5rem; opacity: 0.6;"></i>
+                                </div>
                             @endif
-                            
-                            @php
-                                $date = \Carbon\Carbon::parse($event->start_time);
-                            @endphp
-                            <div class="event-date-tag">
-                                {{ $date->format('M d, Y') }}
-                            </div>
                         </div>
 
-                        <!-- Status Badge -->
-                        @if($event->status === 'completed')
-                            <span class="event-badge bg-secondary text-white">Completed</span>
-                        @elseif($event->status === 'in_progress')
-                            <span class="event-badge bg-warning text-dark">In Progress</span>
-                        @else
-                            <span class="event-badge bg-success text-white">Upcoming</span>
-                        @endif
-
                         <div class="event-details">
-                            <h3>{{ $event->name }}</h3>
-                            <p>{{ $event->description ?? 'No details provided.' }}</p>
+                            <h3 class="text-white mb-3">{{ $location->name }}</h3>
+                            <p class="text-muted mb-4">{{ $location->description ?? 'No details provided for this location.' }}</p>
                             
-                            <div class="event-meta">
-                                <div class="meta-item">
-                                    <i class="fas fa-clock"></i>
-                                    <span>{{ $date->format('h:i A') }} onwards</span>
-                                </div>
-                                <div class="meta-item align-items-start">
-                                    <i class="fas fa-map-marker-alt mt-1"></i>
-                                    <span>
-                                        <strong>{{ $event->location_rel->name ?? $event->location }}</strong>
-                                        @if($event->location_rel && $event->location_rel->description)
-                                            <span class="d-block text-muted mt-1" style="font-size: 0.8rem; line-height: 1.4;">{{ $event->location_rel->description }}</span>
-                                        @endif
-                                    </span>
-                                </div>
-                                @if($event->price && $event->price > 0)
-                                    <div class="meta-item">
-                                        <i class="fas fa-ticket-alt"></i>
-                                        <span>LKR {{ number_format($event->price, 2) }}</span>
-                                    </div>
-                                @else
-                                    <div class="meta-item">
-                                        <i class="fas fa-ticket-alt"></i>
-                                        <span class="text-success">Free Admission</span>
-                                    </div>
-                                @endif
-                                @if($event->max_attendees)
-                                    <div class="meta-item">
-                                        <i class="fas fa-users"></i>
-                                        <span>Max Capacity: {{ $event->max_attendees }} Guests</span>
+                            <div class="event-meta pt-3" style="border-top: 1px solid rgba(255, 255, 255, 0.1);">
+                                @if($location->capacity)
+                                    <div class="meta-item text-gold d-flex align-items-center mb-0">
+                                        <i class="fas fa-users me-2 text-gold"></i>
+                                        <span>Max Capacity: <strong>{{ $location->capacity }}</strong> Guests</span>
                                     </div>
                                 @endif
                             </div>
@@ -232,8 +194,8 @@
                 </div>
                 @empty
                 <div class="col-12 text-center py-5">
-                    <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
-                    <h5>No events are scheduled at the moment. Please check back later!</h5>
+                    <i class="fas fa-map-marker-slash fa-3x text-muted mb-3"></i>
+                    <h5 class="text-muted">No event locations are registered at the moment.</h5>
                 </div>
                 @endforelse
             </div>
@@ -259,7 +221,7 @@
                         <li><a href="{{ url('/') }}">Home</a></li>
                         <li><a href="{{ url('/') }}#featured-rooms">Rooms</a></li>
                         <li><a href="{{ route('website.menu') }}">Food Menu</a></li>
-                        <li><a href="{{ route('website.events') }}">Events</a></li>
+                        <li><a href="{{ route('website.events') }}">Venues</a></li>
                         <li><a href="{{ route('login') }}">Book Now</a></li>
                     </ul>
                 </div>
