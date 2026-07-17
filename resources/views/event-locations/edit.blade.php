@@ -10,7 +10,7 @@
                 </div>
 
                 <div class="card-body">
-                    <form action="{{ route('event-locations.update', $eventLocation) }}" method="POST">
+                    <form action="{{ route('event-locations.update', $eventLocation) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
 
@@ -34,6 +34,21 @@
                             <label for="description" class="form-label">Description</label>
                             <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description" rows="3">{{ old('description', $eventLocation->description) }}</textarea>
                             @error('description')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="image" class="form-label">Location Image</label>
+                            @if($eventLocation->image_path)
+                                <div class="mb-2">
+                                    <img src="{{ asset('storage/' . $eventLocation->image_path) }}" alt="{{ $eventLocation->name }}" class="img-thumbnail" style="max-height: 150px;">
+                                    <div class="form-text text-muted">Current location image. Upload a new file below to replace it.</div>
+                                </div>
+                            @endif
+                            <input type="file" class="form-control @error('image') is-invalid @enderror" id="image" name="image" accept="image/*">
+                            <div class="form-text text-muted">Supported formats: JPEG, PNG, JPG, GIF, WEBP. Max size: 2MB.</div>
+                            @error('image')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>

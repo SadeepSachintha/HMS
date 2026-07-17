@@ -12,6 +12,11 @@
                     </a>
                 </div>
                 <div class="card-body">
+                    @if($eventLocation->image_path)
+                        <div class="mb-3">
+                            <img src="{{ asset('storage/' . $eventLocation->image_path) }}" alt="{{ $eventLocation->name }}" class="img-fluid rounded shadow-sm w-100" style="max-height: 250px; object-fit: cover;">
+                        </div>
+                    @endif
                     <h3 class="card-title text-primary">{{ $eventLocation->name }}</h3>
                     <hr>
                     <p><strong>Capacity:</strong> {{ $eventLocation->capacity ?? 'Not specified' }}</p>

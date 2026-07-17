@@ -58,7 +58,13 @@ class EventLocationController extends Controller
             'capacity' => 'nullable|integer|min:1',
             'description' => 'nullable|string',
             'status' => 'required|in:active,inactive',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048'
         ]);
+
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('event-locations', 'public');
+            $validated['image_path'] = $path;
+        }
 
         EventLocation::create($validated);
 
@@ -104,7 +110,17 @@ class EventLocationController extends Controller
             'capacity' => 'nullable|integer|min:1',
             'description' => 'nullable|string',
             'status' => 'required|in:active,inactive',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048'
         ]);
+
+        if ($request->hasFile('image')) {
+            // Delete old image if exists
+            if ($eventLocation->image_path) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($eventLocation->image_path);
+            }
+            $path = $request->file('image')->store('event-locations', 'public');
+            $validated['image_path'] = $path;
+        }
 
         $eventLocation->update($validated);
 
@@ -125,6 +141,11 @@ class EventLocationController extends Controller
         if ($eventLocation->events()->count() > 0) {
             return redirect()->route('event-locations.index')
                 ->with('error', 'Cannot delete location as it has assigned events.');
+        }
+
+        // Delete image if exists
+        if ($eventLocation->image_path) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($eventLocation->image_path);
         }
 
         $eventLocation->delete();

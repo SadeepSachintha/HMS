@@ -30,6 +30,7 @@ class EventLocation extends Model
         'name',
         'capacity',
         'description',
+        'image_path',
         'status',
     ];
 
