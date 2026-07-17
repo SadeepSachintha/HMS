@@ -38,6 +38,8 @@ use App\Http\Controllers\Auth\LoginController;
 // Public Routes
 // =========================================================================
 Route::get('/', [WebsiteController::class, 'index'])->name('website.home');
+Route::get('/menu', [WebsiteController::class, 'menu'])->name('website.menu');
+Route::get('/our-events', [WebsiteController::class, 'events'])->name('website.events');
 
 // =========================================================================
 // Authentication Routes

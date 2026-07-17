@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\RoomType;
+use App\Models\FoodItem;
+use App\Models\Event;
 use Illuminate\Http\Request;
 
 /**
@@ -25,5 +27,34 @@ class WebsiteController extends Controller
         $featuredRooms = RoomType::with('images')->limit(6)->get();
 
         return view('website.home', compact('featuredRooms'));
+    }
+
+    /**
+     * Display the public food menu.
+     * 
+     * @return \Illuminate\View\View
+     */
+    public function menu()
+    {
+        // Fetch all available food items grouped by category
+        $foodItems = FoodItem::where('is_available', true)->get()->groupBy('category');
+
+        return view('website.menu', compact('foodItems'));
+    }
+
+    /**
+     * Display the public events page.
+     * 
+     * @return \Illuminate\View\View
+     */
+    public function events()
+    {
+        // Fetch active and scheduled events
+        $events = Event::with('location')
+            ->whereIn('status', ['scheduled', 'in_progress', 'completed'])
+            ->orderBy('start_time', 'asc')
+            ->get();
+
+        return view('website.events', compact('events'));
     }
 }

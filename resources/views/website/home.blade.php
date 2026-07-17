@@ -36,6 +36,12 @@
                     <li class="nav-item">
                         <a class="nav-link" href="#amenities">Amenities</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('website.menu') }}">Food Menu</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('website.events') }}">Events</a>
+                    </li>
                     <li class="nav-item ms-lg-3 mt-3 mt-lg-0">
                         @auth
                             <a href="{{ route('dashboard') }}" class="btn-gold px-4 py-2" style="font-size: 0.9rem;">Dashboard</a>
@@ -207,8 +213,8 @@
                         <li><a href="{{ url('/') }}">Home</a></li>
                         <li><a href="#featured-rooms">Rooms</a></li>
                         <li><a href="#amenities">Amenities</a></li>
-                        <li><a href="{{ route('food-items.index') }}">Food Menu</a></li>
-                        <li><a href="{{ route('events.index') }}">Events</a></li>
+                        <li><a href="{{ route('website.menu') }}">Food Menu</a></li>
+                        <li><a href="{{ route('website.events') }}">Events</a></li>
                         <li><a href="{{ route('login') }}">Book Now</a></li>
                     </ul>
                 </div>
