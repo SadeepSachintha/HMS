@@ -300,6 +300,7 @@
                 contextSourceSelect.prop('disabled', false);
 
                 // Clone and filter original groups
+                let hasMatches = false;
                 originalGroups.each(function() {
                     const group = $(this).clone();
                     const options = group.find('option');
@@ -312,8 +313,14 @@
                     if (filteredOptions.length > 0) {
                         group.empty().append(filteredOptions);
                         contextSourceSelect.append(group);
+                        hasMatches = true;
                     }
                 });
+
+                if (!hasMatches) {
+                    contextSourceSelect.empty();
+                    contextSourceSelect.append('<option value="" disabled selected>No active events or reservations found for this customer</option>');
+                }
 
                 // Clear main charge row and update totals since the source might have changed or cleared
                 $('#main-charge-row').hide();
