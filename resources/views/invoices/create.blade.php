@@ -518,6 +518,21 @@
             updateTotals();
             togglePaymentFields();
 
+            // Set reservation_id or event_id based on selection
+            $('#invoice-context-source').on('change', function() {
+                var selected = $(this).val();
+                if (selected && selected.startsWith('reservation-')) {
+                    $('#reservation_id').val(selected.replace('reservation-', ''));
+                    $('#event_id').val('');
+                } else if (selected && selected.startsWith('event-')) {
+                    $('#event_id').val(selected.replace('event-', ''));
+                    $('#reservation_id').val('');
+                } else {
+                    $('#reservation_id').val('');
+                    $('#event_id').val('');
+                }
+            });
+
             // Initialize on load if a customer is already selected (e.g. old input or query parameters)
             const initialCustomerId = $('#customer_id').val() || "{{ $preselectedCustomerId ?? '' }}";
             if (initialCustomerId) {
@@ -536,21 +551,6 @@
             } else {
                 filterContextSources('');
             }
-
-            // Set reservation_id or event_id based on selection
-            $('#invoice-context-source').on('change', function() {
-                var selected = $(this).val();
-                if (selected && selected.startsWith('reservation-')) {
-                    $('#reservation_id').val(selected.replace('reservation-', ''));
-                    $('#event_id').val('');
-                } else if (selected && selected.startsWith('event-')) {
-                    $('#event_id').val(selected.replace('event-', ''));
-                    $('#reservation_id').val('');
-                } else {
-                    $('#reservation_id').val('');
-                    $('#event_id').val('');
-                }
-            });
         });
     </script>
 @endpush
