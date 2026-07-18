@@ -83,15 +83,34 @@
                             <tfoot>
                                 <tr>
                                     <td colspan="3" class="text-end">Subtotal:</td>
-                                    <td class="text-end">LKR{{ number_format($invoice->subtotal, 2) }}</td>
+                                    <td class="text-end">LKR{{ number_format($invoice->base_amount > 0 ? $invoice->base_amount : $invoice->subtotal, 2) }}</td>
                                 </tr>
+                                @if($invoice->base_amount > 0)
+                                <tr>
+                                    <td colspan="3" class="text-end">Service Charge:</td>
+                                    <td class="text-end">LKR{{ number_format($invoice->service_charge, 2) }}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" class="text-end">SSCL:</td>
+                                    <td class="text-end">LKR{{ number_format($invoice->sscl_amount, 2) }}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" class="text-end">TDL:</td>
+                                    <td class="text-end">LKR{{ number_format($invoice->tdl_amount, 2) }}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" class="text-end">VAT:</td>
+                                    <td class="text-end">LKR{{ number_format($invoice->vat_amount, 2) }}</td>
+                                </tr>
+                                @else
                                 <tr>
                                     <td colspan="3" class="text-end">Tax ({{ $invoice->tax_rate }}%):</td>
                                     <td class="text-end">LKR{{ number_format($invoice->tax_amount, 2) }}</td>
                                 </tr>
+                                @endif
                                 <tr>
-                                    <td colspan="3" class="text-end"><strong>Total:</strong></td>
-                                    <td class="text-end"><strong>LKR{{ number_format($invoice->total_amount, 2) }}</strong></td>
+                                    <td colspan="3" class="text-end"><strong>Grand Total:</strong></td>
+                                    <td class="text-end"><strong class="text-gold">LKR{{ number_format($invoice->grand_total > 0 ? $invoice->grand_total : $invoice->total_amount, 2) }}</strong></td>
                                 </tr>
                             </tfoot>
                         </table>

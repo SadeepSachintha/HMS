@@ -24,6 +24,12 @@ class Invoice extends Model
         'total_amount',
         'status',
         'notes',
+        'base_amount',
+        'service_charge',
+        'sscl_amount',
+        'tdl_amount',
+        'vat_amount',
+        'grand_total',
     ];
 
     protected $casts = [
@@ -33,6 +39,12 @@ class Invoice extends Model
         'tax_rate' => 'decimal:2',
         'tax_amount' => 'decimal:2',
         'total_amount' => 'decimal:2',
+        'base_amount' => 'decimal:2',
+        'service_charge' => 'decimal:2',
+        'sscl_amount' => 'decimal:2',
+        'tdl_amount' => 'decimal:2',
+        'vat_amount' => 'decimal:2',
+        'grand_total' => 'decimal:2',
     ];
 
     public function customer(): BelongsTo

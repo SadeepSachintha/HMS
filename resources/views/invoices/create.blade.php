@@ -158,15 +158,31 @@
 
                             <div class="row mb-3">
                                 <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="tax_rate" class="form-label">Tax Rate (%)</label>
-                                        <input type="number" class="form-control @error('tax_rate') is-invalid @enderror"
-                                            id="tax_rate" name="tax_rate" value="{{ old('tax_rate', 0) }}" min="0"
-                                            max="100" step="0.01">
-                                        @error('tax_rate')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
+                                    <div class="card bg-dark border-secondary">
+                                        <div class="card-header bg-transparent border-secondary text-gold">
+                                            <h6 class="mb-0"><i class="fas fa-percent me-1"></i> Active Tax Configuration</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between mb-2">
+                                                <span>Service Charge Rate:</span>
+                                                <span class="text-gold">{{ number_format($settings->service_charge_rate ?? 10.00, 2) }}%</span>
+                                            </div>
+                                            <div class="d-flex justify-content-between mb-2">
+                                                <span>SSCL Rate:</span>
+                                                <span class="text-gold">{{ number_format($settings->sscl_rate ?? 2.50, 2) }}%</span>
+                                            </div>
+                                            <div class="d-flex justify-content-between mb-2">
+                                                <span>TDL Rate:</span>
+                                                <span class="text-gold">{{ number_format($settings->tdl_rate ?? 1.00, 2) }}%</span>
+                                            </div>
+                                            <div class="d-flex justify-content-between">
+                                                <span>VAT Rate:</span>
+                                                <span class="text-gold">{{ number_format($settings->vat_rate ?? 18.00, 2) }}%</span>
+                                            </div>
+                                        </div>
                                     </div>
+                                    <!-- Hidden legacy tax_rate input set to sum of all rates for validation compatibility -->
+                                    <input type="hidden" id="tax_rate" name="tax_rate" value="{{ ($settings->service_charge_rate ?? 10.00) + ($settings->sscl_rate ?? 2.50) + ($settings->tdl_rate ?? 1.00) + ($settings->vat_rate ?? 18.00) }}">
                                 </div>
                                 <div class="col-md-6">
                                     <div class="card">
@@ -176,12 +192,24 @@
                                                 <span id="subtotal">LKR0.00</span>
                                             </div>
                                             <div class="d-flex justify-content-between mb-2">
-                                                <span>Tax:</span>
-                                                <span id="tax">LKR0.00</span>
+                                                <span>Service Charge:</span>
+                                                <span id="service_charge_display">LKR0.00</span>
                                             </div>
-                                            <div class="d-flex justify-content-between">
-                                                <strong>Total:</strong>
-                                                <strong id="total">LKR0.00</strong>
+                                            <div class="d-flex justify-content-between mb-2">
+                                                <span>SSCL:</span>
+                                                <span id="sscl_display">LKR0.00</span>
+                                            </div>
+                                            <div class="d-flex justify-content-between mb-2">
+                                                <span>TDL:</span>
+                                                <span id="tdl_display">LKR0.00</span>
+                                            </div>
+                                            <div class="d-flex justify-content-between mb-2">
+                                                <span>VAT:</span>
+                                                <span id="vat_display">LKR0.00</span>
+                                            </div>
+                                            <div class="d-flex justify-content-between border-top pt-2">
+                                                <strong>Grand Total:</strong>
+                                                <strong id="total" class="text-gold">LKR0.00</strong>
                                             </div>
                                             <input type="hidden" name="subtotal" id="subtotal-input">
                                             <input type="hidden" name="tax_amount" id="tax-amount-input">
@@ -410,12 +438,23 @@
                     subtotal += parseFloat($(this).val()) || 0;
                 });
 
-                const taxRate = parseFloat($('#tax_rate').val()) || 0;
-                const taxAmount = subtotal * (taxRate / 100);
+                const serviceChargeRate = {{ $settings->service_charge_rate ?? 10.00 }};
+                const ssclRate = {{ $settings->sscl_rate ?? 2.50 }};
+                const tdlRate = {{ $settings->tdl_rate ?? 1.00 }};
+                const vatRate = {{ $settings->vat_rate ?? 18.00 }};
+
+                const serviceCharge = subtotal * (serviceChargeRate / 100);
+                const sscl = subtotal * (ssclRate / 100);
+                const tdl = subtotal * (tdlRate / 100);
+                const vat = subtotal * (vatRate / 100);
+                const taxAmount = serviceCharge + sscl + tdl + vat;
                 const total = subtotal + taxAmount;
 
                 $('#subtotal').text('LKR' + subtotal.toFixed(2));
-                $('#tax').text('LKR' + taxAmount.toFixed(2));
+                $('#service_charge_display').text('LKR' + serviceCharge.toFixed(2));
+                $('#sscl_display').text('LKR' + sscl.toFixed(2));
+                $('#tdl_display').text('LKR' + tdl.toFixed(2));
+                $('#vat_display').text('LKR' + vat.toFixed(2));
                 $('#total').text('LKR' + total.toFixed(2));
 
                 $('#subtotal-input').val(subtotal.toFixed(2));

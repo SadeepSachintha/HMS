@@ -131,12 +131,12 @@
 
                 @role('admin,manager')
                 <!-- Administration -->
-                <li class="{{ Request::is('staff*') || Request::is('users*') || Request::is('reports*') ? 'active' : '' }}">
-                    <a href="#adminSubmenu" data-bs-toggle="collapse" aria-expanded="{{ Request::is('staff*') || Request::is('users*') || Request::is('reports*') ? 'true' : 'false' }}" class="dropdown-toggle">
+                <li class="{{ Request::is('staff*') || Request::is('users*') || Request::is('reports*') || Request::is('settings*') ? 'active' : '' }}">
+                    <a href="#adminSubmenu" data-bs-toggle="collapse" aria-expanded="{{ Request::is('staff*') || Request::is('users*') || Request::is('reports*') || Request::is('settings*') ? 'true' : 'false' }}" class="dropdown-toggle">
                         <i class="fas fa-user-shield"></i>
                         <span>Administration</span>
                     </a>
-                    <ul class="collapse list-unstyled {{ Request::is('staff*') || Request::is('users*') || Request::is('reports*') ? 'show' : '' }}" id="adminSubmenu">
+                    <ul class="collapse list-unstyled {{ Request::is('staff*') || Request::is('users*') || Request::is('reports*') || Request::is('settings*') ? 'show' : '' }}" id="adminSubmenu">
                         <li class="{{ Request::is('staff*') ? 'active' : '' }}">
                             <a href="{{ route('staff.index') }}">
                                 <i class="fas fa-user-tie"></i>
@@ -153,6 +153,12 @@
                             <a href="{{ route('reports.index') }}">
                                 <i class="fas fa-chart-bar"></i>
                                 <span>Reports</span>
+                            </a>
+                        </li>
+                        <li class="{{ Request::is('settings*') ? 'active' : '' }}">
+                            <a href="{{ route('settings.index') }}">
+                                <i class="fas fa-cogs"></i>
+                                <span>Settings</span>
                             </a>
                         </li>
                     </ul>

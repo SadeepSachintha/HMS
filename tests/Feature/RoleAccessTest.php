@@ -33,6 +33,7 @@ class RoleAccessTest extends TestCase
             ['users.index', ['admin', 'manager']],
             ['notifications.index', ['admin', 'manager', 'staff', 'guest']],
             ['alerts.index', ['admin', 'manager', 'staff', 'guest']],
+            ['settings.index', ['admin', 'manager']],
         ];
     }
 

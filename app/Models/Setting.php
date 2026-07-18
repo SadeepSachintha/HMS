@@ -35,10 +35,18 @@ class Setting extends Model
         'check_out_time',
         'email_notifications',
         'sms_notifications',
+        'service_charge_rate',
+        'sscl_rate',
+        'tdl_rate',
+        'vat_rate',
     ];
 
     protected $casts = [
         'email_notifications' => 'boolean',
         'sms_notifications' => 'boolean',
+        'service_charge_rate' => 'float',
+        'sscl_rate' => 'float',
+        'tdl_rate' => 'float',
+        'vat_rate' => 'float',
     ];
 }

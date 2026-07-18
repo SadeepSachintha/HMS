@@ -79,9 +79,11 @@ class InvoiceController extends Controller
         $preselectedReservationId = $request->query('reservation_id');
         $preselectedEventId = $request->query('event_id');
 
+        $settings = \App\Models\Setting::first() ?? new \App\Models\Setting();
+
         return view('invoices.create', compact(
             'customers', 'events', 'reservations', 'foodItems',
-            'preselectedCustomerId', 'preselectedReservationId', 'preselectedEventId'
+            'preselectedCustomerId', 'preselectedReservationId', 'preselectedEventId', 'settings'
         ));
     }
 
@@ -119,8 +121,32 @@ class InvoiceController extends Controller
             }
         }
 
+        // Fetch settings for dynamic tax calculation
+        $settings = \App\Models\Setting::first() ?? new \App\Models\Setting();
+        $subtotal = (float)$validated['subtotal'];
+
+        $serviceCharge = $subtotal * ($settings->service_charge_rate ?? 10.00) / 100;
+        $sscl = $subtotal * ($settings->sscl_rate ?? 2.50) / 100;
+        $tdl = $subtotal * ($settings->tdl_rate ?? 1.00) / 100;
+        $vat = $subtotal * ($settings->vat_rate ?? 18.00) / 100;
+        $grandTotal = $subtotal + $serviceCharge + $sscl + $tdl + $vat;
+
         // We create the invoice. We don't save record_payment, payment_method, amount_paid, and main_charge to invoice model directly
         $invoiceData = collect($validated)->except(['record_payment', 'payment_method', 'amount_paid', 'main_charge'])->toArray();
+        
+        $invoiceData['base_amount'] = $subtotal;
+        $invoiceData['service_charge'] = $serviceCharge;
+        $invoiceData['sscl_amount'] = $sscl;
+        $invoiceData['tdl_amount'] = $tdl;
+        $invoiceData['vat_amount'] = $vat;
+        $invoiceData['grand_total'] = $grandTotal;
+
+        // Legacy compatibility
+        $invoiceData['subtotal'] = $subtotal;
+        $invoiceData['tax_rate'] = ($settings->service_charge_rate ?? 10.00) + ($settings->sscl_rate ?? 2.50) + ($settings->tdl_rate ?? 1.00) + ($settings->vat_rate ?? 18.00);
+        $invoiceData['tax_amount'] = $serviceCharge + $sscl + $tdl + $vat;
+        $invoiceData['total_amount'] = $grandTotal;
+
         $invoice = Invoice::create($invoiceData);
 
         // Save main charge as invoice item

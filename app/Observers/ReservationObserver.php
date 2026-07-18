@@ -34,19 +34,32 @@ class ReservationObserver
     private function generateInvoice(Reservation $reservation): void
     {
         if ($reservation->status === 'confirmed' && !$reservation->invoice) {
-            $total = $reservation->total_price;
+            $subtotal = $reservation->total_price;
             
+            $settings = \App\Models\Setting::first() ?? new \App\Models\Setting();
+            $serviceCharge = $subtotal * ($settings->service_charge_rate ?? 10.00) / 100;
+            $sscl = $subtotal * ($settings->sscl_rate ?? 2.50) / 100;
+            $tdl = $subtotal * ($settings->tdl_rate ?? 1.00) / 100;
+            $vat = $subtotal * ($settings->vat_rate ?? 18.00) / 100;
+            $grandTotal = $subtotal + $serviceCharge + $sscl + $tdl + $vat;
+
             \App\Models\Invoice::create([
                 'customer_id' => $reservation->customer_id,
                 'reservation_id' => $reservation->id,
                 'invoice_date' => now(),
                 'due_date' => now()->addDays(7), // Standard 7 days due date
-                'subtotal' => $total,
-                'tax_rate' => 0,
-                'tax_amount' => 0,
-                'total_amount' => $total,
+                'subtotal' => $subtotal,
+                'tax_rate' => ($settings->service_charge_rate ?? 10.00) + ($settings->sscl_rate ?? 2.50) + ($settings->tdl_rate ?? 1.00) + ($settings->vat_rate ?? 18.00),
+                'tax_amount' => $serviceCharge + $sscl + $tdl + $vat,
+                'total_amount' => $grandTotal,
                 'status' => 'sent',
-                'notes' => 'Automatically generated for Reservation #' . $reservation->id
+                'notes' => 'Automatically generated for Reservation #' . $reservation->id,
+                'base_amount' => $subtotal,
+                'service_charge' => $serviceCharge,
+                'sscl_amount' => $sscl,
+                'tdl_amount' => $tdl,
+                'vat_amount' => $vat,
+                'grand_total' => $grandTotal,
             ]);
         }
     }

@@ -19,7 +19,8 @@ use App\Http\Controllers\{
     WebsiteController,
     HomeController,
     UserController,
-    EventLocationController
+    EventLocationController,
+    SettingsController
 };
 use App\Http\Controllers\Auth\LoginController;
 
@@ -148,4 +149,8 @@ Route::middleware(['auth', 'role:admin,manager'])->group(function () {
     Route::get('staff/{staff}/edit', [StaffController::class, 'edit'])->name('staff.edit');
     Route::put('staff/{staff}', [StaffController::class, 'update'])->name('staff.update');
     Route::delete('staff/{staff}', [StaffController::class, 'destroy'])->name('staff.destroy');
+
+    // System Settings
+    Route::get('settings', [SettingsController::class, 'index'])->name('settings.index');
+    Route::post('settings', [SettingsController::class, 'update'])->name('settings.update');
 });

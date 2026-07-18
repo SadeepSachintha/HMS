@@ -50,6 +50,10 @@ class SettingsController extends Controller
             'contact_phone' => 'required|string|max:20',
             'check_in_time' => 'required',
             'check_out_time' => 'required',
+            'service_charge_rate' => 'required|numeric|min:0|max:100',
+            'sscl_rate' => 'required|numeric|min:0|max:100',
+            'tdl_rate' => 'required|numeric|min:0|max:100',
+            'vat_rate' => 'required|numeric|min:0|max:100',
         ]);
 
         $settings = Setting::first();
@@ -65,6 +69,10 @@ class SettingsController extends Controller
         $settings->check_out_time = $request->check_out_time;
         $settings->email_notifications = $request->has('email_notifications');
         $settings->sms_notifications = $request->has('sms_notifications');
+        $settings->service_charge_rate = $request->service_charge_rate;
+        $settings->sscl_rate = $request->sscl_rate;
+        $settings->tdl_rate = $request->tdl_rate;
+        $settings->vat_rate = $request->vat_rate;
         $settings->save();
 
         return redirect()->route('settings.index')->with('success', 'Settings updated successfully.');
