@@ -81,7 +81,8 @@
                             <div class="mb-3">
                                 <label for="due_date" class="form-label">Due Date</label>
                                 <input type="date" class="form-control @error('due_date') is-invalid @enderror"
-                                    id="due_date" name="due_date" value="{{ old('due_date') }}" required>
+                                    id="due_date" name="due_date" value="{{ old('due_date', date('Y-m-d', strtotime('+7 days'))) }}"
+                                    min="{{ old('invoice_date', date('Y-m-d')) }}" required>
                                 @error('due_date')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -378,9 +379,21 @@
             bindItemSourceDropdown($('.invoice-item').first());
             toggleRemoveButtons();
 
-            // Set minimum due date based on invoice date
+            // Set minimum due date based on invoice date and auto-fill +7 days
             $('#invoice_date').change(function() {
-                $('#due_date').attr('min', $(this).val());
+                const invoiceDateVal = $(this).val();
+                if (invoiceDateVal) {
+                    $('#due_date').attr('min', invoiceDateVal);
+                    
+                    const date = new Date(invoiceDateVal);
+                    date.setDate(date.getDate() + 7);
+                    
+                    const year = date.getFullYear();
+                    const month = String(date.getMonth() + 1).padStart(2, '0');
+                    const day = String(date.getDate()).padStart(2, '0');
+                    
+                    $('#due_date').val(`${year}-${month}-${day}`);
+                }
             });
 
             // Add new item
