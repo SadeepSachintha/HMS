@@ -43,6 +43,7 @@ A comprehensive, enterprise-grade Hotel Management System built on **Laravel 8**
 
 ### 💳 Billing & Financials
 - **Automated Invoicing** — Invoices are auto-generated via a Laravel Observer when a reservation is confirmed; zero manual billing overhead.
+- **Customizable Taxes & Levies** — Dynamic, customizable tax percentages (Service Charge, SSCL, TDL, VAT) configurable via the Admin Settings screen. The system calculates client-side breakdowns during creation and stores detailed itemized amounts on save.
 - **Reservation Item Preservation** — The primary event/reservation charge details are automatically created and saved as a distinct invoice item on invoice generation.
 - **Full Payment Policy** — Enforces full invoice settlement in a single transaction (no partial payments).
 - **Payment Methods** — Cash, Card, Bank Transfer, and Cheque supported with manual payment recording.
@@ -89,13 +90,13 @@ A comprehensive, enterprise-grade Hotel Management System built on **Laravel 8**
 | `event_locations` | Named hotel facilities/venues |
 | `event_staff` | Pivot table linking staff to events with custom roles |
 | `food_items` | Hotel restaurant/room-service menu items |
-| `invoices` | Auto-generated invoices per confirmed reservation |
+| `invoices` | Invoices containing calculated detailed tax amount breakdowns and status tracking |
 | `invoice_items` | Line items composing each invoice |
 | `payments` | Payment records against invoices |
 | `staff` | Internal staff profiles linked to user accounts |
 | `alerts` | System alert records for the notification panel |
 | `system_notifications` | Broadcast notification log |
-| `settings` | Application configuration key-value store |
+| `settings` | Global hotel details, times, notification switches, and customizable tax rates |
 | `sessions` | Database-backed session management |
 
 ---
