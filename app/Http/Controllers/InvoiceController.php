@@ -255,10 +255,7 @@ class InvoiceController extends Controller
 
     public function destroy(Invoice $invoice)
     {
-        $invoice->delete();
-
-        return redirect()->route('invoices.index')
-            ->with('success', 'Invoice deleted successfully.');
+        abort(403, 'Deletion is disabled.');
     }
     //PDF generation and download
     public function download(Invoice $invoice)

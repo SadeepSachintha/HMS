@@ -4,9 +4,11 @@
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="page-title mb-0">Room Types</h2>
-        <a href="{{ route('room-types.create') }}" class="btn btn-primary">
-            <i class="fas fa-plus me-1"></i> Add New Room Type
-        </a>
+        @if(auth()->user()->isAdmin() || auth()->user()->isManager())
+            <a href="{{ route('room-types.create') }}" class="btn btn-primary">
+                <i class="fas fa-plus me-1"></i> Add New Room Type
+            </a>
+        @endif
     </div>
 
     <div class="row">
@@ -55,23 +57,17 @@
                                                 <a href="{{ route('room-types.show', $roomType) }}" class="btn btn-sm btn-info text-white d-inline-flex align-items-center" title="View">
                                                     <i class="fas fa-eye me-1"></i>
                                                 </a>
-                                                <a href="{{ route('room-types.edit', $roomType) }}" class="btn btn-sm btn-primary d-inline-flex align-items-center" title="Edit">
-                                                    <i class="fas fa-edit me-1"></i>
-                                                </a>
-                                                <form action="{{ route('room-types.destroy', $roomType) }}" method="POST" class="d-inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-sm btn-danger d-inline-flex align-items-center"
-                                                            onclick="return confirm('Are you sure you want to delete this room type?')">
-                                                        <i class="fas fa-trash me-1"></i>
-                                                    </button>
-                                                </form>
+                                                @if(auth()->user()->isAdmin() || auth()->user()->isManager())
+                                                    <a href="{{ route('room-types.edit', $roomType) }}" class="btn btn-sm btn-primary d-inline-flex align-items-center" title="Edit">
+                                                        <i class="fas fa-edit me-1"></i>
+                                                    </a>
+                                                @endif
                                             </div>
                                         </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="4" class="text-center py-4">
+                                        <td colspan="3" class="text-center py-4">
                                             <div class="d-flex flex-column align-items-center">
                                                 <i class="fas fa-bed fa-3x text-muted mb-3"></i>
                                                 <h5 class="text-muted">No room types found</h5>

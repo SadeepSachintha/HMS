@@ -5,9 +5,11 @@
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-white">Customer Details</h1>
         <div>
-            <a href="{{ route('customers.edit', $customer->id) }}" class="btn btn-primary">
-                <i class="fas fa-edit fa-sm text-white-50"></i> Edit Customer
-            </a>
+            @if(auth()->user()->isAdmin() || auth()->user()->isManager())
+                <a href="{{ route('customers.edit', $customer->id) }}" class="btn btn-primary">
+                    <i class="fas fa-edit fa-sm text-white-50"></i> Edit Customer
+                </a>
+            @endif
             <a href="{{ route('customers.index') }}" class="btn btn-secondary">
                 <i class="fas fa-arrow-left fa-sm text-white-50"></i> Back to List
             </a>

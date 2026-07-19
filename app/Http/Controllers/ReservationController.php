@@ -178,15 +178,7 @@ class ReservationController extends Controller
      */
     public function destroy(Reservation $reservation)
     {
-        // Role-based access control: Only staff/admin can delete
-        if (auth()->user()->isGuest()) {
-            abort(403, 'Guests cannot delete reservations.');
-        }
-
-        $reservation->delete();
-
-        return redirect()->route('reservations.index')
-            ->with('success', 'Reservation deleted successfully.');
+        abort(403, 'Deletion is disabled.');
     }
 
     /**

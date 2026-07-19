@@ -148,17 +148,11 @@ class RoomTypeController extends Controller
 
     public function destroy(RoomType $roomType)
     {
-        // Images will be automatically deleted through the model's boot method
-        $roomType->delete();
-
-        return redirect()->route('room-types.index')
-            ->with('success', 'Room type deleted successfully.');
+        abort(403, 'Deletion is disabled.');
     }
 
     public function deleteImage($id)
     {
-        $image = RoomTypeImage::findOrFail($id);
-        $image->delete(); // Will trigger the deleting event in the model
-        return response()->json(['success' => true]);
+        abort(403, 'Deletion is disabled.');
     }
 }

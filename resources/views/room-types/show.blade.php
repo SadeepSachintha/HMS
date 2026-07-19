@@ -12,9 +12,11 @@
                             <a href="{{ route('room-types.index') }}" class="btn btn-secondary">
                                 <i class="fas fa-arrow-left me-1"></i> Back to List
                             </a>
-                            <a href="{{ route('room-types.edit', $roomType) }}" class="btn btn-primary">
-                                <i class="fas fa-edit me-1"></i> Edit
-                            </a>
+                            @if(auth()->user()->isAdmin() || auth()->user()->isManager())
+                                <a href="{{ route('room-types.edit', $roomType) }}" class="btn btn-primary">
+                                    <i class="fas fa-edit me-1"></i> Edit
+                                </a>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -130,17 +132,6 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="mt-4">
-                        <form action="{{ route('room-types.destroy', $roomType) }}" method="POST" class="d-inline"
-                              onsubmit="return confirm('Are you sure you want to delete this room type? This action cannot be undone.');">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger">
-                                <i class="fas fa-trash me-1"></i> Delete Room Type
-                            </button>
-                        </form>
                     </div>
                 </div>
             </div>

@@ -165,12 +165,6 @@ class RoomController extends Controller
      */
     public function destroy(Room $room)
     {
-        // Broadcast the room deleted event before deleting
-        broadcast(new RoomEvent($room, 'deleted'))->toOthers();
-
-        $room->delete();
-
-        return redirect()->route('rooms.index')
-            ->with('success', 'Room deleted successfully.');
+        abort(403, 'Deletion is disabled.');
     }
 }

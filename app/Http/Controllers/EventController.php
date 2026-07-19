@@ -151,10 +151,7 @@ class EventController extends Controller
 
     public function destroy(Event $event)
     {
-        $event->delete();
-
-        return redirect()->route('events.index')
-            ->with('success', 'Event deleted successfully.');
+        abort(403, 'Deletion is disabled.');
     }
 
     public function calendar()

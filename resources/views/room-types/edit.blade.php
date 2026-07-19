@@ -93,10 +93,7 @@
                                                                    name="image_orders[{{ $image->id }}]"
                                                                    value="{{ $image->display_order }}"
                                                                    placeholder="Order">
-                                                            <button type="button" class="btn btn-danger btn-sm delete-image"
-                                                                    data-image-id="{{ $image->id }}">
-                                                                <i class="fas fa-trash"></i>
-                                                            </button>
+
                                                         </div>
                                                     </div>
                                                 </div>

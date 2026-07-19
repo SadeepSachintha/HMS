@@ -91,16 +91,11 @@
                                 <a href="{{ route('customers.show', $customer->id) }}" class="btn btn-info btn-sm" title="View">
                                     <i class="fas fa-eye"></i>
                                 </a>
-                                <a href="{{ route('customers.edit', $customer->id) }}" class="btn btn-primary btn-sm" title="Edit">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <form action="{{ route('customers.destroy', $customer->id) }}" method="POST" class="d-inline">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm" title="Delete" onclick="return confirm('Are you sure you want to delete this customer?')">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </form>
+                                @if(auth()->user()->isAdmin() || auth()->user()->isManager())
+                                    <a href="{{ route('customers.edit', $customer->id) }}" class="btn btn-primary btn-sm" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                @endif
                             </td>
                         </tr>
                         @empty

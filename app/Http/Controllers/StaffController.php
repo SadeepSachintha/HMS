@@ -145,9 +145,6 @@ class StaffController extends Controller
 
     public function destroy(Staff $staff)
     {
-        $staff->delete();
-
-        return redirect()->route('staff.index')
-            ->with('success', 'Staff member deleted successfully.');
+        abort(403, 'Deletion is disabled.');
     }
 }

@@ -183,18 +183,13 @@
                     </div>
                     @endif
 
+                    @if(auth()->user()->isAdmin() || auth()->user()->isManager())
                     <div class="mt-4">
                         <a href="{{ route('rooms.edit', $room) }}" class="btn btn-primary me-2">
                             <i class="fas fa-edit me-1"></i> Edit Room
                         </a>
-                        <form action="{{ route('rooms.destroy', $room) }}" method="POST" class="d-inline">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this room?')">
-                                <i class="fas fa-trash me-1"></i> Delete Room
-                            </button>
-                        </form>
                     </div>
+                    @endif
                 </div>
             </div>
         </div>

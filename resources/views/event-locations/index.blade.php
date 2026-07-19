@@ -4,9 +4,11 @@
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="page-title mb-0">Event Locations</h2>
-        <a href="{{ route('event-locations.create') }}" class="btn btn-primary">
-            <i class="fas fa-plus me-1"></i> Add New Location
-        </a>
+        @if(auth()->user()->isAdmin() || auth()->user()->isManager())
+            <a href="{{ route('event-locations.create') }}" class="btn btn-primary">
+                <i class="fas fa-plus me-1"></i> Add New Location
+            </a>
+        @endif
     </div>
 
     <div class="row">
@@ -44,17 +46,11 @@
                                         </td>
                                         <td class="align-middle">
                                             <div class="d-flex gap-2">
-                                                <a href="{{ route('event-locations.edit', $location) }}" class="btn btn-sm btn-primary d-inline-flex align-items-center" title="Edit">
-                                                    <i class="fas fa-edit me-1"></i>
-                                                </a>
-                                                <form action="{{ route('event-locations.destroy', $location) }}" method="POST" class="d-inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-sm btn-danger d-inline-flex align-items-center" title="Delete"
-                                                            onclick="return confirm('Are you sure you want to delete this location?')">
-                                                        <i class="fas fa-trash me-1"></i>
-                                                    </button>
-                                                </form>
+                                                @if(auth()->user()->isAdmin() || auth()->user()->isManager())
+                                                    <a href="{{ route('event-locations.edit', $location) }}" class="btn btn-sm btn-primary d-inline-flex align-items-center" title="Edit">
+                                                        <i class="fas fa-edit me-1"></i>
+                                                    </a>
+                                                @endif
                                             </div>
                                         </td>
                                     </tr>

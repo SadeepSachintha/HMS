@@ -12,19 +12,13 @@
                     <div class="card-header">
                         <div class="d-flex justify-content-between align-items-center">
                             <h4 class="mb-0">Event Details</h4>
-                            <div>
-                                <a href="{{ route('events.edit', $event) }}" class="btn btn-warning">
-                                    <i class="fas fa-edit"></i> Edit
-                                </a>
-                                <form action="{{ route('events.destroy', $event) }}" method="POST" class="d-inline">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger"
-                                        onclick="return confirm('Are you sure you want to delete this event?')">
-                                        <i class="fas fa-trash"></i> Delete
-                                    </button>
-                                </form>
-                            </div>
+                            @if(auth()->user()->isAdmin() || auth()->user()->isManager())
+                                <div>
+                                    <a href="{{ route('events.edit', $event) }}" class="btn btn-warning">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
+                                </div>
+                            @endif
                         </div>
                     </div>
                     <div class="card-body">

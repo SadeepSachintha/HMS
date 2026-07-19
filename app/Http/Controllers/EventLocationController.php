@@ -137,20 +137,6 @@ class EventLocationController extends Controller
      */
     public function destroy(EventLocation $eventLocation)
     {
-        // Integrity check: prevent deletion of locations containing events
-        if ($eventLocation->events()->count() > 0) {
-            return redirect()->route('event-locations.index')
-                ->with('error', 'Cannot delete location as it has assigned events.');
-        }
-
-        // Delete image if exists
-        if ($eventLocation->image_path) {
-            \Illuminate\Support\Facades\Storage::disk('public')->delete($eventLocation->image_path);
-        }
-
-        $eventLocation->delete();
-
-        return redirect()->route('event-locations.index')
-            ->with('success', 'Location deleted successfully.');
+        abort(403, 'Deletion is disabled.');
     }
 }

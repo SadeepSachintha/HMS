@@ -261,14 +261,7 @@ class PaymentController extends Controller
      */
     public function destroy(Payment $payment)
     {
-        if (auth()->user()->isGuest()) {
-            abort(403);
-        }
-        
-        $payment->delete();
-
-        return redirect()->route('payments.index')
-            ->with('success', 'Payment deleted successfully.');
+        abort(403, 'Deletion is disabled.');
     }
 
     /**

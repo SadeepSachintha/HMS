@@ -128,9 +128,6 @@ class FoodItemController extends Controller
 
     public function destroy(FoodItem $foodItem)
     {
-        $foodItem->delete();
-
-        return redirect()->route('food-items.index')
-            ->with('success', 'Food item deleted successfully.');
+        abort(403, 'Deletion is disabled.');
     }
 }

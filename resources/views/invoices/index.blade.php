@@ -109,9 +109,11 @@
                                         <a href="{{ route('invoices.show', $invoice) }}" class="btn btn-sm btn-info" title="View">
                                             <i class="fas fa-eye"></i>
                                         </a>
-                                        <a href="{{ route('invoices.edit', $invoice) }}" class="btn btn-sm btn-warning" title="Edit Status & Notes">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
+                                        @if(auth()->user()->isAdmin() || auth()->user()->isManager())
+                                            <a href="{{ route('invoices.edit', $invoice) }}" class="btn btn-sm btn-warning" title="Edit Status & Notes">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                        @endif
                                         @if($invoice->status !== 'paid' && $invoice->status !== 'cancelled')
                                             <a href="{{ route('payments.create', ['invoice_id' => $invoice->id]) }}" class="btn btn-sm btn-success" title="Pay">
                                                 <i class="fas fa-credit-card"></i>
@@ -124,13 +126,6 @@
                                         <a href="{{ route('invoices.download', $invoice) }}" class="btn btn-sm btn-secondary" title="Download">
                                             <i class="fas fa-download"></i>
                                         </a>
-                                        <form action="{{ route('invoices.destroy', $invoice) }}" method="POST" class="d-inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-danger" title="Delete" onclick="return confirm('Are you sure you want to delete this invoice?')">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </form>
                                     </div>
                                 </td>
                             </tr>

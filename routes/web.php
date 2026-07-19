@@ -84,7 +84,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/unread-count', [AlertController::class, 'getUnreadCount'])->name('alerts.unread-count');
     });
 });
-
 // =========================================================================
 // Core Business Logic (Staff/Manager/Admin)
 // =========================================================================
@@ -97,27 +96,23 @@ Route::middleware(['auth', 'role:admin,manager,staff'])->group(function () {
         Route::get('/events', [ReservationController::class, 'events'])->name('reservations.events');
         Route::get('/{reservation}/details', [ReservationController::class, 'details'])->name('reservations.details');
     });
-    Route::resource('reservations', ReservationController::class);
+    Route::resource('reservations', ReservationController::class)->only(['index', 'show', 'create', 'store']);
 
-    // Inventory & Facility Management
-    Route::resource('customers', CustomerController::class);
-    Route::resource('rooms', RoomController::class);
-    Route::resource('room-types', RoomTypeController::class);
-    Route::delete('/room-types/images/{id}', [RoomTypeController::class, 'deleteImage'])->name('room-types.images.destroy');
-    Route::resource('food-items', FoodItemController::class);
-    Route::resource('event-locations', EventLocationController::class);
+    // Inventory & Facility Management (Read-only for staff)
+    Route::resource('customers', CustomerController::class)->only(['index', 'show', 'create', 'store']);
+    Route::resource('rooms', RoomController::class)->only(['index', 'show']);
+    Route::resource('room-types', RoomTypeController::class)->only(['index', 'show']);
+    Route::resource('food-items', FoodItemController::class)->only(['index', 'show']);
+    Route::resource('event-locations', EventLocationController::class)->only(['index', 'show']);
 
-    // Events Management
-    Route::resource('events', EventController::class);
+    // Events Management (Read-only for staff)
+    Route::resource('events', EventController::class)->only(['index', 'show']);
     Route::get('/events/calendar', [EventController::class, 'calendar'])->name('events.calendar');
-    Route::post('/events/{event}/staff/assign', [EventController::class, 'assignStaff'])->name('events.staff.assign');
-    Route::delete('/events/{event}/staff/{staff}/remove', [EventController::class, 'removeStaff'])->name('events.staff.remove');
 
     // Financials: Payments & Invoices
-    Route::resource('payments', PaymentController::class);
+    Route::resource('payments', PaymentController::class)->only(['index', 'show', 'create', 'store']);
     Route::get('payments/{payment}/receipt', [PaymentController::class, 'receipt'])->name('payments.receipt');
-    Route::resource('invoices', InvoiceController::class);
-    Route::put('invoices/{invoice}/update-status-notes', [InvoiceController::class, 'updateStatusNotes'])->name('invoices.update-status-notes');
+    Route::resource('invoices', InvoiceController::class)->only(['index', 'show', 'create', 'store']);
     Route::get('invoices/{invoice}/download', [InvoiceController::class, 'download'])->name('invoices.download');
 
     // Reports
@@ -130,6 +125,27 @@ Route::middleware(['auth', 'role:admin,manager,staff'])->group(function () {
 
     // Staff Directory (View Only)
     Route::get('staff', [StaffController::class, 'index'])->name('staff.index');
+
+    // =========================================================================
+    // Admin & Manager Only Operational Actions (Creations & Edits)
+    // =========================================================================
+    Route::middleware(['role:admin,manager'])->group(function () {
+        // Edit & Update for common creations
+        Route::resource('reservations', ReservationController::class)->only(['edit', 'update']);
+        Route::resource('customers', CustomerController::class)->only(['edit', 'update']);
+        Route::resource('payments', PaymentController::class)->only(['edit', 'update']);
+        Route::resource('invoices', InvoiceController::class)->only(['edit', 'update']);
+        Route::put('invoices/{invoice}/update-status-notes', [InvoiceController::class, 'updateStatusNotes'])->name('invoices.update-status-notes');
+
+        // Full CRUD (excluding index/show and destroy) for restricted items
+        Route::resource('rooms', RoomController::class)->except(['index', 'show', 'destroy']);
+        Route::resource('room-types', RoomTypeController::class)->except(['index', 'show', 'destroy']);
+        Route::resource('food-items', FoodItemController::class)->except(['index', 'show', 'destroy']);
+        Route::resource('event-locations', EventLocationController::class)->except(['index', 'show', 'destroy']);
+        Route::resource('events', EventController::class)->except(['index', 'show', 'destroy']);
+        Route::post('/events/{event}/staff/assign', [EventController::class, 'assignStaff'])->name('events.staff.assign');
+        Route::delete('/events/{event}/staff/{staff}/remove', [EventController::class, 'removeStaff'])->name('events.staff.remove');
+    });
 });
 
 // =========================================================================
@@ -138,17 +154,16 @@ Route::middleware(['auth', 'role:admin,manager,staff'])->group(function () {
 Route::middleware(['auth', 'role:admin,manager'])->group(function () {
     
     // User Account Management
-    Route::resource('users', UserController::class);
+    Route::resource('users', UserController::class)->except(['destroy']);
     Route::post('users/{user}/reset-password', [UserController::class, 'resetPassword'])->name('users.reset-password');
     Route::post('users/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('users.toggle-status');
 
-    // Staff Human Resources
+    // Staff Human Resources (Excluding Destroy)
     Route::get('staff/create', [StaffController::class, 'create'])->name('staff.create');
     Route::post('staff', [StaffController::class, 'store'])->name('staff.store');
     Route::get('staff/{staff}', [StaffController::class, 'show'])->name('staff.show');
     Route::get('staff/{staff}/edit', [StaffController::class, 'edit'])->name('staff.edit');
     Route::put('staff/{staff}', [StaffController::class, 'update'])->name('staff.update');
-    Route::delete('staff/{staff}', [StaffController::class, 'destroy'])->name('staff.destroy');
 
     // System Settings
     Route::get('settings', [SettingsController::class, 'index'])->name('settings.index');

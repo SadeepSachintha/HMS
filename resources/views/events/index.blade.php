@@ -22,9 +22,11 @@
                     </a>
                 @endif
             </form>
-            <a href="{{ route('events.create') }}" class="btn btn-primary">
-                <i class="fas fa-plus"></i> Add New Event
-            </a>
+            @if(auth()->user()->isAdmin() || auth()->user()->isManager())
+                <a href="{{ route('events.create') }}" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Add New Event
+                </a>
+            @endif
         </div>
     </div>
 
@@ -129,22 +131,17 @@
                                                 <a href="{{ route('events.show', $event) }}" class="btn btn-sm btn-info" title="View">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
-                                                <a href="{{ route('events.edit', $event) }}" class="btn btn-sm btn-warning" title="Edit">
-                                                    <i class="fas fa-edit"></i>
-                                                </a>
-                                                <form action="{{ route('events.destroy', $event) }}" method="POST" class="d-inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-sm btn-danger" title="Delete" onclick="return confirm('Are you sure you want to delete this event?')">
-                                                        <i class="fas fa-trash"></i>
-                                                    </button>
-                                                </form>
+                                                @if(auth()->user()->isAdmin() || auth()->user()->isManager())
+                                                    <a href="{{ route('events.edit', $event) }}" class="btn btn-sm btn-warning" title="Edit">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                @endif
                                             </div>
                                         </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="7" class="text-center">
+                                        <td colspan="6" class="text-center">
                                             @if(request('search'))
                                                 No events found matching your search criteria.
                                             @else
