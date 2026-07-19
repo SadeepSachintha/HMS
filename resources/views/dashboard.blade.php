@@ -236,12 +236,14 @@
                                 <span>Room Status</span>
                             </a>
                         </div>
+                        @if(auth()->user()->isAdmin() || auth()->user()->isManager())
                         <div class="col-6">
                             <a href="{{ route('reports.index') }}" class="quick-action-btn text-decoration-none">
                                 <i class="fas fa-file-alt text-primary"></i>
                                 <span>Reports</span>
                             </a>
                         </div>
+                        @endif
                     </div>
                 </div>
                 
