@@ -2,7 +2,15 @@
 
 
 
+
+
+
+
 // =========================================================================
+
+
+
+
 
 
 
@@ -10,7 +18,15 @@
 
 
 
+
+
+
+
 // - Universal authenticated endpoints are registered under Route::middleware(['auth'])
+
+
+
+
 
 
 
@@ -18,7 +34,15 @@
 
 
 
+
+
+
+
 // - Admin and Manager operational routes are registered under Route::middleware(['auth', 'role:admin,manager'])
+
+
+
+
 
 
 
@@ -26,7 +50,15 @@
 
 
 
+
+
+
+
 // =========================================================================
+
+
+
+
 
 
 
@@ -34,7 +66,15 @@ use Illuminate\Support\Facades\Route;
 
 
 
+
+
+
+
 use Illuminate\Support\Facades\Auth;
+
+
+
+
 
 
 
@@ -42,7 +82,15 @@ use App\Http\Controllers\{
 
 
 
+
+
+
+
     DashboardController,
+
+
+
+
 
 
 
@@ -50,7 +98,15 @@ use App\Http\Controllers\{
 
 
 
+
+
+
+
     CustomerController,
+
+
+
+
 
 
 
@@ -58,7 +114,15 @@ use App\Http\Controllers\{
 
 
 
+
+
+
+
     RoomTypeController,
+
+
+
+
 
 
 
@@ -66,7 +130,15 @@ use App\Http\Controllers\{
 
 
 
+
+
+
+
     EventController,
+
+
+
+
 
 
 
@@ -74,7 +146,15 @@ use App\Http\Controllers\{
 
 
 
+
+
+
+
     PaymentController,
+
+
+
+
 
 
 
@@ -82,7 +162,15 @@ use App\Http\Controllers\{
 
 
 
+
+
+
+
     ReportController,
+
+
+
+
 
 
 
@@ -90,7 +178,15 @@ use App\Http\Controllers\{
 
 
 
+
+
+
+
     AlertController,
+
+
+
+
 
 
 
@@ -98,7 +194,15 @@ use App\Http\Controllers\{
 
 
 
+
+
+
+
     HomeController,
+
+
+
+
 
 
 
@@ -106,7 +210,15 @@ use App\Http\Controllers\{
 
 
 
+
+
+
+
     EventLocationController,
+
+
+
+
 
 
 
@@ -114,7 +226,15 @@ use App\Http\Controllers\{
 
 
 
+
+
+
+
     ActivityLogController
+
+
+
+
 
 
 
@@ -122,7 +242,15 @@ use App\Http\Controllers\{
 
 
 
+
+
+
+
 use App\Http\Controllers\Auth\LoginController;
+
+
+
+
 
 
 
@@ -130,7 +258,15 @@ use App\Http\Controllers\Auth\LoginController;
 
 
 
+
+
+
+
 |--------------------------------------------------------------------------
+
+
+
+
 
 
 
@@ -138,11 +274,23 @@ use App\Http\Controllers\Auth\LoginController;
 
 
 
+
+
+
+
 |--------------------------------------------------------------------------
 
 
 
+
+
+
+
 |
+
+
+
+
 
 
 
@@ -150,7 +298,15 @@ use App\Http\Controllers\Auth\LoginController;
 
 
 
+
+
+
+
 | routes are loaded by the RouteServiceProvider and all of them will
+
+
+
+
 
 
 
@@ -158,7 +314,15 @@ use App\Http\Controllers\Auth\LoginController;
 
 
 
+
+
+
+
 |
+
+
+
+
 
 
 
@@ -166,7 +330,15 @@ use App\Http\Controllers\Auth\LoginController;
 
 
 
+
+
+
+
 // =========================================================================
+
+
+
+
 
 
 
@@ -174,7 +346,15 @@ use App\Http\Controllers\Auth\LoginController;
 
 
 
+
+
+
+
 // =========================================================================
+
+
+
+
 
 
 
@@ -182,7 +362,15 @@ Route::get('/', [WebsiteController::class, 'index'])->name('website.home');
 
 
 
+
+
+
+
 Route::get('/menu', [WebsiteController::class, 'menu'])->name('website.menu');
+
+
+
+
 
 
 
@@ -190,7 +378,15 @@ Route::get('/our-events', [WebsiteController::class, 'events'])->name('website.e
 
 
 
+
+
+
+
 // =========================================================================
+
+
+
+
 
 
 
@@ -198,7 +394,15 @@ Route::get('/our-events', [WebsiteController::class, 'events'])->name('website.e
 
 
 
+
+
+
+
 // =========================================================================
+
+
+
+
 
 
 
@@ -206,7 +410,15 @@ Auth::routes();
 
 
 
+
+
+
+
 Route::post('logout', [LoginController::class, 'logout'])->name('logout');
+
+
+
+
 
 
 
@@ -214,11 +426,23 @@ Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 
 
 
+
+
+
+
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 
 
 
+
+
+
+
 // =========================================================================
+
+
+
+
 
 
 
@@ -226,7 +450,15 @@ Route::get('/home', [HomeController::class, 'index'])->name('home');
 
 
 
+
+
+
+
 // =========================================================================
+
+
+
+
 
 
 
@@ -234,7 +466,15 @@ Route::middleware(['auth'])->group(function () {
 
 
 
+
+
+
+
     
+
+
+
+
 
 
 
@@ -242,7 +482,15 @@ Route::middleware(['auth'])->group(function () {
 
 
 
+
+
+
+
     Route::middleware(['role:admin,manager,staff'])->group(function () {
+
+
+
+
 
 
 
@@ -250,7 +498,15 @@ Route::middleware(['auth'])->group(function () {
 
 
 
+
+
+
+
         Route::get('/dashboard/refresh-stats', [DashboardController::class, 'refreshStats'])->name('dashboard.refresh-stats');
+
+
+
+
 
 
 
@@ -258,7 +514,15 @@ Route::middleware(['auth'])->group(function () {
 
 
 
+
+
+
+
         Route::get('/dashboard/revenue', [DashboardController::class, 'getRevenueStats'])->name('dashboard.revenue');
+
+
+
+
 
 
 
@@ -266,7 +530,15 @@ Route::middleware(['auth'])->group(function () {
 
 
 
+
+
+
+
     });
+
+
+
+
 
 
 
@@ -274,7 +546,15 @@ Route::middleware(['auth'])->group(function () {
 
 
 
+
+
+
+
     Route::prefix('notifications')->group(function () {
+
+
+
+
 
 
 
@@ -282,7 +562,15 @@ Route::middleware(['auth'])->group(function () {
 
 
 
+
+
+
+
         Route::get('/unread-count', [NotificationController::class, 'getUnreadCount']);
+
+
+
+
 
 
 
@@ -290,7 +578,15 @@ Route::middleware(['auth'])->group(function () {
 
 
 
+
+
+
+
         Route::post('/{id}/mark-as-read', [NotificationController::class, 'markAsRead']);
+
+
+
+
 
 
 
@@ -298,11 +594,23 @@ Route::middleware(['auth'])->group(function () {
 
 
 
+
+
+
+
         Route::delete('/{id}', [NotificationController::class, 'destroy']);
 
 
 
+
+
+
+
     });
+
+
+
+
 
 
 
@@ -310,7 +618,20 @@ Route::middleware(['auth'])->group(function () {
 
 
 
+
+
+
+
+    // Common/Guest Accessible Resources
+    Route::resource('reservations', ReservationController::class)->only(['index', 'show', 'create', 'store']);
+    Route::resource('invoices', InvoiceController::class)->only(['index', 'show']);
+    Route::get('invoices/{invoice}/download', [InvoiceController::class, 'download'])->name('invoices.download');
+
     Route::prefix('alerts')->group(function () {
+
+
+
+
 
 
 
@@ -318,7 +639,15 @@ Route::middleware(['auth'])->group(function () {
 
 
 
+
+
+
+
         Route::post('/{alert}/mark-as-read', [AlertController::class, 'markAsRead'])->name('alerts.mark-as-read');
+
+
+
+
 
 
 
@@ -326,7 +655,15 @@ Route::middleware(['auth'])->group(function () {
 
 
 
+
+
+
+
         Route::delete('/{alert}', [AlertController::class, 'destroy'])->name('alerts.destroy');
+
+
+
+
 
 
 
@@ -334,7 +671,15 @@ Route::middleware(['auth'])->group(function () {
 
 
 
+
+
+
+
     });
+
+
+
+
 
 
 
@@ -342,7 +687,15 @@ Route::middleware(['auth'])->group(function () {
 
 
 
+
+
+
+
 // =========================================================================
+
+
+
+
 
 
 
@@ -350,7 +703,15 @@ Route::middleware(['auth'])->group(function () {
 
 
 
+
+
+
+
 // =========================================================================
+
+
+
+
 
 
 
@@ -358,7 +719,15 @@ Route::middleware(['auth', 'role:admin,manager,staff'])->group(function () {
 
 
 
+
+
+
+
     // Reservations
+
+
+
+
 
 
 
@@ -366,7 +735,15 @@ Route::middleware(['auth', 'role:admin,manager,staff'])->group(function () {
 
 
 
+
+
+
+
         Route::get('/available-rooms', [ReservationController::class, 'availableRooms'])->name('reservations.available-rooms');
+
+
+
+
 
 
 
@@ -374,7 +751,15 @@ Route::middleware(['auth', 'role:admin,manager,staff'])->group(function () {
 
 
 
+
+
+
+
         Route::get('/events', [ReservationController::class, 'events'])->name('reservations.events');
+
+
+
+
 
 
 
@@ -382,11 +767,23 @@ Route::middleware(['auth', 'role:admin,manager,staff'])->group(function () {
 
 
 
+
+
+
+
     });
 
 
 
-    Route::resource('reservations', ReservationController::class)->only(['index', 'show', 'create', 'store']);
+
+
+
+
+    
+
+
+
+
 
 
 
@@ -394,7 +791,15 @@ Route::middleware(['auth', 'role:admin,manager,staff'])->group(function () {
 
 
 
+
+
+
+
     Route::resource('customers', CustomerController::class)->only(['index', 'show', 'create', 'store']);
+
+
+
+
 
 
 
@@ -402,7 +807,15 @@ Route::middleware(['auth', 'role:admin,manager,staff'])->group(function () {
 
 
 
+
+
+
+
     Route::resource('room-types', RoomTypeController::class)->only(['index', 'show']);
+
+
+
+
 
 
 
@@ -410,7 +823,15 @@ Route::middleware(['auth', 'role:admin,manager,staff'])->group(function () {
 
 
 
+
+
+
+
     Route::resource('event-locations', EventLocationController::class)->only(['index', 'show']);
+
+
+
+
 
 
 
@@ -418,7 +839,15 @@ Route::middleware(['auth', 'role:admin,manager,staff'])->group(function () {
 
 
 
+
+
+
+
     Route::resource('events', EventController::class)->only(['index', 'show']);
+
+
+
+
 
 
 
@@ -426,7 +855,15 @@ Route::middleware(['auth', 'role:admin,manager,staff'])->group(function () {
 
 
 
+
+
+
+
     // Financials: Payments & Invoices
+
+
+
+
 
 
 
@@ -434,15 +871,31 @@ Route::middleware(['auth', 'role:admin,manager,staff'])->group(function () {
 
 
 
+
+
+
+
     Route::get('payments/{payment}/receipt', [PaymentController::class, 'receipt'])->name('payments.receipt');
 
 
 
-    Route::resource('invoices', InvoiceController::class)->only(['index', 'show', 'create', 'store']);
 
 
 
-    Route::get('invoices/{invoice}/download', [InvoiceController::class, 'download'])->name('invoices.download');
+
+    
+
+
+
+
+
+
+
+    
+
+
+
+
 
 
 
@@ -450,7 +903,15 @@ Route::middleware(['auth', 'role:admin,manager,staff'])->group(function () {
 
 
 
+
+
+
+
     Route::prefix('reports')->group(function () {
+
+
+
+
 
 
 
@@ -458,7 +919,15 @@ Route::middleware(['auth', 'role:admin,manager,staff'])->group(function () {
 
 
 
+
+
+
+
         Route::post('/fetch-data', [ReportController::class, 'fetchReportData'])->name('reports.fetch-data');
+
+
+
+
 
 
 
@@ -466,11 +935,23 @@ Route::middleware(['auth', 'role:admin,manager,staff'])->group(function () {
 
 
 
+
+
+
+
         Route::get('/export-excel', [ReportController::class, 'exportExcel'])->name('reports.export-excel');
 
 
 
+
+
+
+
     });
+
+
+
+
 
 
 
@@ -478,11 +959,23 @@ Route::middleware(['auth', 'role:admin,manager,staff'])->group(function () {
 
 
 
+
+
+
+
     Route::get('staff', [StaffController::class, 'index'])->name('staff.index');
 
 
 
+
+
+
+
     // =========================================================================
+
+
+
+
 
 
 
@@ -490,7 +983,15 @@ Route::middleware(['auth', 'role:admin,manager,staff'])->group(function () {
 
 
 
+
+
+
+
     // =========================================================================
+
+
+
+
 
 
 
@@ -498,7 +999,15 @@ Route::middleware(['auth', 'role:admin,manager,staff'])->group(function () {
 
 
 
+
+
+
+
         // Edit & Update for common creations
+
+
+
+
 
 
 
@@ -506,7 +1015,15 @@ Route::middleware(['auth', 'role:admin,manager,staff'])->group(function () {
 
 
 
+
+
+
+
         Route::resource('customers', CustomerController::class)->only(['edit', 'update']);
+
+
+
+
 
 
 
@@ -514,7 +1031,15 @@ Route::middleware(['auth', 'role:admin,manager,staff'])->group(function () {
 
 
 
+
+
+
+
         Route::resource('invoices', InvoiceController::class)->only(['edit', 'update']);
+
+
+
+
 
 
 
@@ -522,7 +1047,15 @@ Route::middleware(['auth', 'role:admin,manager,staff'])->group(function () {
 
 
 
+
+
+
+
         // Full CRUD (excluding index/show and destroy) for restricted items
+
+
+
+
 
 
 
@@ -530,7 +1063,15 @@ Route::middleware(['auth', 'role:admin,manager,staff'])->group(function () {
 
 
 
+
+
+
+
         Route::resource('room-types', RoomTypeController::class)->except(['index', 'show', 'destroy']);
+
+
+
+
 
 
 
@@ -538,7 +1079,15 @@ Route::middleware(['auth', 'role:admin,manager,staff'])->group(function () {
 
 
 
+
+
+
+
         Route::resource('event-locations', EventLocationController::class)->except(['index', 'show', 'destroy']);
+
+
+
+
 
 
 
@@ -546,7 +1095,15 @@ Route::middleware(['auth', 'role:admin,manager,staff'])->group(function () {
 
 
 
+
+
+
+
         Route::post('/events/{event}/staff/assign', [EventController::class, 'assignStaff'])->name('events.staff.assign');
+
+
+
+
 
 
 
@@ -554,15 +1111,34 @@ Route::middleware(['auth', 'role:admin,manager,staff'])->group(function () {
 
 
 
+
+
+
+
     });
 
 
 
+
+
+
+
+
+    // Invoice Creation for staff
+    Route::resource('invoices', InvoiceController::class)->only(['create', 'store']);
 });
 
 
 
+
+
+
+
 // =========================================================================
+
+
+
+
 
 
 
@@ -570,7 +1146,15 @@ Route::middleware(['auth', 'role:admin,manager,staff'])->group(function () {
 
 
 
+
+
+
+
 // =========================================================================
+
+
+
+
 
 
 
@@ -578,14 +1162,29 @@ Route::middleware(['auth', 'role:admin,manager'])->group(function () {
 
 
 
+
+
+
+
     
 
 
 
+
+
+
+
     
+
+
+
 
 
     // Staff Human Resources (Excluding Destroy)
+
+
+
+
 
 
 
@@ -593,7 +1192,15 @@ Route::middleware(['auth', 'role:admin,manager'])->group(function () {
 
 
 
+
+
+
+
     Route::post('staff', [StaffController::class, 'store'])->name('staff.store');
+
+
+
+
 
 
 
@@ -601,7 +1208,15 @@ Route::middleware(['auth', 'role:admin,manager'])->group(function () {
 
 
 
+
+
+
+
     Route::get('staff/{staff}/edit', [StaffController::class, 'edit'])->name('staff.edit');
+
+
+
+
 
 
 
@@ -609,7 +1224,15 @@ Route::middleware(['auth', 'role:admin,manager'])->group(function () {
 
 
 
+
+
+
+
     
+
+
+
+
 
 
 
@@ -617,11 +1240,23 @@ Route::middleware(['auth', 'role:admin,manager'])->group(function () {
 
 
 
+
+
+
+
 Route::middleware(['auth', 'role:admin'])->group(function () {
+
     // User Account Management (Admin Only)
+
     Route::resource('users', UserController::class)->except(['destroy']);
+
     Route::post('users/{user}/reset-password', [UserController::class, 'resetPassword'])->name('users.reset-password');
+
     Route::post('users/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('users.toggle-status');
+
+
+
+
 
 
 
@@ -629,7 +1264,15 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
 
 
+
+
+
+
     Route::get('settings', [SettingsController::class, 'index'])->name('settings.index');
+
+
+
+
 
 
 
@@ -637,11 +1280,23 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
 
 
+
+
+
+
     Route::get('activity-logs', [ActivityLogController::class, 'index'])->name('activity-logs.index');
 
 
 
+
+
+
+
 });
+
+
+
+
 
 
 

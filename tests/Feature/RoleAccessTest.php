@@ -1,10 +1,6 @@
 <?php
 
-
-
 namespace Tests\Feature;
-
-
 
 use App\Models\User;
 
@@ -12,15 +8,11 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use Tests\TestCase;
 
-
-
 class RoleAccessTest extends TestCase
 
 {
 
     use RefreshDatabase;
-
-
 
     /**
 
@@ -40,7 +32,7 @@ class RoleAccessTest extends TestCase
 
             ['dashboard', ['admin', 'manager', 'staff']],
 
-            ['reservations.index', ['admin', 'manager', 'staff']],
+            ['reservations.index', ['admin', 'manager', 'staff', 'guest']],
 
             ['customers.index', ['admin', 'manager', 'staff']],
 
@@ -56,7 +48,7 @@ class RoleAccessTest extends TestCase
 
             ['payments.index', ['admin', 'manager', 'staff']],
 
-            ['invoices.index', ['admin', 'manager', 'staff']],
+            ['invoices.index', ['admin', 'manager', 'staff', 'guest']],
 
             ['reports.index', ['admin', 'manager', 'staff']],
 
@@ -74,8 +66,6 @@ class RoleAccessTest extends TestCase
 
     }
 
-
-
     /**
 
      * @dataProvider roleProvider
@@ -90,8 +80,6 @@ class RoleAccessTest extends TestCase
 
         $matrix = $this->routeMatrix();
 
-
-
         foreach ($matrix as $item) {
 
             $routeName = $item[0];
@@ -101,8 +89,6 @@ class RoleAccessTest extends TestCase
             
 
             $response = $this->actingAs($user)->get(route($routeName));
-
-
 
             if (in_array($role, $allowedRoles)) {
 
@@ -117,8 +103,6 @@ class RoleAccessTest extends TestCase
         }
 
     }
-
-
 
     public function roleProvider()
 
@@ -137,8 +121,6 @@ class RoleAccessTest extends TestCase
         ];
 
     }
-
-
 
     /**
 
