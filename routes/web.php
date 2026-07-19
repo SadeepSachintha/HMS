@@ -3,18 +3,30 @@
 
 
 // =========================================================================
+
+
+
 // ROUTE CONFIGURATION & ENDPOINT ACCESS CONTROL POLICY:
+
+
+
 // - Universal authenticated endpoints are registered under Route::middleware(['auth'])
+
+
+
 // - Admin exclusive routes are registered under Route::middleware(['auth', 'role:admin'])
+
+
+
 // - Admin and Manager operational routes are registered under Route::middleware(['auth', 'role:admin,manager'])
+
+
+
 // - Standard resource controller mappings automatically register index, create, store, show, edit, update, and destroy actions.
+
+
+
 // =========================================================================
-
-
-
-
-
-
 
 
 
@@ -114,10 +126,6 @@ use App\Http\Controllers\Auth\LoginController;
 
 
 
-
-
-
-
 /*
 
 
@@ -158,10 +166,6 @@ use App\Http\Controllers\Auth\LoginController;
 
 
 
-
-
-
-
 // =========================================================================
 
 
@@ -186,10 +190,6 @@ Route::get('/our-events', [WebsiteController::class, 'events'])->name('website.e
 
 
 
-
-
-
-
 // =========================================================================
 
 
@@ -210,19 +210,11 @@ Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 
 
 
-
-
-
-
 // Redirect for default home route
 
 
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
-
-
-
-
 
 
 
@@ -278,10 +270,6 @@ Route::middleware(['auth'])->group(function () {
 
 
 
-
-
-
-
     // Notifications System
 
 
@@ -315,10 +303,6 @@ Route::middleware(['auth'])->group(function () {
 
 
     });
-
-
-
-
 
 
 
@@ -374,10 +358,6 @@ Route::middleware(['auth', 'role:admin,manager,staff'])->group(function () {
 
 
 
-
-
-
-
     // Reservations
 
 
@@ -410,10 +390,6 @@ Route::middleware(['auth', 'role:admin,manager,staff'])->group(function () {
 
 
 
-
-
-
-
     // Inventory & Facility Management (Read-only for staff)
 
 
@@ -438,10 +414,6 @@ Route::middleware(['auth', 'role:admin,manager,staff'])->group(function () {
 
 
 
-
-
-
-
     // Events Management (Read-only for staff)
 
 
@@ -451,10 +423,6 @@ Route::middleware(['auth', 'role:admin,manager,staff'])->group(function () {
 
 
     Route::get('/events/calendar', [EventController::class, 'calendar'])->name('events.calendar');
-
-
-
-
 
 
 
@@ -475,10 +443,6 @@ Route::middleware(['auth', 'role:admin,manager,staff'])->group(function () {
 
 
     Route::get('invoices/{invoice}/download', [InvoiceController::class, 'download'])->name('invoices.download');
-
-
-
-
 
 
 
@@ -510,19 +474,11 @@ Route::middleware(['auth', 'role:admin,manager,staff'])->group(function () {
 
 
 
-
-
-
-
     // Staff Directory (View Only)
 
 
 
     Route::get('staff', [StaffController::class, 'index'])->name('staff.index');
-
-
-
-
 
 
 
@@ -566,10 +522,6 @@ Route::middleware(['auth', 'role:admin,manager,staff'])->group(function () {
 
 
 
-
-
-
-
         // Full CRUD (excluding index/show and destroy) for restricted items
 
 
@@ -610,10 +562,6 @@ Route::middleware(['auth', 'role:admin,manager,staff'])->group(function () {
 
 
 
-
-
-
-
 // =========================================================================
 
 
@@ -634,24 +582,7 @@ Route::middleware(['auth', 'role:admin,manager'])->group(function () {
 
 
 
-    // User Account Management
-
-
-
-    Route::resource('users', UserController::class)->except(['destroy']);
-
-
-
-    Route::post('users/{user}/reset-password', [UserController::class, 'resetPassword'])->name('users.reset-password');
-
-
-
-    Route::post('users/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('users.toggle-status');
-
-
-
-
-
+    
 
 
     // Staff Human Resources (Excluding Destroy)
@@ -678,11 +609,23 @@ Route::middleware(['auth', 'role:admin,manager'])->group(function () {
 
 
 
+    
 
 
 
+});
 
-    // System Settings
+
+
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    // User Account Management (Admin Only)
+    Route::resource('users', UserController::class)->except(['destroy']);
+    Route::post('users/{user}/reset-password', [UserController::class, 'resetPassword'])->name('users.reset-password');
+    Route::post('users/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('users.toggle-status');
+
+
+
+    // System Settings (Admin Only)
 
 
 
@@ -691,18 +634,6 @@ Route::middleware(['auth', 'role:admin,manager'])->group(function () {
 
 
     Route::post('settings', [SettingsController::class, 'update'])->name('settings.update');
-
-
-
-});
-
-
-
-
-
-
-
-Route::middleware(['auth', 'role:admin'])->group(function () {
 
 
 
