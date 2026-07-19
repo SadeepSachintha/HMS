@@ -30,16 +30,24 @@ A comprehensive, enterprise-grade Hotel Management System built on **Laravel 8**
 - **Staff Assignment** — Assign internal staff members to events with custom role descriptions.
 - **Event Detail View** — Scoped dark-theme table layout preserving rich-text formatting (newlines, spaces) in descriptions and notes.
 
-### 👤 Role-Based Access Control
+### 👤 Role-Based Access Control (RBAC) & Safety
 | Role | Access |
 |---|---|
-| **Admin** | Full system access — all modules, reports, user management |
-| **Manager** | All operational modules and reports |
-| **Staff** | Reservations, customers, rooms, events, food, billing |
-| **Guest** | My Reservations, My Invoices only |
+| **Admin** | Full system access — all modules, reports, user management, and system logs |
+| **Manager** | Operational management — all operations, reports, creation/modification of core hotel setup |
+| **Staff** | Daily operations — views lists/records, creates reservations, customers, invoices, and payments |
+| **Guest** | Self-service — My Reservations, My Invoices only |
 
-- Powered by a **Custom Role Middleware**.
-- Middleware-protected routes per role group.
+- **Custom Role Middleware** — Secures route endpoints based on custom middleware verification.
+- **Safety Actions (Disabled Deletions)** — Resource deletion is completely disabled system-wide (on route definition, controller aborts, and layout UI actions) for all core models (users, reservations, customers, rooms, room types, food, locations, events, invoices, and payments) to prevent accidental data loss.
+- **Creation & Modification Restrictions**:
+  - Only **Admin** and **Manager** roles can create new items for Rooms, Room Types, Food Menus, Events, and Event Locations.
+  - Only **Admin** and **Manager** roles can edit/modify Reservations, Customers, Invoices, and Payments.
+
+### 📜 System Activity Logging
+- **Trait-based Model Auditing** — Core models utilize a shared `LogsActivity` trait to automatically hook Eloquent actions (`created`, `updated`, `deleted`) and log them (including a listing of specifically modified field names).
+- **Authentication Logging** — Automatic tracking of successful logins, logouts, and failed login attempts.
+- **Protected Admin Logs Dashboard** — A secure dashboard restricted exclusively to the **Admin** role supporting full-text search, action-type dropdown filtering, and date filtering. Includes IP address and browser User-Agent auditing.
 
 ### 💳 Billing & Financials
 - **Automated Invoicing** — Invoices are auto-generated via a Laravel Observer when a reservation is confirmed; zero manual billing overhead.
@@ -98,6 +106,7 @@ A comprehensive, enterprise-grade Hotel Management System built on **Laravel 8**
 | `system_notifications` | Broadcast notification log |
 | `settings` | Global hotel details, times, notification switches, and customizable tax rates |
 | `sessions` | Database-backed session management |
+| `activity_logs` | System activity logs documenting timestamp, action, model ID, description, IP, and browser meta |
 
 ---
 
@@ -125,11 +134,12 @@ A comprehensive, enterprise-grade Hotel Management System built on **Laravel 8**
 ```
 HMS/
 ├── app/
-│   ├── Http/Controllers/       # 19 resource controllers
-│   ├── Models/                 # 16 Eloquent models
-│   └── Observers/              # Invoice auto-generation observer
+│   ├── Http/Controllers/       # 20 controllers (including ActivityLogController)
+│   ├── Models/                 # 17 Eloquent models (including ActivityLog)
+│   ├── Observers/              # Invoice auto-generation observer
+│   └── Traits/                 # Helper traits (including LogsActivity)
 ├── database/
-│   ├── migrations/             # 25 migration files
+│   ├── migrations/             # 29 migration files
 │   └── seeders/                # Role, permission, and demo data seeders
 ├── public/
 │   └── css/
@@ -139,9 +149,10 @@ HMS/
 │       └── website.css         # Public landing page styles
 ├── resources/views/
 │   ├── layouts/app.blade.php   # Main authenticated layout
+│   ├── activity-logs/          # Logs dashboard view
 │   ├── events/                 # Event CRUD views
 │   ├── reservations/           # Reservation CRUD views
-│   └── ...                     # All other module views
+│   └── ...                     # All other views
 └── routes/web.php              # All application routes
 ```
 
@@ -222,7 +233,9 @@ The system includes a comprehensive automated test suite built with **Laravel Fe
 ### Key Test Coverage
 - **Role-Based Access Control (RBAC)**: Verifies that Admin, Manager, Staff, and Guest roles can only access their authorized components.
 - **Component Integrity**: Ensures that core modules (Reservations, Rooms, Events, Users, etc.) load correctly for authorized users.
-- **Route Precedence Verification**: Protects against routing conflicts (e.g., ensuring resource creation routes are not intercepted by wildcards).
+- **Safety Actions (Disabled Deletions)**: Assures database deletion calls are rejected.
+- **Activity Logging Audits**: Asserts creation, modification, and logins write to log records.
+- **Route Precedence Verification**: Protects against routing conflicts.
 
 ### Running Tests
 To run the full test suite, use the standard Artisan command:
@@ -232,6 +245,9 @@ php artisan test
 
 For more focused testing:
 ```bash
+# Run only Activity Logging tests
+php artisan test tests/Feature/ActivityLogTest.php
+
 # Run only Role-Based Access tests
 php artisan test tests/Feature/RoleAccessTest.php
 
