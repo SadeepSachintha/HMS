@@ -22,7 +22,8 @@ A comprehensive, enterprise-grade Hotel Management System built on **Laravel 8**
 - **Reservation ID Tracking** — Every booking is assigned a unique tracking ID (e.g., `#RES-00042`) for precise operational management.
 - **Automated Customer Profiles** — A customer record is automatically created and linked to a user account upon guest registration via email.
 - **Room Status Auto-Sync** — Automatically synchronizes the physical/housekeeping status of a room based on reservation status (updates room to `occupied` when reservation is `checked_in`, and back to `available` when `checked_out`).
-- **Time-Sensitive Paid Auto-Checkout** — Runs background checks via a custom middleware. On the scheduled check-out date, once the hotel's checkout time (default: 12:00 PM) has passed, any checked-in reservation with a fully paid invoice is automatically checked out, releasing the room as available.
+- **Time-Sensitive Paid Auto-Checkout** — Runs background checks via a custom middleware. On the scheduled check-out date, once the hotel's checkout time (default: 12:00 PM) has passed, any checked-in reservation with a fully paid invoice is automatically checked out, releasing the room as available.
+- **Strict Guest Count Validation** — Enforces strict occupancy limits per room type both client-side and server-side: Single Room is capped at 1 guest, Double Room at 2 guests, and Deluxe Family Room at 4 guests.
 
 ### 🎭 Event & Facility Management
 - **Event Scheduling** — Full CRUD for hotel-hosted events: name, description, start/end times, pricing, attendee limits, and status.
