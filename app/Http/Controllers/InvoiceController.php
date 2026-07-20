@@ -356,11 +356,7 @@ class InvoiceController extends Controller
 
     {
 
-        $customers = \App\Models\Customer::orderBy('name')->get();
-
-        $events = \App\Models\Event::orderBy('start_time', 'desc')->get();
-
-        return view('invoices.edit', compact('invoice', 'customers', 'events'));
+        abort(403, 'Editing invoices is disabled.');
 
     }
 
@@ -368,63 +364,7 @@ class InvoiceController extends Controller
 
     {
 
-        $validated = $request->validate([
-
-            'customer_id' => 'required|exists:customers,id',
-
-            'event_id' => 'nullable|exists:events,id',
-
-            'invoice_date' => 'required|date',
-
-            'due_date' => 'required|date|after:invoice_date',
-
-            'subtotal' => 'required|numeric|min:0',
-
-            'tax_rate' => 'required|numeric|min:0',
-
-            'tax_amount' => 'required|numeric|min:0',
-
-            'total_amount' => 'required|numeric|min:0',
-
-            'status' => 'required|in:draft,sent,paid,overdue,cancelled',
-
-            'notes' => 'nullable|string'
-
-        ]);
-
-        $invoice->update($validated);
-
-        // Remove old items
-
-        $invoice->items()->delete();
-
-        // Add new items
-
-        if ($request->has('items')) {
-
-            foreach ($request->items as $item) {
-
-                if (!empty($item['description']) && !empty($item['quantity']) && !empty($item['unit_price'])) {
-
-                    $invoice->items()->create([
-
-                        'description' => $item['description'],
-
-                        'quantity' => $item['quantity'],
-
-                        'unit_price' => $item['unit_price'],
-
-                    ]);
-
-                }
-
-            }
-
-        }
-
-        return redirect()->route('invoices.index')
-
-            ->with('success', 'Invoice updated successfully.');
+        abort(403, 'Editing invoices is disabled.');
 
     }
 

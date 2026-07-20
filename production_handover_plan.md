@@ -62,7 +62,7 @@ This section summarizes the custom components and business logic systems impleme
 
 ### 👤 Role-Based Action Restrictions
 * **Admin & Manager Exclusive Creations**: Room, Room Type, Food menu, Event, and Event Location creations are restricted exclusively to the `admin` and `manager` roles. The "Add New" buttons are hidden from `staff` members.
-* **Stricter Edit Privileges**: Edits and updates to core reservations, customer records, invoice items, and payment details are restricted to `admin` and `manager` roles.
+* **Stricter Edit Privileges**: Edits and updates to core reservations and customer records are restricted exclusively to the `admin` and `manager` roles. Edits to financial transactions (invoices, invoice items, and payment details) have been completely disabled system-wide for all roles to preserve accounting integrity.
 * **Staff Reports Restriction**: The reports dashboard and sidebar navigation have been completely hidden from the `staff` role. The backend `/reports` routes are restricted strictly to `admin` and `manager` using custom middleware, returning `403 Forbidden` if accessed by staff.
 
 ### 🔄 Check-In & Time-Sensitive Auto-Checkout Sync

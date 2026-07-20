@@ -135,13 +135,13 @@ HMS utilizes custom route group middlewares (`RoleMiddleware`) in `routes/web.ph
 | **Reports** | Read Only | Read Only | Denied | Denied |
 | **Room/Food Config** | Read / Write | Read / Write | Denied | Denied |
 | **Event Location Config** | Read / Write | Read / Write | Denied | Denied |
-| **Reservations / Invoices** | Read / Write | Read / Write | Read / Write | Read Only (Own) |
+| **Reservations** | Read / Write | Read / Write | Read / Write | Read Only (Own) |
+| **Invoices / Payments** | Read / Write (No Edit) | Read / Write (No Edit) | Read / Write (No Edit) | Read Only (Own) |
 
-### 🔒 Deletion Safety Guard
-To prevent accidental data loss:
-- Resource deletion is disabled system-wide.
-- All delete endpoints/buttons have been removed from Blade views.
-- The `destroy` action is omitted in all resource controllers, returning `abort(403, 'Deletion is disabled.');` if requested.
+### 🔒 Deletion & Modification Safety Guards
+To prevent accidental data loss and maintain accounting integrity:
+- **No Resource Deletion**: Resource deletion is disabled system-wide. All delete endpoints/buttons have been removed from Blade views, and controller `destroy` methods return a `403` status.
+- **No Invoice & Payment Modification**: Edit and update capabilities for invoices and payments are disabled system-wide. All edit endpoints/buttons have been removed from Blade views, routes are unregistered, and controller actions return a `403` status.
 
 ---
 

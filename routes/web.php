@@ -256,10 +256,6 @@ Route::middleware(['auth', 'role:admin,manager,staff'])->group(function () {
 
         Route::resource('customers', CustomerController::class)->only(['edit', 'update']);
 
-        Route::resource('payments', PaymentController::class)->only(['edit', 'update']);
-
-        Route::resource('invoices', InvoiceController::class)->only(['edit', 'update']);
-
         Route::put('invoices/{invoice}/update-status-notes', [InvoiceController::class, 'updateStatusNotes'])->name('invoices.update-status-notes');
 
         // Full CRUD (excluding index/show and destroy) for restricted items

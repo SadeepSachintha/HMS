@@ -338,23 +338,7 @@ class PaymentController extends Controller
 
     {
 
-        if (auth()->user()->isGuest()) {
-
-            abort(403);
-
-        }
-
-        
-
-        $payment->load(['invoice.customer', 'reservation.customer']);
-
-        $invoices = \App\Models\Invoice::with('customer')->orderBy('invoice_date', 'desc')->get();
-
-        $reservations = \App\Models\Reservation::with('customer')->orderBy('id', 'desc')->get();
-
-        
-
-        return view('payments.edit', compact('payment', 'invoices', 'reservations'));
+        abort(403, 'Editing payments is disabled.');
 
     }
 
@@ -376,81 +360,7 @@ class PaymentController extends Controller
 
     {
 
-        if (auth()->user()->isGuest()) {
-
-            abort(403);
-
-        }
-
-        
-
-        // Ensure empty inputs are converted to null for nullable foreign keys
-
-        $request->merge([
-
-            'invoice_id' => $request->input('invoice_id') ?: null,
-
-            'reservation_id' => $request->input('reservation_id') ?: null,
-
-        ]);
-
-        $validated = $request->validate([
-
-            'invoice_id' => 'nullable|exists:invoices,id',
-
-            'reservation_id' => 'nullable|exists:reservations,id',
-
-            'amount' => 'required|numeric|min:0',
-
-            'payment_method' => 'required|in:cash,credit_card,debit_card,bank_transfer',
-
-            'payment_date' => 'required|date',
-
-            'status' => 'required|in:pending,completed,failed,refunded',
-
-            'transaction_id' => 'nullable|string|max:100|unique:payments,transaction_id,' . $payment->id,
-
-            'notes' => 'nullable|string'
-
-        ]);
-
-        if (empty($validated['invoice_id']) && empty($validated['reservation_id'])) {
-
-            return back()->withErrors(['invoice_id' => 'Please select an invoice or reservation.'])->withInput();
-
-        }
-
-        if (!empty($validated['invoice_id'])) {
-
-            $invoice = Invoice::find($validated['invoice_id']);
-
-            if ($invoice) {
-
-                $validated['amount'] = $invoice->total_amount;
-
-                if (empty($validated['reservation_id']) && $invoice->reservation_id) {
-
-                    $validated['reservation_id'] = $invoice->reservation_id;
-
-                }
-
-            }
-
-        }
-
-        $payment->update($validated);
-
-        // Auto-update the linked invoice status to 'paid' when a payment is marked as 'completed'
-
-        if ($payment->status === 'completed' && $payment->invoice) {
-
-            $payment->invoice->update(['status' => 'paid']);
-
-        }
-
-        return redirect()->route('payments.index')
-
-            ->with('success', 'Payment updated successfully.');
+        abort(403, 'Editing payments is disabled.');
 
     }
 
