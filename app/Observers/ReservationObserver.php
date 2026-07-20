@@ -15,6 +15,7 @@ class ReservationObserver
     public function created(Reservation $reservation)
     {
         $this->generateInvoice($reservation);
+        $this->syncRoomStatus($reservation);
     }
 
     /**
@@ -26,6 +27,7 @@ class ReservationObserver
     public function updated(Reservation $reservation)
     {
         $this->generateInvoice($reservation);
+        $this->syncRoomStatus($reservation);
     }
 
     /**
@@ -61,6 +63,22 @@ class ReservationObserver
                 'vat_amount' => $vat,
                 'grand_total' => $grandTotal,
             ]);
+        }
+    }
+
+    /**
+     * Automatically update the room's status based on the reservation status.
+     */
+    private function syncRoomStatus(Reservation $reservation): void
+    {
+        if (!$reservation->room) {
+            return;
+        }
+
+        if ($reservation->status === 'checked_in') {
+            $reservation->room->update(['status' => 'occupied']);
+        } elseif ($reservation->status === 'checked_out') {
+            $reservation->room->update(['status' => 'available']);
         }
     }
 
