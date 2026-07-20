@@ -50,7 +50,8 @@ A comprehensive, enterprise-grade Hotel Management System built on **Laravel 8**
 ### 📜 System Activity Logging
 - **Trait-based Model Auditing** — Core models utilize a shared `LogsActivity` trait to automatically hook Eloquent actions (`created`, `updated`, `deleted`) and log them (including a listing of specifically modified field names).
 - **Authentication Logging** — Automatic tracking of successful logins, logouts, and failed login attempts.
-- **Protected Admin Logs Dashboard** — A secure dashboard restricted exclusively to the **Admin** role supporting full-text search, action-type dropdown filtering, and date filtering. Includes IP address and browser User-Agent auditing.
+- **Protected Admin Logs Dashboard** — A secure dashboard restricted exclusively to the **Admin** role supporting full-text search, action-type dropdown filtering, and date filtering. Includes IP address and browser User-Agent auditing.
+- **Excel Export** — Allows administrators to export the filtered set of activity log search results directly to `.xlsx` Excel spreadsheets for local archiving and offline auditing.
 
 ### 💳 Billing & Financials
 - **Automated Invoicing** — Invoices are auto-generated via a Laravel Observer when a reservation is confirmed; zero manual billing overhead.

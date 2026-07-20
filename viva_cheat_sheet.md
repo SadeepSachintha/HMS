@@ -71,6 +71,10 @@ Auth event tracking is registered inside `app/Providers/EventServiceProvider.php
 * `Illuminate\Auth\Events\Logout`
 * `Illuminate\Auth\Events\Failed`
 
+### How to Export Logs
+- Log export is handled via `App\Exports\ActivityLogExport` and the route `/activity-logs/export`.
+- It dynamically appends active filter query strings (e.g. search, action, date) to download only the matching results.
+
 ---
 
 ## 5. Quick Commands Reference (Offline Shell)

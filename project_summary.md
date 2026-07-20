@@ -153,6 +153,7 @@ To maintain a permanent audit trail:
 - When a model is updated, the trait compares `$model->getOriginal()` with the current state and writes a record to the `activity_logs` table (including which fields changed, User IP, and browser metadata).
 - Authentication events (Login, Logout, Failed attempts) are logged using Laravel's core auth event listeners registered in `EventServiceProvider`.
 - Access to the log panel is strictly limited to the **Admin** role.
+- **Excel Logs Export**: Administrators can export the filtered set of activity logs directly to Excel (.xlsx) spreadsheets using Maatwebsite Excel.
 
 ---
 

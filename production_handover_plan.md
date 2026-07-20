@@ -75,6 +75,7 @@ This section summarizes the custom components and business logic systems impleme
 * **Model Observers (`LogsActivity` trait)**: Automatically boots and logs creations, deletions, and updates (specifying modified columns) on all primary models without controller overhead.
 * **Authentication Audits**: Listeners log login/logout actions and capture failed login emails.
 * **Admin Logs Dashboard**: Provides a searchable/filterable list view of all system activities, restricted strictly to the `admin` role.
+* **Excel Logs Export**: Adds an export button allowing administrators to download the filtered activity logs directly into a `.xlsx` spreadsheet format via the custom `ActivityLogExport` wrapper.
 
 ---
 
