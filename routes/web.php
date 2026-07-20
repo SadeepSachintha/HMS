@@ -522,6 +522,8 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
     Route::post('settings', [SettingsController::class, 'update'])->name('settings.update');
 
+    Route::get('activity-logs/export', [ActivityLogController::class, 'export'])->name('activity-logs.export');
+
     Route::get('activity-logs', [ActivityLogController::class, 'index'])->name('activity-logs.index');
 
 });

@@ -121,4 +121,27 @@ class ActivityLogTest extends TestCase
             'description' => "User {$this->admin->name} logged out.",
         ]);
     }
+
+    /**
+     * Test admin can export activity logs.
+     */
+    public function test_admin_can_export_activity_logs()
+    {
+        $response = $this->actingAs($this->admin)->get(route('activity-logs.export'));
+
+        $response->assertStatus(200);
+        $response->assertHeader('content-type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    }
+
+    /**
+     * Test manager and staff are forbidden from exporting activity logs.
+     */
+    public function test_manager_and_staff_cannot_export_activity_logs()
+    {
+        $response = $this->actingAs($this->manager)->get(route('activity-logs.export'));
+        $response->assertStatus(403);
+
+        $response = $this->actingAs($this->staff)->get(route('activity-logs.export'));
+        $response->assertStatus(403);
+    }
 }

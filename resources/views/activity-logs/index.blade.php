@@ -4,7 +4,12 @@
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="page-title mb-0">System Activity Logs</h2>
-        <span class="badge bg-danger px-3 py-2 fs-6"><i class="fas fa-lock me-1"></i> Admin Access Only</span>
+        <div class="d-flex gap-2 align-items-center">
+            <a href="{{ route('activity-logs.export', request()->all()) }}" class="btn btn-success">
+                <i class="fas fa-file-excel me-1"></i> Export to Excel
+            </a>
+            <span class="badge bg-danger px-3 py-2 fs-6"><i class="fas fa-lock me-1"></i> Admin Access Only</span>
+        </div>
     </div>
 
     <!-- Filters Card -->
