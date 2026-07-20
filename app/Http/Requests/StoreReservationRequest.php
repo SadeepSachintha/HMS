@@ -45,9 +45,20 @@ class StoreReservationRequest extends FormRequest
                 'min:1',
                 function ($attribute, $value, $fail) {
                     $room = \App\Models\Room::with('roomType')->find($this->room_id);
-                    if ($room && $room->roomType && $room->roomType->capacity) {
-                        if ($value > $room->roomType->capacity) {
-                            $fail('The number of guests exceeds the maximum allowed for this room type (max: ' . $room->roomType->capacity . ').');
+                    if ($room && $room->roomType) {
+                        $name = $room->roomType->name;
+                        $maxCapacity = $room->roomType->capacity;
+
+                        if (strcasecmp($name, 'Single Room') === 0) {
+                            $maxCapacity = 1;
+                        } elseif (strcasecmp($name, 'Double Room') === 0) {
+                            $maxCapacity = 2;
+                        } elseif (strcasecmp($name, 'Deluxe Family Room') === 0) {
+                            $maxCapacity = 4;
+                        }
+
+                        if ($value > $maxCapacity) {
+                            $fail('The number of guests exceeds the maximum allowed for ' . $name . ' (max: ' . $maxCapacity . ').');
                         }
                     }
                 },

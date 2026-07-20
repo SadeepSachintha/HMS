@@ -123,7 +123,19 @@
         const guestsInput = document.getElementById('number_of_guests');
         function updateMaxGuests() {
             const selectedOption = roomSelect.options[roomSelect.selectedIndex];
-            const maxGuests = parseInt(selectedOption.getAttribute('data-capacity')) || 1;
+            if (!selectedOption || !selectedOption.value) {
+                guestsInput.removeAttribute('max');
+                return;
+            }
+            const roomType = selectedOption.getAttribute('data-room-type') || '';
+            let maxGuests = parseInt(selectedOption.getAttribute('data-capacity')) || 1;
+            if (roomType.toLowerCase() === 'single room') {
+                maxGuests = 1;
+            } else if (roomType.toLowerCase() === 'double room') {
+                maxGuests = 2;
+            } else if (roomType.toLowerCase() === 'deluxe family room') {
+                maxGuests = 4;
+            }
             guestsInput.max = maxGuests;
             if (parseInt(guestsInput.value) > maxGuests) {
                 guestsInput.value = maxGuests;
