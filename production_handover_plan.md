@@ -47,11 +47,34 @@ This section summarizes the custom components and business logic systems impleme
   * **Conference Room:** Unsplash Photo ID `1431540015161-0bf868a2d407` (Modern corporate boardroom table layout).
 
 ### 💳 Booking & Billing Synchronizer
-* **Reservation Item Preservation:** When an invoice is created, the primary event/reservation charge details are automatically saved as a separate line item inside the `invoice_items` table.
-* **Payment Auto-Sync (Observer):** The system implements `PaymentObserver` to listen to payment completed status. Completing a cash or card payment automatically:
+* **Reservation Item Preservation**: When an invoice is created, the primary event/reservation charge details are automatically saved as a separate line item inside the `invoice_items` table.
+* **Payment Auto-Sync (Observer)**: The system implements `PaymentObserver` to listen to payment completed status. Completing a cash or card payment automatically:
   1. Sets the linked Invoice status to **`Paid`**.
   2. Sets the associated Reservation status to **`Confirmed`** instantly.
-* **Database Bug Fixes:** Removed the redundant and non-existent `paid_amount` column from the payment index layout to prevent database exceptions and whitelisted sort inputs.
+* **Database Bug Fixes**: Removed the redundant and non-existent `paid_amount` column from the payment index layout to prevent database exceptions and whitelisted sort inputs.
+* **Removed Cheque Payment Option**: Fully removed the cheque payment method from all UI dropdowns and controller validations system-wide.
+
+### 🚫 Safety Safeguards (Disabled Deletions)
+* **Accidental Data Loss Prevention**: Database record deletions have been completely disabled system-wide.
+* **Backend Security**: All controller `destroy()` methods return `403 Forbidden` if invoked.
+* **Route Protection**: The `destroy` action endpoints are excluded from Laravel's resource route registration.
+* **UI Updates**: All delete buttons and forms have been removed from the user interface templates.
+
+### 👤 Role-Based Action Restrictions
+* **Admin & Manager Exclusive Creations**: Room, Room Type, Food menu, Event, and Event Location creations are restricted exclusively to the `admin` and `manager` roles. The "Add New" buttons are hidden from `staff` members.
+* **Stricter Edit Privileges**: Edits and updates to core reservations, customer records, invoice items, and payment details are restricted to `admin` and `manager` roles.
+* **Staff Reports Restriction**: The reports dashboard and sidebar navigation have been completely hidden from the `staff` role. The backend `/reports` routes are restricted strictly to `admin` and `manager` using custom middleware, returning `403 Forbidden` if accessed by staff.
+
+### 🔄 Check-In & Time-Sensitive Auto-Checkout Sync
+* **Room Status Auto-Sync**: When a reservation status changes to `checked_in`, the associated room is automatically updated to `occupied`. When changed to `checked_out`, it is reset back to `available`.
+* **Time-Sensitive Paid Auto-Checkout**: The custom `AutoCheckOutMiddleware` (integrated in the `web` stack) automatically transitions `checked_in` reservations with a fully paid invoice to `checked_out` on their checkout date, provided the current system time is past the hotel's `check_out_time` (fallback default: `12:00:00`).
+* **Strict Guest Count Validation**: Enforces strict occupancy limits per room type both client-side (via dynamic Javascript `max` adjustments in Create/Edit views) and server-side (via custom rules in `StoreReservationRequest` and `UpdateReservationRequest`): Single Room is capped at 1 guest, Double Room at 2 guests, and Deluxe Family Room at 4 guests.
+
+### 📜 System Activity Logging
+* **Auditing Database**: Created `activity_logs` table storing timestamp, acting user details, action types (created, updated, deleted, login, logout, failed_login), association target models, description texts, IP addresses, and user agents.
+* **Model Observers (`LogsActivity` trait)**: Automatically boots and logs creations, deletions, and updates (specifying modified columns) on all primary models without controller overhead.
+* **Authentication Audits**: Listeners log login/logout actions and capture failed login emails.
+* **Admin Logs Dashboard**: Provides a searchable/filterable list view of all system activities, restricted strictly to the `admin` role.
 
 ---
 
@@ -92,7 +115,7 @@ Follow this checklist when deploying the application to your production server:
    ```
 
 ### Step 3: Database Migration & Seeding
-On a fresh installation, run the migrations to create the table structure:
+On a fresh installation, run the migrations to create the table structure (including `activity_logs`):
 ```bash
 php artisan migrate --force
 ```
@@ -101,7 +124,7 @@ If you wish to seed the initial roles and administrative credentials, run:
 php artisan db:seed --force
 ```
 
-### Step 4: Storage Link (Crucial for Venue/Room Images)
+### Step 4: Storage Link (Crucial for Venue/Room/Gallery Images)
 Create the symbolic link from `public/storage` to `storage/app/public` so uploaded venue and room images are accessible by web browsers:
 ```bash
 php artisan storage:link
@@ -111,7 +134,11 @@ php artisan storage:link
 Prior to launch, clear and rebuild Laravel configurations and route caches for maximum performance:
 ```bash
 php artisan config:cache
+```
+```bash
 php artisan route:cache
+```
+```bash
 php artisan view:cache
 ```
 
@@ -140,3 +167,10 @@ Set up a daily automated backup of the MySQL database.
 If the database crashes due to sudden power loss or server shut down:
 1. Review the error log located at `d:\xampp\mysql\data\mysql_error.log` (or your OS log location).
 2. If InnoDB crashes, add `innodb_force_recovery = 1` up to `6` to the `[mysqld]` section of your configuration file to start the database in read-only mode, export your data using `mysqldump`, initialize a clean cluster, and re-import.
+
+### Handling MariaDB Privilege Table Corruption (Incorrect file format 'db')
+If the MariaDB service fails to start and logs `Fatal error: Can't open and lock privilege tables: Incorrect file format 'db'` in the `mysql_error.log`:
+1. Ensure the MySQL/MariaDB service is fully stopped (terminate any hung `mysqld.exe` processes via Task Manager details tab).
+2. Back up the corrupted folder: Rename `D:\xampp\mysql\data\mysql` to `D:\xampp\mysql\data\mysql_corrupted_backup`.
+3. Restore from the system backup directory: Copy the folder `D:\xampp\mysql\backup\mysql` to `D:\xampp\mysql\data\mysql`.
+4. Restart the MySQL service in XAMPP.
