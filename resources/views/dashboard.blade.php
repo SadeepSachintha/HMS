@@ -18,6 +18,20 @@
             height: 300px;
             width: 100%;
         }
+
+        currency-converter {
+            --converter-primary: #D4AF37 !important;
+            --converter-primary-hover: #bfa030 !important;
+            --converter-bg: rgba(255, 255, 255, 0.03) !important;
+            --converter-border: rgba(212, 175, 55, 0.2) !important;
+            --converter-text-primary: #ffffff !important;
+            --converter-text-secondary: #b0b5c1 !important;
+            --converter-text-muted: #6b7280 !important;
+            --converter-radius: 16px !important;
+            --converter-shadow: 0 15px 30px rgba(0, 0, 0, 0.4) !important;
+            max-width: 100% !important;
+            display: block;
+        }
     </style>
 @endpush
 
@@ -271,6 +285,18 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Currency Exchange Card -->
+                <div class="col-12 mt-4">
+                    <h5 class="section-title mb-3">Currency Exchange</h5>
+                    <currency-converter 
+                        api-url="https://ss-labz-currency-api.onrender.com" 
+                        theme="glass"
+                        default-amount="750" 
+                        default-base="USD" 
+                        default-target="auto">
+                    </currency-converter>
+                </div>
             </div>
         </div>
     </div>
@@ -289,4 +315,5 @@
         };
     </script>
     <script src="{{ asset('js/dashboard.js') }}"></script>
+    <script src="{{ asset('js/widget.js') }}"></script>
 @endpush
