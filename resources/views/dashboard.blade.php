@@ -290,7 +290,7 @@
                 <div class="col-12 mt-4">
                     <h5 class="section-title mb-3">Currency Exchange</h5>
                     <currency-converter 
-                        api-url="https://ss-labz-currency-api.onrender.com" 
+                        api-url="{{ url('/api') }}" 
                         theme="glass"
                         default-amount="750" 
                         default-base="USD" 
