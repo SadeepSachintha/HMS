@@ -18,9 +18,15 @@ class AlertController extends Controller
     /**
      * Display a listing of the alerts.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $alerts = auth()->user()->alerts()->latest()->paginate(10);
+        $alertsQuery = auth()->user()->alerts()->latest();
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json($alertsQuery->take(5)->get());
+        }
+
+        $alerts = $alertsQuery->paginate(10);
         return view('alerts.index', compact('alerts'));
     }
 

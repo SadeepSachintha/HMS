@@ -49,25 +49,41 @@ The Currency Converter widget has been visually re-themed to integrate with the 
 
 ---
 
+## 🔔 4. Navbar Alerts System Fixes
+
+We identified and resolved two critical issues preventing alerts from functioning correctly on local XAMPP/subdirectory environments:
+
+### Changes Made
+- **[AlertController.php](file:///D:/xampp/htdocs/HMS/app/Http/Controllers/AlertController.php)**: Updated `index()` to detect AJAX requests and return a JSON list of the top 5 alerts rather than always serving the Blade template view (which crashed Javascript parsers).
+- **[app.blade.php](file:///D:/xampp/htdocs/HMS/resources/views/layouts/app.blade.php)**: Injected a `<meta name="base-url">` tag containing Laravel's root URL path dynamically.
+- **[alerts.js](file:///D:/xampp/htdocs/HMS/public/js/alerts.js)**: Prepend `baseUrl` to all AJAX GET/POST requests (`/alerts`, `/alerts/unread-count`, `/alerts/{id}/mark-as-read`). This ensures AJAX calls correctly map to subdirectories (e.g. `/HMS/public/alerts`) instead of returning `404 Not Found`.
+- **[AlertsTest.php](file:///D:/xampp/htdocs/HMS/tests/Feature/AlertsTest.php)**: Implemented automated feature tests confirming Blade vs. JSON formatting, mark-as-read flags, and unread counts.
+
+---
+
 ## 🔬 Verification Results
 
 ### Automated Tests
-Ran the full test suite (including new capacity validation and invoice/payment immutability feature tests):
+Ran the full test suite (including new capacity validation, invoice/payment immutability, currency offline API, and alerts feature tests):
 ```bash
 php artisan test
 ```
 Output:
 ```
-   PASS  Tests\Feature\ImmutableInvoicePaymentTest
-  ✓ invoice edit and update are forbidden
-  ✓ payment edit and update are forbidden
+   PASS  Tests\Feature\AlertsTest
+  ✓ index returns blade view
+  ✓ index returns json for ajax
+  ✓ mark as read
+  ✓ get unread count
 
-   PASS  Tests\Feature\ReservationGuestValidationTest
-  ✓ single room exceeding capacity validation
-  ✓ double room exceeding capacity validation
-  ✓ deluxe family room exceeding capacity validation
-
-  Tests:  33 passed
-  Time:   2.60s
+  Tests:  40 passed
+  Time:   3.20s
 ```
-All 33 tests pass successfully.
+All 40 tests pass successfully.
+
+### Manual Verification
+Using the browser subagent:
+- Confirmed that the unread badge is displayed correctly on the bell icon in the navbar when a new notification is generated.
+- Verified that clicking the checkmark successfully marks the alert as read via AJAX, updates the dropdown menu, and removes the red unread badge.
+- Saved screenshots showing unread notifications dropdown:
+![Unread alerts badge](file:///C:/Users/Sadeep/.gemini/antigravity-ide/brain/d7d9d918-b5c6-48cc-9b06-88c9a9ab699e/badge_visible_1784905673535.png)

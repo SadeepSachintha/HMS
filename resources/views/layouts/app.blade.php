@@ -10,6 +10,8 @@
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
+    <meta name="base-url" content="{{ url('/') }}">
+
     <title>{{ config('app.name', 'Hotel Management System') }}</title>
 
     <!-- Fonts -->

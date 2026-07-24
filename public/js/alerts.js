@@ -1,4 +1,5 @@
 $(document).ready(function() {
+    const baseUrl = $('meta[name="base-url"]').attr('content') || '';
     // Function to format the time
     function timeAgo(date) {
         const seconds = Math.floor((new Date() - new Date(date)) / 1000);
@@ -37,7 +38,7 @@ $(document).ready(function() {
 
     // Function to load alerts
     function loadAlerts() {
-        $.get('/alerts/unread-count', function(response) {
+        $.get(baseUrl + '/alerts/unread-count', function(response) {
             const badge = $('#alerts-count');
             if (response.count > 0) {
                 badge.text(response.count).show();
@@ -47,7 +48,7 @@ $(document).ready(function() {
         });
 
         // Load alerts into dropdown
-        $.get('/alerts', function(response) {
+        $.get(baseUrl + '/alerts', function(response) {
             const container = $('#alerts-container');
             container.empty();
 
@@ -100,7 +101,7 @@ $(document).ready(function() {
         const alertId = alertItem.data('alert-id');
 
         $.ajax({
-            url: `/alerts/${alertId}/mark-as-read`,
+            url: `${baseUrl}/alerts/${alertId}/mark-as-read`,
             type: 'POST',
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
