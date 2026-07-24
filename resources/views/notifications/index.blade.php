@@ -74,10 +74,12 @@
 @section('scripts')
 <script>
 $(document).ready(function() {
+    const baseUrl = $('meta[name="base-url"]').attr('content') || '';
+
     // Mark single notification as read
     $('.mark-as-read').click(function() {
         const id = $(this).data('id');
-        $.post(`/notifications/${id}/mark-as-read`, {
+        $.post(`${baseUrl}/notifications/${id}/mark-as-read`, {
             _token: '{{ csrf_token() }}'
         }).done(function() {
             $(`#notification-${id}`).removeClass('unread');
@@ -87,7 +89,7 @@ $(document).ready(function() {
 
     // Mark all notifications as read
     $('#mark-all-read').click(function() {
-        $.post('/notifications/mark-all-as-read', {
+        $.post(`${baseUrl}/notifications/mark-all-as-read`, {
             _token: '{{ csrf_token() }}'
         }).done(function() {
             $('.list-group-item').removeClass('unread');
@@ -100,7 +102,7 @@ $(document).ready(function() {
         const id = $(this).data('id');
         if (confirm('Are you sure you want to delete this notification?')) {
             $.ajax({
-                url: `/notifications/${id}`,
+                url: `${baseUrl}/notifications/${id}`,
                 type: 'DELETE',
                 data: {
                     _token: '{{ csrf_token() }}'

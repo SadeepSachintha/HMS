@@ -95,13 +95,15 @@
 @push('scripts')
 <script>
 $(document).ready(function() {
+    const baseUrl = $('meta[name="base-url"]').attr('content') || '';
+
     // Mark single alert as read
     $('.mark-as-read').click(function() {
         const alertId = $(this).data('alert-id');
         const alertElement = $(`#alert-${alertId}`);
 
         $.ajax({
-            url: `/alerts/${alertId}/mark-as-read`,
+            url: `${baseUrl}/alerts/${alertId}/mark-as-read`,
             type: 'POST',
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -119,7 +121,7 @@ $(document).ready(function() {
     // Mark all alerts as read
     $('#mark-all-read').click(function() {
         $.ajax({
-            url: '/alerts/mark-all-as-read',
+            url: `${baseUrl}/alerts/mark-all-as-read`,
             type: 'POST',
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -144,7 +146,7 @@ $(document).ready(function() {
         const alertElement = $(`#alert-${alertId}`);
 
         $.ajax({
-            url: `/alerts/${alertId}`,
+            url: `${baseUrl}/alerts/${alertId}`,
             type: 'DELETE',
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -165,7 +167,7 @@ $(document).ready(function() {
 
     // Update unread count in navbar
     function updateUnreadCount() {
-        $.get('/alerts/unread-count', function(response) {
+        $.get(baseUrl + '/alerts/unread-count', function(response) {
             const badge = $('#alerts-count');
             if (response.count > 0) {
                 badge.text(response.count).show();
