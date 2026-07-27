@@ -54,6 +54,8 @@ class RegisterController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'phone' => ['nullable', 'string', 'regex:/^\+(?:[0-9] ?){6,14}[0-9]$/'],
+            'nic_passport' => ['nullable', 'string', 'max:50'],
         ]);
     }
 
@@ -75,7 +77,11 @@ class RegisterController extends Controller
 
         Customer::firstOrCreate(
             ['email' => $data['email']],
-            ['name' => $data['name']]
+            [
+                'name' => $data['name'],
+                'phone' => $data['phone'] ?? null,
+                'nic_passport' => $data['nic_passport'] ?? null,
+            ]
         );
 
         return $user;

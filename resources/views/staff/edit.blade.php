@@ -41,6 +41,14 @@
                         </div>
 
                         <div class="mb-3">
+                            <label for="nic" class="form-label">NIC Number</label>
+                            <input type="text" class="form-control @error('nic') is-invalid @enderror" id="nic" name="nic" value="{{ old('nic', $staff->nic) }}">
+                            @error('nic')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3">
                             <label for="address" class="form-label">Address</label>
                             <input type="text" class="form-control @error('address') is-invalid @enderror" id="address" name="address" value="{{ old('address', $staff->address) }}" required>
                             @error('address')

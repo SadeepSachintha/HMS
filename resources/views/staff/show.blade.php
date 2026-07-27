@@ -40,6 +40,10 @@
                                         <td>{{ $staff->phone }}</td>
                                     </tr>
                                     <tr>
+                                        <th>NIC Number:</th>
+                                        <td>{{ $staff->nic ?? 'Not provided' }}</td>
+                                    </tr>
+                                    <tr>
                                         <th>Address:</th>
                                         <td>{{ $staff->address ?? 'Not provided' }}</td>
                                     </tr>

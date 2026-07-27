@@ -7,7 +7,7 @@
             <div class="d-flex align-items-center">
                 <form method="GET" action="{{ route('staff.index') }}" class="d-flex me-3">
                     <input type="text" name="search" class="form-control form-control-sm me-2"
-                        placeholder="Search by name, position, or department..." value="{{ request('search') }}">
+                        placeholder="Search by name, position, department, or NIC..." value="{{ request('search') }}">
                     <select name="status" class="form-select form-select-sm me-2" style="width: auto;">
                         <option value="">All Status</option>
                         <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Active</option>
@@ -107,6 +107,20 @@
                                         </div>
                                     </a>
                                 </div>
+                            </th>
+                            <th>
+                                <div class="d-flex align-items-center" style="height: 100%;">
+                                    <a href="{{ request()->fullUrlWithQuery(['sort' => 'nic', 'order' => request('sort') == 'nic' && request('order') == 'asc' ? 'desc' : 'asc']) }}"
+                                        class="text-decoration-none text-white d-flex align-items-center justify-content-between w-100">
+                                        NIC
+                                        <div class="d-flex flex-column">
+                                            <i class="fas fa-sort-up {{ request('sort') == 'nic' && request('order') == 'asc' ? 'text-primary' : 'text-muted' }}"
+                                                style="font-size: 0.7em;"></i>
+                                            <i class="fas fa-sort-down {{ request('sort') == 'nic' && request('order') == 'desc' ? 'text-primary' : 'text-muted' }}"
+                                                style="font-size: 0.7em;"></i>
+                                        </div>
+                                    </a>
+                                </div>
                             </th>
                             <th>
                                 <div class="d-flex align-items-center" style="height: 100%;">
@@ -133,7 +147,8 @@
                                 <td>{{ $member->id }}</td>
                                 <td>{{ $member->name }}</td>
                                 <td>{{ $member->position }}</td>
-                                <td>{{ $member->department }}</td>
+                                <td>{{ $member->department }}</td>
+                                <td>{{ $member->nic ?? '-' }}</td>
                                 <td>
                                     <span
                                         class="badge bg-{{ $member->status === 'active' ? 'success' : ($member->status === 'inactive' ? 'danger' : 'warning') }}">
@@ -156,7 +171,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="text-center">
+                                <td colspan="7" class="text-center">
                                     @if (request('search') || request('status'))
                                         No staff members found matching your criteria.
                                     @else

@@ -227,6 +227,21 @@
                         <div class="validation-error">{{ $message }}</div>
                     @enderror
                 </div>
+                <div class="mb-3">
+                    <label for="phone" class="form-label">Phone Number</label>
+                    <input id="phone" type="text" class="form-control @error('phone') is-invalid @enderror" name="phone" value="{{ old('phone') }}" placeholder="+94771234567">
+                    @error('phone')
+                        <div class="validation-error">{{ $message }}</div>
+                    @enderror
+                </div>
+                <div class="mb-3">
+                    <label for="nic_passport" class="form-label">NIC or Passport Number</label>
+                    <input id="nic_passport" type="text" class="form-control @error('nic_passport') is-invalid @enderror" name="nic_passport" value="{{ old('nic_passport') }}">
+                    @error('nic_passport')
+                        <div class="validation-error">{{ $message }}</div>
+                    @enderror
+                </div>
+                
 
                 <div class="mb-3">
                     <label for="password" class="form-label">Password</label>

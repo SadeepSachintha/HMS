@@ -4,14 +4,18 @@ This report documents the status and configuration of all input, model, and busi
 
 ---
 
-## 🪪 1. Customer Identification & Details
+## 🪪 1. Customer & Staff Identification Details
 
 | Attribute | Validation Rule | Backend Implementation | Frontend UI Behavior | Status |
 | :--- | :--- | :--- | :--- | :--- |
-| **Name** | Required, String, Max 255 chars | `StoreCustomerRequest` / `UpdateCustomerRequest` | HTML5 `required` attribute. | 🟢 Active |
-| **Email** | Nullable, Email format, Unique database constraint | `unique:customers,email` (ignoring current ID on updates) | Validates email syntax. | 🟢 Active |
-| **Phone** | Required, International phone format with country code | Regex `regex:/^\+(?:[0-9] ?){6,14}[0-9]$/` | Custom JavaScript forces `+` prefix and strips invalid characters. | 🟢 Active |
-| **NIC / Passport** | Nullable, String, Max 50 chars | `nullable|string|max:50` | Text input, optional, displays in details view. | 🟢 Active |
+| **Customer Name** | Required, String, Max 255 chars | `StoreCustomerRequest` / `UpdateCustomerRequest` | HTML5 `required` attribute. | 🟢 Active |
+| **Customer Email** | Nullable, Email format, Unique database constraint | `unique:customers,email` (ignoring current ID on updates) | Validates email syntax. | 🟢 Active |
+| **Customer Phone** | Required, International phone format with country code | Regex `regex:/^\+(?:[0-9] ?){6,14}[0-9]$/` | Custom JavaScript forces `+` prefix and strips invalid characters. | 🟢 Active |
+| **Customer NIC / Passport** | Nullable, String, Max 50 chars | `nullable|string|max:50` | Text input, optional, displays in details view. | 🟢 Active |
+| **Staff Name** | Required, String, Max 255 chars | Controller Validation | HTML5 `required` attribute. | 🟢 Active |
+| **Staff Email** | Required, Email format, Unique database constraint | `unique:staff,email` (ignoring current ID on updates) | Validates email syntax. | 🟢 Active |
+| **Staff Phone** | Required, String, Max 20 chars | Controller Validation | HTML5 `required` attribute. | 🟢 Active |
+| **Staff NIC** | Nullable, String, Max 50 chars, Unique database constraint | `unique:staff,nic` (ignoring current ID on updates) | Text input, optional, displays in listing. | 🟢 Active |
 
 ---
 
@@ -26,7 +30,19 @@ This report documents the status and configuration of all input, model, and busi
 
 ---
 
-## 💳 3. Financial Trail Integrity (Immutability)
+## 🌐 3. Guest Self-Registration Form
+
+| Parameter | Validation Rule | Backend Implementation | UI Representation | Status |
+| :--- | :--- | :--- | :--- | :--- |
+| **Full Name** | Required, String, Max 255 chars | `RegisterController` Validation | HTML5 `required` attribute. | 🟢 Active |
+| **Email Address** | Required, Email format, Unique database constraint | `unique:users,email` | Validates email syntax. | 🟢 Active |
+| **Phone Number** | Nullable, International format with country code | Regex `regex:/^\+(?:[0-9] ?){6,14}[0-9]$/` | Input field with placeholder | 🟢 Active |
+| **NIC or Passport** | Nullable, String, Max 50 chars | `nullable|string|max:50` | Input field with error labels | 🟢 Active |
+| **Password** | Required, String, Min 8 chars, Confirmed | `min:8|confirmed` | Hidden input text validation | 🟢 Active |
+
+---
+
+## 💳 4. Financial Trail Integrity (Immutability)
 
 | Component | Validation Rule | Backend Implementation | UI Representation | Status |
 | :--- | :--- | :--- | :--- | :--- |
@@ -35,7 +51,7 @@ This report documents the status and configuration of all input, model, and busi
 
 ---
 
-## 💵 4. Offline Currency API Request constraints
+## 💵 5. Offline Currency API Request constraints
 
 | Parameter | Validation Rule | Backend Implementation | UI Representation | Status |
 | :--- | :--- | :--- | :--- | :--- |
@@ -50,12 +66,13 @@ This report documents the status and configuration of all input, model, and busi
 
 All validation rules are covered by automated unit/feature tests:
 * **`CustomerTest`**: Validates creation, updates, max character length restrictions, and query searching.
+* **`StaffNicTest`**: Validates staff creation NIC unique checks and guest self-registration model sync.
 * **`ReservationGuestValidationTest`**: Verifies Single (1), Double (2), and Deluxe Family (4) capacity check failures.
 * **`ImmutableInvoicePaymentTest`**: Validates that edit/update requests to Invoices/Payments trigger a `403 Forbidden` response.
 * **`CurrencyApiTest`**: Validates correct parameters, input restrictions, and error formats.
 
 **Test Execution Results:**
-- **Total Tests Run**: 44
-- **Passed**: 44
+- **Total Tests Run**: 47
+- **Passed**: 47
 - **Failed**: 0
-- **Time**: 3.21 seconds
+- **Time**: 4.13 seconds

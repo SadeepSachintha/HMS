@@ -46,6 +46,8 @@ A comprehensive, enterprise-grade Hotel Management System built on **Laravel 8**
 - **Room Status Auto-Sync** — Automatically synchronizes the physical/housekeeping status of a room based on reservation status (updates room to `occupied` when reservation is `checked_in`, and back to `available` when `checked_out`).
 - **Time-Sensitive Paid Auto-Checkout** — Runs background checks via a custom middleware. On the scheduled check-out date, once the hotel's checkout time (default: 12:00 PM) has passed, any checked-in reservation with a fully paid invoice is automatically checked out, releasing the room as available.
 - **Strict Guest Count Validation** — Enforces strict occupancy limits per room type both client-side and server-side: Single Room is capped at 1 guest, Double Room at 2 guests, and Deluxe Family Room at 4 guests.
+- **Guest Identity Tracking** — Supports collecting, viewing, and searching by an official National Identity Card (NIC) or Passport number.
+- **Guest Self-Registration Form** — Automatically collects contact numbers and NIC/Passport numbers during sign-up, instantly creating customer profile links.
 
 
 
@@ -92,6 +94,7 @@ A comprehensive, enterprise-grade Hotel Management System built on **Laravel 8**
   - Only **Admin** and **Manager** roles can edit/modify Reservations and Customers.
 
   - **Financial Immutability**: Modifying or editing generated Invoices or recorded Payments is disabled system-wide for all roles to preserve accounting integrity.
+  - **Staff NIC Field**: Ensures every internal employee's profile is recorded with their unique NIC (with validation checks for Sri Lankan format standards).
 
 
 

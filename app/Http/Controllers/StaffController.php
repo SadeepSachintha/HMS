@@ -23,7 +23,8 @@ class StaffController extends Controller
                 $q->where('name', 'LIKE', "%{$search}%")
                   ->orWhere('email', 'LIKE', "%{$search}%")
                   ->orWhere('position', 'LIKE', "%{$search}%")
-                  ->orWhere('department', 'LIKE', "%{$search}%");
+                  ->orWhere('department', 'LIKE', "%{$search}%")
+                  ->orWhere('nic', 'LIKE', "%{$search}%");
             });
         }
 
@@ -37,7 +38,7 @@ class StaffController extends Controller
         $sortOrder = $request->get('order', 'desc');
 
         // Validate sort column
-        $allowedSortColumns = ['id', 'name', 'position', 'department', 'status', 'hire_date', 'created_at'];
+        $allowedSortColumns = ['id', 'name', 'position', 'department', 'status', 'hire_date', 'nic', 'created_at'];
         if (!in_array($sortBy, $allowedSortColumns)) {
             $sortBy = 'id';
         }
@@ -79,6 +80,7 @@ class StaffController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:staff,email',
             'phone' => 'required|string|max:20',
+            'nic' => 'nullable|string|max:50|unique:staff,nic',
             'position' => 'required|string|max:100',
             'department' => 'required|string|max:100',
             'hire_date' => 'required|date',
@@ -121,6 +123,7 @@ class StaffController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:staff,email,' . $staff->id,
             'phone' => 'required|string|max:20',
+            'nic' => 'nullable|string|max:50|unique:staff,nic,' . $staff->id,
             'position' => 'required|string|max:100',
             'department' => 'required|string|max:100',
             'hire_date' => 'required|date',

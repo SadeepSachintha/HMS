@@ -174,26 +174,58 @@ In [AlertController.php](file:///D:/xampp/htdocs/HMS/app/Http/Controllers/AlertC
 
 ---
 
-## 9. Customer Identity Validation & Searches (`nic_passport`)
+## 9. Customer & Staff Identity Validation (`nic_passport` / `nic`)
 
-### Schema & Validation
+### Customer Identity
 - Nullable string column in `customers` table, max 50 characters.
 - Validated via:
   ```php
   'nic_passport' => 'nullable|string|max:50'
   ```
-
-### Search Logic & White-listing
 - Searched in [CustomerController.php](file:///D:/xampp/htdocs/HMS/app/Http/Controllers/CustomerController.php) via `orWhere('nic_passport', 'LIKE', "%{$search}%")`.
-- Sort query whitelist:
-  ```php
-  $allowedSortColumns = ['id', 'name', 'email', 'phone', 'nic_passport', 'created_at'];
-  ```
-- Form fields are populated under inputs labeled **NIC or Passport Number** in `create.blade.php` and `edit.blade.php`.
+- Sort query whitelist: `['id', 'name', 'email', 'phone', 'nic_passport', 'created_at']`.
+- UI fields are populated under inputs labeled **NIC or Passport Number** in customer `create` and `edit` views.
+
+### Staff Identity
+- Nullable string column in `staff` table, max 50 characters, unique database constraint.
+- Validated via:
+  - Store: `'nic' => 'nullable|string|max:50|unique:staff,nic'`
+  - Update: `'nic' => 'nullable|string|max:50|unique:staff,nic,' . $staff->id`
+- Searched in [StaffController.php](file:///D:/xampp/htdocs/HMS/app/Http/Controllers/StaffController.php) via `orWhere('nic', 'LIKE', "%{$search}%")`.
+- Sort query whitelist includes `'nic'`.
+- UI fields are populated under inputs labeled **NIC Number** in staff `create` and `edit` views.
 
 ---
 
-## 10. Quick Commands Reference (Offline Shell)
+## 10. Guest Self-Registration Integrations
+
+### Controller Validation & Logic
+File: [RegisterController.php](file:///D:/xampp/htdocs/HMS/app/Http/Controllers/Auth/RegisterController.php)
+- Self-registration has been updated to optionally collect **Phone Number** and **NIC / Passport Number** directly from the guest.
+- Validated via:
+  ```php
+  'phone' => ['nullable', 'string', 'regex:/^\+(?:[0-9] ?){6,14}[0-9]$/'],
+  'nic_passport' => ['nullable', 'string', 'max:50'],
+  ```
+- Upon validation success, it automatically creates/finds the associated `Customer` record alongside the `User` account:
+  ```php
+  Customer::firstOrCreate(
+      ['email' => $data['email']],
+      [
+          'name' => $data['name'],
+          'phone' => $data['phone'] ?? null,
+          'nic_passport' => $data['nic_passport'] ?? null,
+      ]
+  );
+  ```
+
+### UI Registration Fields
+File: [register.blade.php](file:///D:/xampp/htdocs/HMS/resources/views/auth/register.blade.php)
+- Inputs for **Phone Number** and **NIC or Passport Number** are positioned immediately under the Email field.
+
+---
+
+## 11. Quick Commands Reference (Offline Shell)
 
 Run these commands inside your project root (`d:\xampp\htdocs\HMS`):
 
@@ -203,6 +235,7 @@ php artisan test
 
 # Run a specific test class (faster)
 php artisan test --filter=CustomerTest
+php artisan test --filter=StaffNicTest
 php artisan test --filter=ReservationGuestValidationTest
 php artisan test --filter=ImmutableInvoicePaymentTest
 php artisan test --filter=AlertsTest

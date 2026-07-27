@@ -85,10 +85,30 @@ We added support for collecting, listing, viewing, and searching by an official 
 
 ---
 
+## 🤵 6. Staff NIC Management & Guest Self-Registration
+
+We expanded NIC validation and storage to cover hotel employees, and updated the public guest sign-up form to automatically capture contact details and identity fields.
+
+### Changes Made
+
+#### Database Schema
+- **[2026_07_27_152625_add_nic_to_staff_table.php](file:///D:/xampp/htdocs/HMS/database/migrations/2026_07_27_152625_add_nic_to_staff_table.php)**: Added a unique `nic` column (max 50 chars) to the `staff` table.
+
+#### Staff Logic & Views
+- **[Staff.php](file:///D:/xampp/htdocs/HMS/app/Models/Staff.php)**: Whitelisted `nic` in mass-assignable fillable attributes.
+- **[StaffController.php](file:///D:/xampp/htdocs/HMS/app/Http/Controllers/StaffController.php)**: Integrated unique constraints, search filters, and query sort whitelisting for employee NICs.
+- **[Staff views](file:///D:/xampp/htdocs/HMS/resources/views/staff/)**: Integrated the **NIC Number** inputs and column displays inside staff create, edit, show, and index list templates.
+
+#### Guest Self-Registration
+- **[RegisterController.php](file:///D:/xampp/htdocs/HMS/app/Http/Controllers/Auth/RegisterController.php)**: Updated registration validations to collect `phone` and `nic_passport` parameters, automatically generating/mapping the associated `Customer` row upon user creation.
+- **[register.blade.php](file:///D:/xampp/htdocs/HMS/resources/views/auth/register.blade.php)**: Injected public registration input forms for Phone and NIC/Passport.
+
+---
+
 ## 🔬 Verification Results
 
 ### Automated Tests
-Ran the full test suite (including the new `CustomerTest.php` cases):
+Ran the full test suite (including the new `CustomerTest.php` and `StaffNicTest.php` cases):
 ```bash
 php artisan test
 ```
@@ -100,15 +120,22 @@ Output:
   ✓ customer can be updated
   ✓ searching by nic passport
 
-  Tests:  44 passed
-  Time:   3.21s
+   PASS  Tests\Feature\StaffNicTest
+  ✓ staff can be created with nic
+  ✓ staff nic must be unique
+  ✓ guest can register with phone and nic
+
+  Tests:  47 passed
+  Time:   4.13s
 ```
-All 44 test cases passed successfully.
+All 47 test cases passed successfully.
 
 ### Manual Verification
 Confirmed via browser subagent:
 - Form fields render correctly and input sanitizations behave as expected.
-- Customers can be searched dynamically by their NIC/Passport values.
-- Prepopulation and updates work seamlessly.
-- Staged screenshot showing customer listing with new ID column:
-![Updated Customer List View](file:///C:/Users/Sadeep/.gemini/antigravity-ide/brain/d7d9d918-b5c6-48cc-9b06-88c9a9ab699e/updated_customer_index_1785128482919.png)
+- Customers and staff can be searched dynamically by their NIC values.
+- Guest registration automatically populates customer profile metrics.
+- Verified search query showing staff listing:
+![Staff search query view](file:///C:/Users/Sadeep/.gemini/antigravity-ide/brain/d7d9d918-b5c6-48cc-9b06-88c9a9ab699e/staff_search_bob_1785146605948.png)
+- Verified guest session redirection view:
+![Guest registration success](file:///C:/Users/Sadeep/.gemini/antigravity-ide/brain/d7d9d918-b5c6-48cc-9b06-88c9a9ab699e/guest_register_success_1785146689384.png)
