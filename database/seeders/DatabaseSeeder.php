@@ -98,14 +98,16 @@ class DatabaseSeeder extends Seeder
         Customer::create([
             'name' => 'John Doe',
             'email' => 'john@example.com',
-            'phone' => '1234567890',
+            'phone' => '+1234567890',
+            'nic_passport' => '911042754V',
             'address' => '123 Main St'
         ]);
 
         Customer::create([
             'name' => 'Jane Smith',
             'email' => 'jane@example.com',
-            'phone' => '0987654321',
+            'phone' => '+94987654321',
+            'nic_passport' => '199260142672',
             'address' => '456 Oak Ave'
         ]);
 
