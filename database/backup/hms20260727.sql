@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 27, 2026 at 12:14 PM
+-- Generation Time: Jul 27, 2026 at 12:30 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -206,7 +206,14 @@ INSERT INTO `activity_logs` (`id`, `user_id`, `action`, `model_type`, `model_id`
 (159, 14, 'login', NULL, NULL, 'User Charlie Guest logged in successfully.', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36', '2026-07-27 10:04:46', '2026-07-27 10:04:46'),
 (160, 14, 'logout', NULL, NULL, 'User Charlie Guest logged out.', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36', '2026-07-27 10:09:27', '2026-07-27 10:09:27'),
 (161, 10, 'login', NULL, NULL, 'User Sachintha Soysa logged in successfully.', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36', '2026-07-27 10:09:47', '2026-07-27 10:09:47'),
-(162, 10, 'logout', NULL, NULL, 'User Sachintha Soysa logged out.', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36', '2026-07-27 10:13:38', '2026-07-27 10:13:38');
+(162, 10, 'logout', NULL, NULL, 'User Sachintha Soysa logged out.', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36', '2026-07-27 10:13:38', '2026-07-27 10:13:38'),
+(163, 10, 'login', NULL, NULL, 'User Sachintha Soysa logged in successfully.', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36', '2026-07-27 10:15:51', '2026-07-27 10:15:51'),
+(164, NULL, 'created', 'App\\Models\\Setting', 1, 'Created Setting #1', '127.0.0.1', 'Symfony', '2026-07-27 10:18:21', '2026-07-27 10:18:21'),
+(165, NULL, 'created', 'App\\Models\\RoomType', 7, 'Created RoomType #7', '127.0.0.1', 'Symfony', '2026-07-27 10:18:21', '2026-07-27 10:18:21'),
+(166, NULL, 'created', 'App\\Models\\RoomType', 8, 'Created RoomType #8', '127.0.0.1', 'Symfony', '2026-07-27 10:18:21', '2026-07-27 10:18:21'),
+(167, NULL, 'created', 'App\\Models\\RoomType', 9, 'Created RoomType #9', '127.0.0.1', 'Symfony', '2026-07-27 10:18:21', '2026-07-27 10:18:21'),
+(168, 10, 'logout', NULL, NULL, 'User Sachintha Soysa logged out.', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36', '2026-07-27 10:21:01', '2026-07-27 10:21:01'),
+(169, 10, 'login', NULL, NULL, 'User Sachintha Soysa logged in successfully.', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36', '2026-07-27 10:21:54', '2026-07-27 10:21:54');
 
 -- --------------------------------------------------------
 
@@ -727,7 +734,10 @@ CREATE TABLE `room_types` (
 INSERT INTO `room_types` (`id`, `name`, `description`, `capacity`, `price_per_night`, `amenities`, `created_at`, `updated_at`) VALUES
 (1, 'Single Room', 'Enjoy a comfortable stay in this well-appointed room featuring a single bed, air conditioning, and complimentary Wi-Fi. The room includes a vanity with a sink for added convenience, while modern hallway bathrooms are easily accessible. Amenities such as a mini refrigerator, LCD TV, work desk, and hair dryer ensure a pleasant and productive stay.\r\n*Single beds are 38\"x79.5\" (96.5cm x 202cm) in size.', 1, 3000.00, '[\"single\",\"bathroom\",\"ac\",\"wifi\",\"hair_dryer\",\"tv\",\"fridge\",\"desk\"]', '2025-06-28 11:50:47', '2025-06-28 11:50:47'),
 (2, 'Double Room', 'Relax in comfort with a spacious double bed and private bathroom, perfect for solo travelers or couples. This air-conditioned room features a vanity with sink in the bedroom, free Wi-Fi, LCD TV, mini refrigerator, and a work desk for added convenience. A hair dryer is also provided to make your stay even more comfortable.\r\n*Double beds are 53\"x79.5\" (134.5cm x 202cm) in size.', 2, 5000.00, '[\"double\",\"private_bathroom\",\"ac\",\"wifi\",\"hair_dryer\",\"tv\",\"fridge\",\"desk\"]', '2025-06-28 11:52:33', '2025-06-28 11:52:33'),
-(4, 'Deluxe Family Room', 'Designed for families or small groups, this spacious room features two queen beds and a private bathroom for added comfort and privacy. Enjoy modern amenities including air conditioning, free Wi-Fi, an LCD TV, a mini refrigerator, and a coffee maker. A vanity with sink in the bedroom, complimentary toiletries, hair dryer, and a dedicated work desk ensure a relaxing and convenient stay for all guests.\r\n*Queen beds are 60\"x79.5\" (152.5cm x 202cm) in size.', 4, 7000.00, '[\"queen\",\"private_bathroom\",\"toiletries\",\"ac\",\"coffee\",\"wifi\",\"hair_dryer\",\"fridge\",\"desk\"]', '2025-06-28 11:59:36', '2025-06-28 11:59:36');
+(4, 'Deluxe Family Room', 'Designed for families or small groups, this spacious room features two queen beds and a private bathroom for added comfort and privacy. Enjoy modern amenities including air conditioning, free Wi-Fi, an LCD TV, a mini refrigerator, and a coffee maker. A vanity with sink in the bedroom, complimentary toiletries, hair dryer, and a dedicated work desk ensure a relaxing and convenient stay for all guests.\r\n*Queen beds are 60\"x79.5\" (152.5cm x 202cm) in size.', 4, 7000.00, '[\"queen\",\"private_bathroom\",\"toiletries\",\"ac\",\"coffee\",\"wifi\",\"hair_dryer\",\"fridge\",\"desk\"]', '2025-06-28 11:59:36', '2025-06-28 11:59:36'),
+(7, 'Standard Room', 'Comfortable room with basic amenities', 2, 100.00, NULL, '2026-07-27 10:18:21', '2026-07-27 10:18:21'),
+(8, 'Deluxe Room', 'Spacious room with premium amenities', 3, 200.00, NULL, '2026-07-27 10:18:21', '2026-07-27 10:18:21'),
+(9, 'Suite', 'Luxury suite with separate living area', 4, 300.00, NULL, '2026-07-27 10:18:21', '2026-07-27 10:18:21');
 
 -- --------------------------------------------------------
 
@@ -761,7 +771,10 @@ INSERT INTO `room_type_images` (`id`, `room_type_id`, `image_path`, `caption`, `
 (9, 1, 'rooms/standard.png', NULL, 0, '2025-07-01 07:33:42', '2025-07-01 07:33:42'),
 (10, 1, 'room-types/room_6863dcaf13ca4.jpg', NULL, 1, '2025-07-01 07:33:43', '2025-07-01 07:33:43'),
 (11, 1, 'room-types/room_6863dcaf58ddc.jpg', NULL, 2, '2025-07-01 07:33:43', '2025-07-01 07:33:43'),
-(12, 1, 'room-types/room_6863dcaf9c774.jpg', NULL, 3, '2025-07-01 07:33:43', '2025-07-01 07:33:43');
+(12, 1, 'room-types/room_6863dcaf9c774.jpg', NULL, 3, '2025-07-01 07:33:43', '2025-07-01 07:33:43'),
+(13, 7, 'rooms/standard.png', 'Comfortable Standard Room', 1, '2026-07-27 10:18:21', '2026-07-27 10:18:21'),
+(14, 8, 'rooms/deluxe.png', 'Spacious Deluxe Room', 1, '2026-07-27 10:18:21', '2026-07-27 10:18:21'),
+(15, 9, 'rooms/suite.png', 'Luxurious Suite', 1, '2026-07-27 10:18:21', '2026-07-27 10:18:21');
 
 -- --------------------------------------------------------
 
@@ -800,6 +813,13 @@ CREATE TABLE `settings` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `settings`
+--
+
+INSERT INTO `settings` (`id`, `hotel_name`, `contact_email`, `contact_phone`, `check_in_time`, `check_out_time`, `email_notifications`, `sms_notifications`, `service_charge_rate`, `sscl_rate`, `tdl_rate`, `vat_rate`, `created_at`, `updated_at`) VALUES
+(1, 'Hotel Grand Palace', 'info@grandpalace.com', '+94112345678', '14:00:00', '12:00:00', 1, 0, 10.00, 2.50, 1.00, 18.00, '2026-07-27 10:18:21', '2026-07-27 10:18:21');
 
 -- --------------------------------------------------------
 
@@ -1069,7 +1089,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `activity_logs`
 --
 ALTER TABLE `activity_logs`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=163;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=170;
 
 --
 -- AUTO_INCREMENT for table `alerts`
@@ -1153,25 +1173,25 @@ ALTER TABLE `reservations`
 -- AUTO_INCREMENT for table `rooms`
 --
 ALTER TABLE `rooms`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `room_types`
 --
 ALTER TABLE `room_types`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `room_type_images`
 --
 ALTER TABLE `room_type_images`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `settings`
 --
 ALTER TABLE `settings`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `staff`
