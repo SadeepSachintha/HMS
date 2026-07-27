@@ -1,6 +1,4 @@
-# Viva Live Coding Cheat Sheet & Offline Reference Guide
-
-This reference sheet is designed to help you during your physical offline viva session. Use it to answer questions about the system architecture, explain validation logics, or quickly make live coding modifications.
+# Reference Guide
 
 ---
 
