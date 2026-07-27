@@ -46,7 +46,7 @@
 
             <div class="sidebar-header">
 
-                <h3><i class="fas fa-hotel me-2"></i>HMS</h3>
+                <h3><a href="{{ url('/') }}" class="text-decoration-none text-white"><i class="fas fa-hotel me-2"></i>{{ \App\Models\Setting::first()->hotel_name ?? 'HMS' }}</a></h3>
 
             </div>
 
@@ -485,6 +485,14 @@
                                     </a>
 
                                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+
+                                        <a class="dropdown-item" href="{{ url('/') }}">
+
+                                            <i class="fas fa-globe me-2"></i>Back to Website
+
+                                        </a>
+
+                                        <div class="dropdown-divider"></div>
 
                                         <a class="dropdown-item" href="{{ route('logout') }}"
 

@@ -1,9 +1,12 @@
+@php
+    $settings = \App\Models\Setting::first() ?? new \App\Models\Setting();
+@endphp
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Food Menu - {{ config('app.name', 'Hotel Management System') }}</title>
+    <title>Food Menu - {{ $settings->hotel_name ?? config('app.name', 'Hotel Management System') }}</title>
 
     <!-- Fonts -->
     <link href="{{ asset('css/vendor/fonts.css') }}" rel="stylesheet">
@@ -125,7 +128,7 @@
     <nav class="navbar navbar-expand-lg fixed-top navbar-custom">
         <div class="container">
             <a class="navbar-brand" href="{{ url('/') }}">
-                <i class="fas fa-hotel me-2"></i>{{ config('app.name', 'HMS') }}
+                <i class="fas fa-hotel me-2"></i>{{ $settings->hotel_name ?? config('app.name', 'HMS') }}
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#websiteNavbar" aria-controls="websiteNavbar" aria-expanded="false" aria-label="Toggle navigation">
                 <i class="fas fa-bars text-white"></i>
@@ -229,7 +232,7 @@
             <div class="row">
                 <div class="col-lg-4 mb-4 mb-lg-0">
                     <a href="{{ url('/') }}" class="footer-brand text-decoration-none">
-                        <i class="fas fa-hotel me-2"></i>{{ config('app.name', 'HMS') }}
+                        <i class="fas fa-hotel me-2"></i>{{ $settings->hotel_name ?? config('app.name', 'HMS') }}
                     </a>
                     <p class="footer-text">
                         Setting the standard for luxury hospitality. We are committed to providing our guests with unforgettable experiences, impeccable service, and ultimate comfort.
@@ -256,18 +259,18 @@
                         </li>
                         <li>
                             <i class="fas fa-phone-alt"></i>
-                            <span>+94 11 234 5678</span>
+                            <span>{{ $settings->contact_phone ?? '+94 11 234 5678' }}</span>
                         </li>
                         <li>
                             <i class="fas fa-envelope"></i>
-                            <span>reservations&#64;{{ strtolower(str_replace(' ', '', config('app.name', 'hms'))) }}.com</span>
+                            <span>{{ $settings->contact_email ?? 'reservations@hms.com' }}</span>
                         </li>
                     </ul>
                 </div>
             </div>
             
             <div class="footer-bottom">
-                <p>&copy; {{ date('Y') }} {{ config('app.name', 'Hotel Management System') }}. All rights reserved.</p>
+                <p>&copy; {{ date('Y') }} {{ $settings->hotel_name ?? config('app.name', 'Hotel Management System') }}. All rights reserved.</p>
             </div>
         </div>
     </footer>

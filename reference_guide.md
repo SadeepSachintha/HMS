@@ -36,6 +36,23 @@ You can hide or show buttons and text in Blade files based on the authenticated 
 @endif
 ```
 
+### How to Show Hotel Name Dynamically in Layouts
+During the viva/code modification session, if a teacher asks you to show the Hotel Name dynamically in any layout header (such as the top navbar or sidebar logo):
+1. **Retrieve the settings object** (if not already loaded) at the top of the Blade file:
+   ```html
+   @php
+       $settings = \App\Models\Setting::first() ?? new \App\Models\Setting();
+   @endphp
+   ```
+2. **Render the hotel name** dynamically with a fallback:
+   ```html
+   {{ $settings->hotel_name ?? 'Hotel Management System' }}
+   ```
+   *Example: Sidebar Brand logo in [app.blade.php](file:///D:/xampp/htdocs/HMS/resources/views/layouts/app.blade.php):*
+   ```html
+   <h3><a href="{{ url('/') }}" class="text-decoration-none text-white"><i class="fas fa-hotel me-2"></i>{{ \App\Models\Setting::first()->hotel_name ?? 'HMS' }}</a></h3>
+   ```
+
 ---
 
 ## 3. Disabling Deletions & Immutability (Safety Guard)

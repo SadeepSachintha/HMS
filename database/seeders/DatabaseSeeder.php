@@ -12,8 +12,25 @@ class DatabaseSeeder extends Seeder
     /**
      * Seed the application's database.
      */
-    public function run(): void
-    {
+    public function run(): void
+    {
+        // Create default system settings
+        \App\Models\Setting::firstOrCreate(
+            ['id' => 1],
+            [
+                'hotel_name' => 'Hotel Grand Palace',
+                'contact_email' => 'info@grandpalace.com',
+                'contact_phone' => '+94112345678',
+                'check_in_time' => '14:00:00',
+                'check_out_time' => '12:00:00',
+                'email_notifications' => true,
+                'sms_notifications' => false,
+                'service_charge_rate' => 10.00,
+                'sscl_rate' => 2.50,
+                'tdl_rate' => 1.00,
+                'vat_rate' => 18.00,
+            ]
+        );
         // Create room types
         $standard = RoomType::create([
             'name' => 'Standard Room',
