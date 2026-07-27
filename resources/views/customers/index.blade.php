@@ -7,7 +7,7 @@
         <div class="d-flex align-items-center">
             <form method="GET" action="{{ route('customers.index') }}" class="d-flex me-3">
                 <input type="text" name="search" class="form-control form-control-sm me-2"
-                       placeholder="Search by name, email, or phone..."
+                       placeholder="Search by name, email, phone, or ID..."
                        value="{{ request('search') }}">
                 <button type="submit" class="btn btn-sm btn-outline-primary">
                     <i class="fas fa-search"></i>
@@ -77,6 +77,16 @@
                                     </div>
                                 </a>
                             </th>
+                            <th>
+                                <a href="{{ request()->fullUrlWithQuery(['sort' => 'nic_passport', 'order' => request('sort') == 'nic_passport' && request('order') == 'asc' ? 'desc' : 'asc']) }}"
+                                   class="text-decoration-none text-white d-flex align-items-center justify-content-between">
+                                    NIC / Passport No
+                                    <div class="d-flex flex-column">
+                                        <i class="fas fa-sort-up {{ request('sort') == 'nic_passport' && request('order') == 'asc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
+                                        <i class="fas fa-sort-down {{ request('sort') == 'nic_passport' && request('order') == 'desc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
+                                    </div>
+                                </a>
+                            </th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -87,6 +97,7 @@
                             <td>{{ $customer->name }}</td>
                             <td>{{ $customer->email }}</td>
                             <td>{{ $customer->phone }}</td>
+                            <td>{{ $customer->nic_passport ?? '-' }}</td>
                             <td>
                                 <a href="{{ route('customers.show', $customer->id) }}" class="btn btn-info btn-sm" title="View">
                                     <i class="fas fa-eye"></i>
@@ -100,7 +111,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="5" class="text-center">
+                            <td colspan="6" class="text-center">
                                 @if(request('search'))
                                     No customers found matching your search criteria.
                                 @else

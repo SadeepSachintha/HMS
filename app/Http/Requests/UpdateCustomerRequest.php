@@ -30,6 +30,7 @@ class UpdateCustomerRequest extends FormRequest
             'name' => 'required|string|max:255',
             'email' => 'nullable|email|unique:customers,email,' . $customerId,
             'phone' => ['required', 'regex:/^\+(?:[0-9] ?){6,14}[0-9]$/'],
+            'nic_passport' => 'nullable|string|max:50',
             'address' => 'nullable|string|max:255',
             'city' => 'nullable|string|max:100',
             'state' => 'nullable|string|max:100',

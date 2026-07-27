@@ -55,6 +55,15 @@
                         </div>
 
                         <div class="mb-3">
+                            <label for="nic_passport" class="form-label">NIC or Passport Number</label>
+                            <input type="text" class="form-control @error('nic_passport') is-invalid @enderror"
+                                id="nic_passport" name="nic_passport" value="{{ old('nic_passport', $customer->nic_passport) }}">
+                            @error('nic_passport')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3">
                             <label for="address" class="form-label">Address</label>
                             <input type="text" class="form-control @error('address') is-invalid @enderror"
                                 id="address" name="address" value="{{ old('address', $customer->address) }}">

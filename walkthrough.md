@@ -61,29 +61,54 @@ We identified and resolved two critical issues preventing alerts from functionin
 
 ---
 
+## 🪪 5. Customer NIC / Passport Number Field
+
+We added support for collecting, listing, viewing, and searching by an official guest identification number (NIC or Passport Number).
+
+### Changes Made
+
+#### Database
+- **[2026_07_27_100915_add_nic_passport_to_customers_table.php](file:///D:/xampp/htdocs/HMS/database/migrations/2026_07_27_100915_add_nic_passport_to_customers_table.php)**: Added a nullable string column `nic_passport` (up to 50 chars) to the `customers` table.
+
+#### Backend Logic & Validation
+- **[Customer.php](file:///D:/xampp/htdocs/HMS/app/Models/Customer.php)**: Whitelisted `nic_passport` in mass assignable `$fillable` fields.
+- **[StoreCustomerRequest.php](file:///D:/xampp/htdocs/HMS/app/Http/Requests/StoreCustomerRequest.php)** / **[UpdateCustomerRequest.php](file:///D:/xampp/htdocs/HMS/app/Http/Requests/UpdateCustomerRequest.php)**: Validated `nic_passport` as `nullable|string|max:50`.
+- **[CustomerController.php](file:///D:/xampp/htdocs/HMS/app/Http/Controllers/CustomerController.php)**:
+  - Whitelisted `nic_passport` as sortable in index queries.
+  - Added `->orWhere('nic_passport', 'LIKE', "%{$search}%")` to the search filter.
+
+#### Frontend Views
+- **[create.blade.php](file:///D:/xampp/htdocs/HMS/resources/views/customers/create.blade.php)**: Added a new input field labeled "NIC or Passport Number".
+- **[edit.blade.php](file:///D:/xampp/htdocs/HMS/resources/views/customers/edit.blade.php)**: Added the edit field populated with existing database values.
+- **[show.blade.php](file:///D:/xampp/htdocs/HMS/resources/views/customers/show.blade.php)**: Displayed "NIC / Passport No" in the customer metadata table.
+- **[index.blade.php](file:///D:/xampp/htdocs/HMS/resources/views/customers/index.blade.php)**: Added a sortable "NIC / Passport No" column and adjusted column spans.
+
+---
+
 ## 🔬 Verification Results
 
 ### Automated Tests
-Ran the full test suite (including new capacity validation, invoice/payment immutability, currency offline API, and alerts feature tests):
+Ran the full test suite (including the new `CustomerTest.php` cases):
 ```bash
 php artisan test
 ```
 Output:
 ```
-   PASS  Tests\Feature\AlertsTest
-  ✓ index returns blade view
-  ✓ index returns json for ajax
-  ✓ mark as read
-  ✓ get unread count
+   PASS  Tests\Feature\CustomerTest
+  ✓ customer can be created with nic passport
+  ✓ nic passport max length validation
+  ✓ customer can be updated
+  ✓ searching by nic passport
 
-  Tests:  40 passed
-  Time:   3.20s
+  Tests:  44 passed
+  Time:   3.21s
 ```
-All 40 tests pass successfully.
+All 44 test cases passed successfully.
 
 ### Manual Verification
-Using the browser subagent:
-- Confirmed that the unread badge is displayed correctly on the bell icon in the navbar when a new notification is generated.
-- Verified that clicking the checkmark successfully marks the alert as read via AJAX, updates the dropdown menu, and removes the red unread badge.
-- Saved screenshots showing unread notifications dropdown:
-![Unread alerts badge](file:///C:/Users/Sadeep/.gemini/antigravity-ide/brain/d7d9d918-b5c6-48cc-9b06-88c9a9ab699e/badge_visible_1784905673535.png)
+Confirmed via browser subagent:
+- Form fields render correctly and input sanitizations behave as expected.
+- Customers can be searched dynamically by their NIC/Passport values.
+- Prepopulation and updates work seamlessly.
+- Staged screenshot showing customer listing with new ID column:
+![Updated Customer List View](file:///C:/Users/Sadeep/.gemini/antigravity-ide/brain/d7d9d918-b5c6-48cc-9b06-88c9a9ab699e/updated_customer_index_1785128482919.png)

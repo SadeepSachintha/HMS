@@ -37,6 +37,10 @@
                             <td>{{ $customer->phone ?? 'No data available' }}</td>
                         </tr>
                         <tr>
+                            <th>NIC / Passport No:</th>
+                            <td>{{ $customer->nic_passport ?? 'No data available' }}</td>
+                        </tr>
+                        <tr>
                             <th>Address:</th>
                             <td>{{ $customer->address ?? 'No data available' }}</td>
                         </tr>

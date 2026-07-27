@@ -30,7 +30,8 @@ class CustomerController extends Controller
             $query->where(function($q) use ($search) {
                 $q->where('name', 'LIKE', "%{$search}%")
                   ->orWhere('email', 'LIKE', "%{$search}%")
-                  ->orWhere('phone', 'LIKE', "%{$search}%");
+                  ->orWhere('phone', 'LIKE', "%{$search}%")
+                  ->orWhere('nic_passport', 'LIKE', "%{$search}%");
             });
         }
 
@@ -39,7 +40,7 @@ class CustomerController extends Controller
         $sortOrder = $request->get('order', 'desc');
 
         // Validate sort column against whitelist
-        $allowedSortColumns = ['id', 'name', 'email', 'phone', 'created_at'];
+        $allowedSortColumns = ['id', 'name', 'email', 'phone', 'nic_passport', 'created_at'];
         if (!in_array($sortBy, $allowedSortColumns)) {
             $sortBy = 'id';
         }
