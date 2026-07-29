@@ -66,6 +66,22 @@
 
                 </li>
 
+                @role('admin,manager')
+
+                <li>
+
+                    <a href="http://127.0.0.1:8000/?user_name={{ urlencode(auth()->user()->name) }}&user_role={{ urlencode(auth()->user()->role) }}" target="_blank">
+
+                        <i class="fas fa-heart-pulse"></i>
+
+                        <span>Guest Pulse AI</span>
+
+                    </a>
+
+                </li>
+
+                @endrole
+
                 <!-- Front Office -->
 
                 <li class="{{ Request::is('reservations*') || Request::is('customers*') ? 'active' : '' }}">
@@ -476,7 +492,7 @@
 
                                 </li>
 
-                                <li class="nav-item dropdown">
+                                <li class="nav-item dropdown dropdown-user">
 
                                     <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
 
@@ -492,7 +508,7 @@
 
                                         </a>
 
-                                        <div class="dropdown-divider"></div>
+                                        <div class="dropdown-divider" style="border-top: 1px solid var(--border-color); margin: 0.5rem 0;"></div>
 
                                         <a class="dropdown-item" href="{{ route('logout') }}"
 
@@ -500,7 +516,7 @@
 
                                                          document.getElementById('logout-form').submit();">
 
-                                            {{ __('Logout') }}
+                                            <i class="fas fa-sign-out-alt me-2"></i>Logout
 
                                         </a>
 
