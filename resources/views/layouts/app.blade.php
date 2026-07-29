@@ -66,21 +66,7 @@
 
                 </li>
 
-                @role('admin,manager')
 
-                <li>
-
-                    <a href="http://127.0.0.1:8000/?user_name={{ urlencode(auth()->user()->name) }}&user_role={{ urlencode(auth()->user()->role) }}" target="_blank">
-
-                        <i class="fas fa-heart-pulse"></i>
-
-                        <span>Guest Pulse AI</span>
-
-                    </a>
-
-                </li>
-
-                @endrole
 
                 <!-- Front Office -->
 
@@ -385,6 +371,24 @@
                 </li>
 
                 @endif
+
+                {{-- 
+                @role('admin,manager')
+
+                <li>
+
+                    <a href="http://127.0.0.1:8000/?user_name={{ urlencode(auth()->user()->name) }}&user_role={{ urlencode(auth()->user()->role) }}" target="_blank">
+
+                        <i class="fas fa-heart-pulse"></i>
+
+                        <span>Guest Pulse AI</span>
+
+                    </a>
+
+                </li>
+
+                @endrole
+                --}}
 
             </ul>
 
