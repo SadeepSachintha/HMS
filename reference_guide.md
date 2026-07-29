@@ -265,3 +265,52 @@ php artisan migrate:rollback
 # Enter Laravel interactive terminal to run manual PHP code (Tinker)
 php artisan tinker
 ```
+
+
+---
+
+## 12. Navbar Dropdown Toggling & Explicit Sign Out Action
+
+### Why the custom toggle handler is used
+In the HMS portal layout (app.blade.php), we use a custom delegated jQuery click listener to toggle `.dropdown-menu` expand states:
+```javascript
+$(document).on('click', '#navbarDropdown, #alertsDropdown', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    const $dropdown = $(this).parent();
+    const $menu = $(this).next('.dropdown-menu');
+    $('.dropdown').not($dropdown).removeClass('show');
+    $('.dropdown-menu').not($menu).removeClass('show');
+    $dropdown.toggleClass('show');
+    $menu.toggleClass('show');
+});
+```
+This is necessary because third-party components loaded on the Dashboard page (like Pusher real-time elements, Chart.js, and the currency converter's Shadow DOM boundaries) intercept document bubble events, occasionally breaking Bootstrap's default auto-initialization.
+
+### Explicit Sign-Out Icon & Label
+To prevent empty translator variables (`{{ __('Logout') }}`) from rendering invisible links, we use a hardcoded translation fallback with FontAwesome icons:
+```html
+<a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+    <i class="fas fa-sign-out-alt me-2"></i>Logout
+</a>
+```
+
+---
+
+## 13. Guest Pulse AI Link Commenting & Relocation
+
+- **Relocation**: The Guest Pulse AI sidebar link is placed at the bottom of the sidebar element list.
+- **Commenting**: To prevent presentation errors when the local Guest Pulse Node server (port `8000`) is offline, the link has been wrapped inside Blade comments:
+  ```html
+  {{-- 
+  @role('admin,manager')
+  <li>
+      <a href="http://127.0.0.1:8000/?user_name={{ urlencode(auth()->user()->name) }}&user_role={{ urlencode(auth()->user()->role) }}" target="_blank">
+          <i class="fas fa-heart-pulse"></i>
+          <span>Guest Pulse AI</span>
+      </a>
+  </li>
+  @endrole
+  --}}
+  ```
+  *To restore the link post-presentation, simply remove the `{{--` and `--}}` wrapping tags.*

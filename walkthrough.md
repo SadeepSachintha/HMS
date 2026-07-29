@@ -139,3 +139,17 @@ Confirmed via browser subagent:
 ![Staff search query view](file:///C:/Users/Sadeep/.gemini/antigravity-ide/brain/d7d9d918-b5c6-48cc-9b06-88c9a9ab699e/staff_search_bob_1785146605948.png)
 - Verified guest session redirection view:
 ![Guest registration success](file:///C:/Users/Sadeep/.gemini/antigravity-ide/brain/d7d9d918-b5c6-48cc-9b06-88c9a9ab699e/guest_register_success_1785146689384.png)
+
+
+---
+
+## 7. Navbar Dropdown Toggling & Explicit Sign Out Action
+
+We resolved dropdown expansion issues on layout pages that load complex components (like Pusher real-time elements, Chart.js, and the currency converter shadow DOM).
+
+### Changes Made
+- **[app.blade.php](file:///D:/xampp/htdocs/HMS/resources/views/layouts/app.blade.php)**:
+  - Reverted `.dropdown-user` class to `dropdown` for styling mapping consistency.
+  - Replaced the dynamic translator variable `{{ __('Logout') }}` with explicit sign-out FontAwesome icon and hardcoded "Logout" label.
+  - Injected custom delegated click handlers on `document` targeting dropdown selectors to bypass script bubbles conflict.
+  - Relocated and commented out (`{{-- ... --}}`) the Guest Pulse AI link to hide it from the sidebar navigation.
