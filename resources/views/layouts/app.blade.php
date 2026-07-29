@@ -496,7 +496,7 @@
 
                                 </li>
 
-                                <li class="nav-item dropdown dropdown-user">
+                                <li class="nav-item dropdown">
 
                                     <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
 
@@ -635,6 +635,32 @@
                 $('#sidebar, #content').toggleClass('active');
 
             });
+
+            // Custom dropdown toggle handler to bypass Bootstrap conflicts
+            $(document).on('click', '#navbarDropdown, #alertsDropdown', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const $dropdown = $(this).parent();
+                const $menu = $(this).next('.dropdown-menu');
+                
+                // Close other open dropdowns
+                $('.dropdown').not($dropdown).removeClass('show');
+                $('.dropdown-menu').not($menu).removeClass('show');
+                
+                $dropdown.toggleClass('show');
+                $menu.toggleClass('show');
+            });
+
+            // Close dropdowns when clicking outside
+            $(document).on('click', function(e) {
+                if (!$(e.target).closest('.dropdown').length) {
+                    $('.dropdown').removeClass('show');
+                    $('.dropdown-menu').removeClass('show');
+                }
+            });
+
+
 
             // Global real-time debounced search for list views
 
