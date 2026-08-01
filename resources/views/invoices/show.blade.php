@@ -18,6 +18,15 @@
 
                         <h4 class="mb-0">Invoice #{{ $invoice->invoice_number }}</h4>
 
+                        <a href="{{ route('invoices.download', $invoice) }}" class="btn btn-warning btn-sm" style="background-color: #D4AF37; border-color: #D4AF37; color: #111827; font-weight: 600;">
+                            <i class="fas fa-file-pdf me-1"></i>
+                            @if(strtolower($invoice->status) === 'paid')
+                                Download Receipt
+                            @else
+                                Download Invoice
+                            @endif
+                        </a>
+
                     </div>
 
                 </div>
@@ -326,17 +335,17 @@
 
                     @endif
 
-
-
+                    @if(strtolower($invoice->status) !== 'paid' && strtolower($invoice->status) !== 'cancelled')
                     <div class="mt-4">
 
-                        <a href="{{ route('payments.create', ['invoice_id' => $invoice->id]) }}" class="btn btn-success">
+                         <a href="{{ route('payments.create', ['invoice_id' => $invoice->id]) }}" class="btn btn-success">
 
-                            <i class="fas fa-plus"></i> Record Payment
+                             <i class="fas fa-plus"></i> Record Payment
 
-                        </a>
+                         </a>
 
                     </div>
+                    @endif
 
                 </div>
 
