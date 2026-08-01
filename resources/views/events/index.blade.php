@@ -64,22 +64,22 @@
                                         </a>
                                     </th>
                                     <th>
-                                        <a href="{{ request()->fullUrlWithQuery(['sort' => 'start_date', 'order' => request('sort') == 'start_date' && request('order') == 'asc' ? 'desc' : 'asc']) }}"
+                                        <a href="{{ request()->fullUrlWithQuery(['sort' => 'start_time', 'order' => request('sort') == 'start_time' && request('order') == 'asc' ? 'desc' : 'asc']) }}"
                                            class="text-decoration-none text-white d-flex align-items-center justify-content-between">
                                             Start Time
                                             <div class="d-flex flex-column">
-                                                <i class="fas fa-sort-up {{ request('sort') == 'start_date' && request('order') == 'asc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
-                                                <i class="fas fa-sort-down {{ request('sort') == 'start_date' && request('order') == 'desc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
+                                                <i class="fas fa-sort-up {{ request('sort') == 'start_time' && request('order') == 'asc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
+                                                <i class="fas fa-sort-down {{ request('sort') == 'start_time' && request('order') == 'desc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
                                             </div>
                                         </a>
                                     </th>
                                     <th>
-                                        <a href="{{ request()->fullUrlWithQuery(['sort' => 'end_date', 'order' => request('sort') == 'end_date' && request('order') == 'asc' ? 'desc' : 'asc']) }}"
+                                        <a href="{{ request()->fullUrlWithQuery(['sort' => 'end_time', 'order' => request('sort') == 'end_time' && request('order') == 'asc' ? 'desc' : 'asc']) }}"
                                            class="text-decoration-none text-white d-flex align-items-center justify-content-between">
                                             End Time
                                             <div class="d-flex flex-column">
-                                                <i class="fas fa-sort-up {{ request('sort') == 'end_date' && request('order') == 'asc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
-                                                <i class="fas fa-sort-down {{ request('sort') == 'end_date' && request('order') == 'desc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
+                                                <i class="fas fa-sort-up {{ request('sort') == 'end_time' && request('order') == 'asc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
+                                                <i class="fas fa-sort-down {{ request('sort') == 'end_time' && request('order') == 'desc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
                                             </div>
                                         </a>
                                     </th>

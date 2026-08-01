@@ -68,7 +68,7 @@ class InvoiceController extends Controller
 
         // Validate sort column
 
-        $allowedSortColumns = ['id', 'invoice_number', 'issue_date', 'due_date', 'total', 'status', 'created_at'];
+        $allowedSortColumns = ['id', 'invoice_number', 'invoice_date', 'due_date', 'total_amount', 'status', 'created_at'];
 
         if (!in_array($sortBy, $allowedSortColumns)) {
 

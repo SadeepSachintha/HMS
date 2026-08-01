@@ -104,7 +104,7 @@
 
                             <th>
 
-                                <a href="{{ request()->fullUrlWithQuery(['sort' => 'issue_date', 'order' => request('sort') == 'issue_date' && request('order') == 'asc' ? 'desc' : 'asc']) }}"
+                                <a href="{{ request()->fullUrlWithQuery(['sort' => 'invoice_date', 'order' => request('sort') == 'invoice_date' && request('order') == 'asc' ? 'desc' : 'asc']) }}"
 
                                    class="text-decoration-none text-white d-flex align-items-center justify-content-between">
 
@@ -112,9 +112,9 @@
 
                                     <div class="d-flex flex-column">
 
-                                        <i class="fas fa-sort-up {{ request('sort') == 'issue_date' && request('order') == 'asc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
+                                        <i class="fas fa-sort-up {{ request('sort') == 'invoice_date' && request('order') == 'asc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
 
-                                        <i class="fas fa-sort-down {{ request('sort') == 'issue_date' && request('order') == 'desc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
+                                        <i class="fas fa-sort-down {{ request('sort') == 'invoice_date' && request('order') == 'desc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
 
                                     </div>
 
@@ -144,7 +144,7 @@
 
                             <th>
 
-                                <a href="{{ request()->fullUrlWithQuery(['sort' => 'total', 'order' => request('sort') == 'total' && request('order') == 'asc' ? 'desc' : 'asc']) }}"
+                                <a href="{{ request()->fullUrlWithQuery(['sort' => 'total_amount', 'order' => request('sort') == 'total_amount' && request('order') == 'asc' ? 'desc' : 'asc']) }}"
 
                                    class="text-decoration-none text-white d-flex align-items-center justify-content-between">
 
@@ -152,9 +152,9 @@
 
                                     <div class="d-flex flex-column">
 
-                                        <i class="fas fa-sort-up {{ request('sort') == 'total' && request('order') == 'asc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
+                                        <i class="fas fa-sort-up {{ request('sort') == 'total_amount' && request('order') == 'asc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
 
-                                        <i class="fas fa-sort-down {{ request('sort') == 'total' && request('order') == 'desc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
+                                        <i class="fas fa-sort-down {{ request('sort') == 'total_amount' && request('order') == 'desc' ? 'text-primary' : 'text-muted' }}" style="font-size: 0.7em;"></i>
 
                                     </div>
 

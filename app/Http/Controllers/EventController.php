@@ -33,7 +33,7 @@ class EventController extends Controller
         $sortOrder = $request->get('order', 'desc');
 
         // Validate sort column
-        $allowedSortColumns = ['id', 'name', 'start_date', 'end_date', 'location', 'capacity', 'status', 'created_at'];
+        $allowedSortColumns = ['id', 'name', 'start_time', 'end_time', 'location', 'max_attendees', 'status', 'created_at'];
         if (!in_array($sortBy, $allowedSortColumns)) {
             $sortBy = 'id';
         }
