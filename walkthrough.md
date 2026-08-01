@@ -136,9 +136,9 @@ Confirmed via browser subagent:
 - Customers and staff can be searched dynamically by their NIC values.
 - Guest registration automatically populates customer profile metrics.
 - Verified search query showing staff listing:
-![Staff search query view](file:///C:/Users/Sadeep/.gemini/antigravity-ide/brain/d7d9d918-b5c6-48cc-9b06-88c9a9ab699e/staff_search_bob_1785146605948.png)
+![Staff search query view](C:/Users/Sadeep/.gemini/antigravity-ide/brain/d7d9d918-b5c6-48cc-9b06-88c9a9ab699e/staff_search_bob_1785146605948.png)
 - Verified guest session redirection view:
-![Guest registration success](file:///C:/Users/Sadeep/.gemini/antigravity-ide/brain/d7d9d918-b5c6-48cc-9b06-88c9a9ab699e/guest_register_success_1785146689384.png)
+![Guest registration success](C:/Users/Sadeep/.gemini/antigravity-ide/brain/d7d9d918-b5c6-48cc-9b06-88c9a9ab699e/guest_register_success_1785146689384.png)
 
 
 ---
@@ -153,3 +153,73 @@ We resolved dropdown expansion issues on layout pages that load complex componen
   - Replaced the dynamic translator variable `{{ __('Logout') }}` with explicit sign-out FontAwesome icon and hardcoded "Logout" label.
   - Injected custom delegated click handlers on `document` targeting dropdown selectors to bypass script bubbles conflict.
   - Relocated and commented out (`{{-- ... --}}`) the Guest Pulse AI link to hide it from the sidebar navigation.
+
+---
+
+## 📄 8. Download Invoice / Receipt PDF Button
+
+We added a prominent action button to download the PDF invoice/receipt directly from the invoice details view.
+
+### Changes Made
+- **[invoices/show.blade.php](file:///D:/xampp/htdocs/HMS/resources/views/invoices/show.blade.php)**: Added a dynamic button next to the Invoice header that links to `invoices.download`. If the invoice status is `paid`, the button labels itself **Download Receipt**; otherwise, it displays **Download Invoice**.
+
+---
+
+## 🚫 9. Restricting Record Payment on Cancelled & Refunded Invoices
+
+To ensure accounting safety, we restricted recording new payments on cancelled or refunded invoices.
+
+### Changes Made
+- **[invoices/show.blade.php](file:///D:/xampp/htdocs/HMS/resources/views/invoices/show.blade.php)**: Updated the **Record Payment** button display conditional checks to hide the button when the invoice status is either `paid` or `cancelled`.
+
+---
+
+## 🔍 10. Correct Invoice and Event Index Sorting Parameters
+
+We resolved database `Unknown column` QueryExceptions triggered when sorting tables by columns that did not match database fields.
+
+### Changes Made
+- **[InvoiceController.php](file:///D:/xampp/htdocs/HMS/app/Http/Controllers/InvoiceController.php)** / **[invoices/index.blade.php](file:///D:/xampp/htdocs/HMS/resources/views/invoices/index.blade.php)**: Corrected whitelist and view templates sorting parameters from `issue_date` and `total` to `invoice_date` and `total_amount`.
+- **[EventController.php](file:///D:/xampp/htdocs/HMS/app/Http/Controllers/EventController.php)** / **[events/index.blade.php](file:///D:/xampp/htdocs/HMS/resources/views/events/index.blade.php)**: Corrected sorting whitelists and parameters from `start_date`, `end_date`, and `capacity` to `start_time`, `end_time`, and `max_attendees`.
+
+---
+
+## 🍽️ 11. Remove Category Column from Food Menu
+
+Hided the Category column in the Food Menu list view to simplify visual aesthetics.
+
+### Changes Made
+- **[food-items/index.blade.php](file:///D:/xampp/htdocs/HMS/resources/views/food-items/index.blade.php)**: Removed the Category column `<th>` header and the matching `<td>` item category table cells, and updated the empty list colspan helper layout span from `5` to `4`.
+
+---
+
+## 🧾 12. Add Status Column to PDF Invoices / Receipts
+
+Injected payment status information directly into downloaded PDF invoices and receipts to show when a payment is failed or refunded.
+
+### Changes Made
+- **[invoices/pdf.blade.php](file:///D:/xampp/htdocs/HMS/resources/views/invoices/pdf.blade.php)**: Added a **Status** column inside the **Payment History** table, rendering colored status badges (`success`, `warning`, `danger`, `info`) and adjusting table spans.
+
+---
+
+## 🛎️ 13. Allow Invoicing Active and Concluded Stays
+
+Fixed an issue where checked-in or checked-out reservations could not be selected when generating new invoices.
+
+### Changes Made
+- **[InvoiceController.php](file:///D:/xampp/htdocs/HMS/app/Http/Controllers/InvoiceController.php)**: Expanded the reservations query to include active and concluded guest stays in the selectable dropdown menu:
+  ```php
+  ->whereIn('status', ['pending', 'confirmed', 'checked_in', 'checked_out'])
+  ```
+
+---
+
+## ⏰ 14. Auto-Checkout Concluded Paid Reservations
+
+We updated the automatic check-out engine to checkout stays that ended even if they were not explicitly moved to `checked_in` status.
+
+### Changes Made
+- **[AutoCheckOutMiddleware.php](file:///D:/xampp/htdocs/HMS/app/Http/Middleware/AutoCheckOutMiddleware.php)**: Expanded the query check to verify dates and payments for both `checked_in` and `confirmed` reservations:
+  ```php
+  ->whereIn('status', ['checked_in', 'confirmed'])
+  ```

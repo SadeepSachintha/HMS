@@ -1,4 +1,6 @@
-# Reference Guide
+# Viva Live Coding Cheat Sheet & Offline Reference Guide
+
+This reference sheet is designed to help you during your physical offline viva session. Use it to answer questions about the system architecture, explain validation logics, or quickly make live coding modifications.
 
 ---
 
@@ -33,23 +35,6 @@ You can hide or show buttons and text in Blade files based on the authenticated 
     <a href="{{ route('activity-logs.index') }}">View Activity Logs</a>
 @endif
 ```
-
-### How to Show Hotel Name Dynamically in Layouts
-During the viva/code modification session, if a teacher asks you to show the Hotel Name dynamically in any layout header (such as the top navbar or sidebar logo):
-1. **Retrieve the settings object** (if not already loaded) at the top of the Blade file:
-   ```html
-   @php
-       $settings = \App\Models\Setting::first() ?? new \App\Models\Setting();
-   @endphp
-   ```
-2. **Render the hotel name** dynamically with a fallback:
-   ```html
-   {{ $settings->hotel_name ?? 'Hotel Management System' }}
-   ```
-   *Example: Sidebar Brand logo in [app.blade.php](file:///D:/xampp/htdocs/HMS/resources/views/layouts/app.blade.php):*
-   ```html
-   <h3><a href="{{ url('/') }}" class="text-decoration-none text-white"><i class="fas fa-hotel me-2"></i>{{ \App\Models\Setting::first()->hotel_name ?? 'HMS' }}</a></h3>
-   ```
 
 ---
 
@@ -189,58 +174,26 @@ In [AlertController.php](file:///D:/xampp/htdocs/HMS/app/Http/Controllers/AlertC
 
 ---
 
-## 9. Customer & Staff Identity Validation (`nic_passport` / `nic`)
+## 9. Customer Identity Validation & Searches (`nic_passport`)
 
-### Customer Identity
+### Schema & Validation
 - Nullable string column in `customers` table, max 50 characters.
 - Validated via:
   ```php
   'nic_passport' => 'nullable|string|max:50'
   ```
+
+### Search Logic & White-listing
 - Searched in [CustomerController.php](file:///D:/xampp/htdocs/HMS/app/Http/Controllers/CustomerController.php) via `orWhere('nic_passport', 'LIKE', "%{$search}%")`.
-- Sort query whitelist: `['id', 'name', 'email', 'phone', 'nic_passport', 'created_at']`.
-- UI fields are populated under inputs labeled **NIC or Passport Number** in customer `create` and `edit` views.
-
-### Staff Identity
-- Nullable string column in `staff` table, max 50 characters, unique database constraint.
-- Validated via:
-  - Store: `'nic' => 'nullable|string|max:50|unique:staff,nic'`
-  - Update: `'nic' => 'nullable|string|max:50|unique:staff,nic,' . $staff->id`
-- Searched in [StaffController.php](file:///D:/xampp/htdocs/HMS/app/Http/Controllers/StaffController.php) via `orWhere('nic', 'LIKE', "%{$search}%")`.
-- Sort query whitelist includes `'nic'`.
-- UI fields are populated under inputs labeled **NIC Number** in staff `create` and `edit` views.
+- Sort query whitelist:
+  ```php
+  $allowedSortColumns = ['id', 'name', 'email', 'phone', 'nic_passport', 'created_at'];
+  ```
+- Form fields are populated under inputs labeled **NIC or Passport Number** in `create.blade.php` and `edit.blade.php`.
 
 ---
 
-## 10. Guest Self-Registration Integrations
-
-### Controller Validation & Logic
-File: [RegisterController.php](file:///D:/xampp/htdocs/HMS/app/Http/Controllers/Auth/RegisterController.php)
-- Self-registration has been updated to optionally collect **Phone Number** and **NIC / Passport Number** directly from the guest.
-- Validated via:
-  ```php
-  'phone' => ['nullable', 'string', 'regex:/^\+(?:[0-9] ?){6,14}[0-9]$/'],
-  'nic_passport' => ['nullable', 'string', 'max:50'],
-  ```
-- Upon validation success, it automatically creates/finds the associated `Customer` record alongside the `User` account:
-  ```php
-  Customer::firstOrCreate(
-      ['email' => $data['email']],
-      [
-          'name' => $data['name'],
-          'phone' => $data['phone'] ?? null,
-          'nic_passport' => $data['nic_passport'] ?? null,
-      ]
-  );
-  ```
-
-### UI Registration Fields
-File: [register.blade.php](file:///D:/xampp/htdocs/HMS/resources/views/auth/register.blade.php)
-- Inputs for **Phone Number** and **NIC or Passport Number** are positioned immediately under the Email field.
-
----
-
-## 11. Quick Commands Reference (Offline Shell)
+## 10. Quick Commands Reference (Offline Shell)
 
 Run these commands inside your project root (`d:\xampp\htdocs\HMS`):
 
@@ -250,7 +203,6 @@ php artisan test
 
 # Run a specific test class (faster)
 php artisan test --filter=CustomerTest
-php artisan test --filter=StaffNicTest
 php artisan test --filter=ReservationGuestValidationTest
 php artisan test --filter=ImmutableInvoicePaymentTest
 php artisan test --filter=AlertsTest
@@ -269,7 +221,7 @@ php artisan tinker
 
 ---
 
-## 12. Navbar Dropdown Toggling & Explicit Sign Out Action
+## 11. Navbar Dropdown Toggling & Explicit Sign Out Action
 
 ### Why the custom toggle handler is used
 In the HMS portal layout (app.blade.php), we use a custom delegated jQuery click listener to toggle `.dropdown-menu` expand states:
@@ -297,7 +249,7 @@ To prevent empty translator variables (`{{ __('Logout') }}`) from rendering invi
 
 ---
 
-## 13. Guest Pulse AI Link Commenting & Relocation
+## 12. Guest Pulse AI Link Commenting & Relocation
 
 - **Relocation**: The Guest Pulse AI sidebar link is placed at the bottom of the sidebar element list.
 - **Commenting**: To prevent presentation errors when the local Guest Pulse Node server (port `8000`) is offline, the link has been wrapped inside Blade comments:
@@ -314,3 +266,41 @@ To prevent empty translator variables (`{{ __('Logout') }}`) from rendering invi
   --}}
   ```
   *To restore the link post-presentation, simply remove the `{{--` and `--}}` wrapping tags.*
+
+---
+
+## 13. Query Sort Keys Mismatches (Database vs. Whitelists)
+
+If users encounter a database QueryException when sorting table views (e.g. unknown column exceptions):
+1. Check the controller's `$allowedSortColumns` whitelist.
+2. Ensure the whitelisted column names match the actual database schema rather than the presentation fields:
+   * **Invoices**: Whitelist `invoice_date` and `total_amount` instead of `issue_date` and `total`.
+   * **Events**: Whitelist `start_time`, `end_time`, and `max_attendees` instead of `start_date`, `end_date`, and `capacity`.
+
+---
+
+## 14. Checked-in and Checked-out Reservation Invoicing
+
+To allow creating invoices for active guests or checked-out guests whose invoices have not been finalized:
+1. Open the [InvoiceController.php](file:///D:/xampp/htdocs/HMS/app/Http/Controllers/InvoiceController.php).
+2. Inside `create()`, the query fetching reservations must allow the `checked_in` and `checked_out` status:
+   ```php
+   $reservations = \App\Models\Reservation::with(['customer', 'room.roomType'])
+       ->whereIn('status', ['pending', 'confirmed', 'checked_in', 'checked_out'])
+       ->whereDoesntHave('invoice')
+       ->get();
+   ```
+
+---
+
+## 15. Paid Reservations Auto-Checkout Automation
+
+The automatic check-out engine running in the background ([AutoCheckOutMiddleware.php](file:///D:/xampp/htdocs/HMS/app/Http/Middleware/AutoCheckOutMiddleware.php)) releases stays automatically:
+1. It queries paid reservations whose stay period has concluded.
+2. It targets both **`checked_in`** and **`confirmed`** reservations, ensuring guest stays that ended are automatically marked as `checked_out` even if staff neglected to check them in manually:
+   ```php
+   $reservations = Reservation::whereIn('status', ['checked_in', 'confirmed'])
+       ->whereDate('check_out_date', '<=', now()->toDateString())
+       ->get();
+   ```
+
