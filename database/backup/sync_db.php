@@ -3,7 +3,7 @@ $host = 'localhost';
 $user = 'root';
 $pass = '';
 
-$sourceDb = 'hms_04052026';
+$sourceDb = 'hms20260727';
 $targetDb = 'hms';
 
 $conn = new mysqli($host, $user, $pass);
