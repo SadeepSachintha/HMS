@@ -68,18 +68,6 @@
                                             </a>
                                         </th>
                                         <th>
-                                            <a href="{{ request()->fullUrlWithQuery(['sort' => 'category', 'order' => request('sort') == 'category' && request('order') == 'asc' ? 'desc' : 'asc']) }}"
-                                                class="text-decoration-none text-white d-flex align-items-center justify-content-between">
-                                                Category
-                                                <div class="d-flex flex-column">
-                                                    <i class="fas fa-sort-up {{ request('sort') == 'category' && request('order') == 'asc' ? 'text-primary' : 'text-muted' }}"
-                                                        style="font-size: 0.7em;"></i>
-                                                    <i class="fas fa-sort-down {{ request('sort') == 'category' && request('order') == 'desc' ? 'text-primary' : 'text-muted' }}"
-                                                        style="font-size: 0.7em;"></i>
-                                                </div>
-                                            </a>
-                                        </th>
-                                        <th>
                                             <a href="{{ request()->fullUrlWithQuery(['sort' => 'price', 'order' => request('sort') == 'price' && request('order') == 'asc' ? 'desc' : 'asc']) }}"
                                                 class="text-decoration-none text-white d-flex align-items-center justify-content-between">
                                                 Price
@@ -100,7 +88,6 @@
                                             <td class="align-middle">{{ $item->id }}</td>
 
                                             <td class="align-middle fw-bold">{{ $item->name }}</td>
-                                            <td class="align-middle">{{ $item->category }}</td>
                                             <td class="align-middle text-primary fw-bold">
                                                 LKR{{ number_format($item->price, 2) }}</td>
                                             <td class="align-middle">
@@ -120,7 +107,7 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="5" class="text-center py-4">
+                                            <td colspan="4" class="text-center py-4">
                                                 <div class="text-muted">
                                                     <i class="fas fa-utensils fa-2x mb-3"></i>
                                                     <p class="mb-0">

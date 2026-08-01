@@ -132,6 +132,7 @@
                     <th>Date</th>
                     <th>Method</th>
                     <th>Amount</th>
+                    <th class="text-center">Status</th>
                 </tr>
             </thead>
             <tbody>
@@ -141,17 +142,27 @@
                     <td>{{ $payment->payment_date->format('M d, Y') }}</td>
                     <td>{{ $payment->payment_method === 'check' ? 'Cheque' : ucfirst(str_replace('_', ' ', $payment->payment_method)) }}</td>
                     <td>LKR{{ number_format($payment->amount, 2) }}</td>
+                    <td class="text-center">
+                        <span class="badge bg-{{
+                            $payment->status === 'completed' ? 'success' :
+                            ($payment->status === 'pending' ? 'warning' :
+                            ($payment->status === 'failed' ? 'danger' :
+                            ($payment->status === 'refunded' ? 'info' : 'secondary')))
+                        }}">
+                            {{ strtoupper($payment->status) }}
+                        </span>
+                    </td>
                 </tr>
                 @endforeach
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="3" class="text-end"><strong>Total Paid:</strong></td>
-                    <td colspan="2"><strong>LKR{{ number_format($invoice->payments->where('status', 'completed')->sum('amount'), 2) }}</strong></td>
+                    <td colspan="4" class="text-end"><strong>Total Paid:</strong></td>
+                    <td><strong>LKR{{ number_format($invoice->payments->where('status', 'completed')->sum('amount'), 2) }}</strong></td>
                 </tr>
                 <tr>
-                    <td colspan="3" class="text-end"><strong>Balance Due:</strong></td>
-                    <td colspan="2"><strong>LKR{{ number_format($invoice->total_amount - $invoice->payments->where('status', 'completed')->sum('amount'), 2) }}</strong></td>
+                    <td colspan="4" class="text-end"><strong>Balance Due:</strong></td>
+                    <td><strong>LKR{{ number_format($invoice->total_amount - $invoice->payments->where('status', 'completed')->sum('amount'), 2) }}</strong></td>
                 </tr>
             </tfoot>
         </table>

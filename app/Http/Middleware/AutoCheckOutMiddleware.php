@@ -23,8 +23,8 @@ class AutoCheckOutMiddleware
             $checkOutTime = $settings->check_out_time ?? '12:00:00';
             $currentTime = now()->toTimeString();
 
-            // Find all checked-in reservations whose checkout date has passed or is today
-            $reservations = Reservation::where('status', 'checked_in')
+            // Find all checked-in or confirmed reservations whose checkout date has passed or is today
+            $reservations = Reservation::whereIn('status', ['checked_in', 'confirmed'])
                 ->whereDate('check_out_date', '<=', now()->toDateString())
                 ->get();
 
@@ -35,6 +35,7 @@ class AutoCheckOutMiddleware
                         continue;
                     }
                 }
+
 
                 // If the invoice is paid, check it out
                 if ($reservation->invoice && $reservation->invoice->status === 'paid') {

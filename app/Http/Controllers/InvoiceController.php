@@ -126,7 +126,7 @@ class InvoiceController extends Controller
 
         $reservations = \App\Models\Reservation::with(['customer', 'room.roomType'])
 
-            ->whereIn('status', ['pending', 'confirmed'])
+            ->whereIn('status', ['pending', 'confirmed', 'checked_in', 'checked_out'])
 
             ->whereDoesntHave('invoice')
 
