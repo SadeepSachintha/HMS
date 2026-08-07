@@ -32,6 +32,18 @@
 
     @stack('styles')
 
+    <style>
+        .navbar {
+            z-index: 1050 !important;
+        }
+        .navbar .dropdown-menu-end {
+            right: 0 !important;
+            left: auto !important;
+        }
+        .alerts-dropdown .dropdown-item {
+            white-space: normal !important;
+        }
+    </style>
 </head>
 
 <body>

@@ -331,6 +331,11 @@ a {
 }
 
 /* Alerts Dropdown Styles */
+.navbar .dropdown-menu-end {
+    right: 0 !important;
+    left: auto !important;
+}
+
 .alerts-dropdown {
     padding: 0;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
@@ -350,6 +355,7 @@ a {
 .alerts-dropdown .dropdown-item {
     padding: 12px 16px;
     border-bottom: 1px solid #f8f9fa;
+    white-space: normal !important;
 }
 
 .alerts-dropdown .dropdown-item:last-child {
