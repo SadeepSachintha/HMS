@@ -92,7 +92,7 @@
                             </div>
                         </div>
 
-                        <hr class="my-4">
+                        <!-- <hr class="my-4">
 
                         <h5 class="text-primary mb-3"><i class="fas fa-bell me-2"></i>Notifications</h5>
                         <div class="row mb-4">
@@ -108,7 +108,7 @@
                                     <label class="form-check-label" for="sms_notifications">Enable SMS Notifications</label>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
 
                         <div class="d-flex justify-content-end">
                             <button type="submit" class="btn btn-primary px-4"><i class="fas fa-save me-1"></i>Save Settings</button>

@@ -8,7 +8,7 @@
             <a href="{{ route('activity-logs.export', request()->all()) }}" class="btn btn-success">
                 <i class="fas fa-file-excel me-1"></i> Export to Excel
             </a>
-            <span class="badge bg-danger px-3 py-2 fs-6"><i class="fas fa-lock me-1"></i> Admin Access Only</span>
+            <!-- <span class="badge bg-danger px-3 py-2 fs-6"><i class="fas fa-lock me-1"></i> Admin Access Only</span> -->
         </div>
     </div>
 
