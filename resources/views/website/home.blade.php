@@ -120,7 +120,7 @@
                         </div>
                         <div class="room-details">
                             <h3>{{ $roomType->name }}</h3>
-                            <p>{{ Str::limit($roomType->description, 100) }}</p>
+                            <p>{{ Str::limit($roomType->description, 500) }}</p>
                             
                             <div class="room-features">
                                 <div class="feature-item">

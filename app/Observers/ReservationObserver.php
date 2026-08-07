@@ -16,6 +16,7 @@ class ReservationObserver
     {
         $this->generateInvoice($reservation);
         $this->syncRoomStatus($reservation);
+        $this->notifyStaff($reservation);
     }
 
     /**
@@ -113,5 +114,34 @@ class ReservationObserver
     public function forceDeleted(Reservation $reservation)
     {
         //
+    }
+
+    /**
+     * Send notifications to staff, manager, and admin users.
+     */
+    private function notifyStaff(Reservation $reservation): void
+    {
+        $creator = auth()->user();
+        $isGuestCreated = $creator && $creator->isGuest();
+        
+        $title = $isGuestCreated ? 'New Guest Booking' : 'New Booking Registered';
+        $customerName = $reservation->customer->name ?? 'Guest';
+        $roomNumber = $reservation->room->number ?? 'TBD';
+        
+        $message = $isGuestCreated 
+            ? "Guest {$customerName} has booked Room {$roomNumber}."
+            : "Staff member " . ($creator->name ?? 'System') . " registered a booking for {$customerName} in Room {$roomNumber}.";
+
+        $staffUsers = \App\Models\User::whereIn('role', ['admin', 'manager', 'staff'])->get();
+        foreach ($staffUsers as $user) {
+            \App\Models\Alert::create([
+                'user_id' => $user->id,
+                'title' => $title,
+                'message' => $message,
+                'type' => 'info',
+                'link' => route('reservations.show', $reservation),
+                'is_read' => false
+            ]);
+        }
     }
 }

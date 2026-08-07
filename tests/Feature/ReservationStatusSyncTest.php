@@ -172,4 +172,69 @@ class ReservationStatusSyncTest extends TestCase
         // Clean up time mocking
         Carbon::setTestNow();
     }
+
+    public function test_creating_reservation_generates_alerts_for_staff()
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+        $manager = User::factory()->create(['role' => 'manager']);
+        $staff = User::factory()->create(['role' => 'staff']);
+        $guest = User::factory()->create(['role' => 'guest']);
+
+        $roomType = RoomType::create([
+            'name' => 'Deluxe Room',
+            'description' => 'A luxury room',
+            'price_per_night' => 150.00,
+            'capacity' => 2,
+            'amenities' => ['Wi-Fi', 'TV']
+        ]);
+
+        $room = Room::create([
+            'number' => '102',
+            'room_type_id' => $roomType->id,
+            'floor' => 1,
+            'status' => 'available',
+            'is_clean' => true
+        ]);
+
+        $customer = Customer::create([
+            'name' => 'Jane Doe',
+            'email' => 'jane@doe.com',
+            'phone' => '0987654321',
+            'address' => '456 Oak St'
+        ]);
+
+        // Create reservation as guest user
+        $this->actingAs($guest);
+
+        $reservation = Reservation::create([
+            'customer_id' => $customer->id,
+            'room_id' => $room->id,
+            'check_in_date' => now()->toDateString(),
+            'check_out_date' => now()->addDays(2)->toDateString(),
+            'number_of_guests' => 2,
+            'status' => 'pending'
+        ]);
+
+        // Verify alert was generated for admin, manager, staff
+        $this->assertDatabaseHas('alerts', [
+            'user_id' => $admin->id,
+            'title' => 'New Guest Booking',
+            'message' => 'Guest Jane Doe has booked Room 102.',
+        ]);
+
+        $this->assertDatabaseHas('alerts', [
+            'user_id' => $manager->id,
+            'title' => 'New Guest Booking',
+        ]);
+
+        $this->assertDatabaseHas('alerts', [
+            'user_id' => $staff->id,
+            'title' => 'New Guest Booking',
+        ]);
+
+        // Verify no alert for guest
+        $this->assertDatabaseMissing('alerts', [
+            'user_id' => $guest->id,
+        ]);
+    }
 }
