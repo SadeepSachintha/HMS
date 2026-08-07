@@ -304,3 +304,32 @@ The automatic check-out engine running in the background ([AutoCheckOutMiddlewar
        ->get();
    ```
 
+---
+
+## 16. Expanded Reports & Analytics (F&B Sales & Tax Levies Auditing)
+
+### How F&B Sales queries work
+Queries the `invoice_items` where description matches names in the `food_items` table:
+```php
+$foodNames = \App\Models\FoodItem::pluck('name')->toArray();
+$items = \App\Models\InvoiceItem::whereIn('description', $foodNames)
+    ->whereHas('invoice', function($q) use ($from, $to) {
+        $q->whereBetween('invoice_date', [$from, $to]);
+    })
+    ->selectRaw('description as food_item_name, unit_price, sum(quantity) as quantity_sold, sum(quantity * unit_price) as total_sales')
+    ->groupBy('description', 'unit_price')
+    ->get();
+```
+
+### How Tax Levies Audit queries work
+Gathers all invoice tax columns (`base_amount`, `service_charge`, `sscl_amount`, `tdl_amount`, `vat_amount`, `grand_total`) and computes sum totals to render columns-wise aggregates in Datatables footer.
+
+---
+
+## 17. Guest Invoice Payments Restriction
+
+Since online transactions are disabled, the Pay credit card button (invoice list) and Record Payment button (invoice details page) are restricted:
+1. **Blade logic**: Wrap them in `@if(!auth()->user()->isGuest()) ... @endif`.
+2. **Result**: Hides payment triggers completely for Guest roles while keeping them active for hotel Staff, Managers, and Admins.
+
+
