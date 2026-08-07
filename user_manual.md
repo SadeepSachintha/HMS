@@ -40,7 +40,8 @@ The system restricts features based on four distinct user roles:
 
 | Feature/Module | Guest | Staff | Manager | Admin |
 | :--- | :---: | :---: | :---: | :---: |
-| **Self-Service Booking** | View / Pay | View / Pay | View / Pay | View / Pay |
+| **Self-Service Booking** | View / Book | View / Pay | View / Pay | View / Pay |
+| **Record/Process Payments** | No | Yes | Yes | Yes |
 | **View Own Logs / Profile** | Yes | Yes | Yes | Yes |
 | **Create Reservations / Guests** | No | Yes | Yes | Yes |
 | **Modify Reservations / Guests** | No | No | Yes | Yes |
@@ -153,6 +154,12 @@ The audit dashboard ([app/Http/Controllers/ActivityLogController.php](file:///D:
 * **Metadata Tracking**: Captures user IP address and browser User-Agent details.
 * **Excel Archiving**: Admins can export search results directly to an Excel sheet (`.xlsx`) with a single click.
 
+### 📊 Reports & Analytics Dashboards
+Managers and Admins have access to operational and financial intelligence reports:
+* **Food & Beverage (F&B) Sales Report**: Aggregates food item orders from invoice lines. Displays names, unit prices, quantities sold, and total sales, calculating total revenue at the bottom.
+* **Tax & Financial Levies Audit**: Breaks down invoice financials by subtotal, service charge, SSCL, TDL, VAT, and grand totals, presenting aggregate column sums in the table footer.
+* **PDF & Excel Exports**: Supports local spreadsheet downloads (`.xlsx`) and print-friendly PDF generation for offline archiving.
+
 ### 🔒 Session Timeout Safeguards
 An inactive user session triggers a modal warning popup after **13 minutes of inactivity**, warning that they will be automatically logged out due to inactivity at the **14-minute mark**.
 
@@ -165,6 +172,10 @@ Guests can self-register and manage bookings securely.
 ### 📝 Self-Registration & Customer Mapping
 * During registration, the guest must provide a contact phone number and their NIC/Passport number.
 * Registering automatically creates a corresponding profile inside the `customers` database table, matching the user by email.
+
+### 🚫 Payment Actions Restriction
+* Since online payment processing is disabled, the credit card pay icon is completely hidden from the guest's invoice list page.
+* The "Record Payment" button on the invoice detail view is restricted and hidden from guest logins, preventing unauthorized entries.
 
 ---
 

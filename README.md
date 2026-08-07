@@ -133,6 +133,8 @@ A comprehensive, enterprise-grade Hotel Management System built on **Laravel 8**
 
 - **Safe Payment Recording** — Disables the Record Payment action on paid, cancelled, or refunded invoices.
 
+- **Guest Payments Restriction** — Hides all credit card pay icons and Record Payment links from Guest user roles since online transaction processing is disabled.
+
 - **PDF Receipts & Invoices** — Instant generation via DomPDF. Includes the **Status** column inside the **Payment History** table to show paid/cancelled/refunded records.
 
 - **Excel Reports** — Export data to `.xlsx` via Laravel Excel.
@@ -144,6 +146,10 @@ A comprehensive, enterprise-grade Hotel Management System built on **Laravel 8**
 - **Occupancy Reports** — Track room utilization over custom date ranges.
 
 - **Revenue Reports** — Detailed revenue breakdown by date range.
+
+- **Food & Beverage (F&B) Sales Reports** — Summarizes quantity sold and total revenue generated for billed food menu items.
+
+- **Tax & Levies Audits** — Provides itemized breakdowns of Subtotal, Service Charge, SSCL, TDL, VAT, and Grand Totals with computed sums in table footers.
 
 - **Reservation Reports** — Booking trends and volume insights.
 
