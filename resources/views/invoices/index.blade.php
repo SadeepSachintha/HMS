@@ -224,22 +224,24 @@
 
                                         </a>
 
-                                        @if($invoice->status !== 'paid' && $invoice->status !== 'cancelled')
+                                        @if(!auth()->user()->isGuest())
+                                            @if($invoice->status !== 'paid' && $invoice->status !== 'cancelled')
 
-                                            <a href="{{ route('payments.create', ['invoice_id' => $invoice->id]) }}" class="btn btn-sm btn-success" title="Pay">
+                                                <a href="{{ route('payments.create', ['invoice_id' => $invoice->id]) }}" class="btn btn-sm btn-success" title="Pay">
 
-                                                <i class="fas fa-credit-card"></i>
+                                                    <i class="fas fa-credit-card"></i>
 
-                                            </a>
+                                                </a>
 
-                                        @else
+                                            @else
 
-                                            <button class="btn btn-sm btn-secondary" title="Pay" disabled style="pointer-events: none; opacity: 0.65;">
+                                                <button class="btn btn-sm btn-secondary" title="Pay" disabled style="pointer-events: none; opacity: 0.65;">
 
-                                                <i class="fas fa-credit-card"></i>
+                                                    <i class="fas fa-credit-card"></i>
 
-                                            </button>
+                                                </button>
 
+                                            @endif
                                         @endif
 
                                         <a href="{{ route('invoices.download', $invoice) }}" class="btn btn-sm btn-secondary" title="Download">

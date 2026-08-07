@@ -335,16 +335,18 @@
 
                     @endif
 
-                    @if(strtolower($invoice->status) !== 'paid' && strtolower($invoice->status) !== 'cancelled')
-                    <div class="mt-4">
+                    @if(!auth()->user()->isGuest())
+                        @if(strtolower($invoice->status) !== 'paid' && strtolower($invoice->status) !== 'cancelled')
+                        <div class="mt-4">
 
-                         <a href="{{ route('payments.create', ['invoice_id' => $invoice->id]) }}" class="btn btn-success">
+                             <a href="{{ route('payments.create', ['invoice_id' => $invoice->id]) }}" class="btn btn-success">
 
-                             <i class="fas fa-plus"></i> Record Payment
+                                 <i class="fas fa-plus"></i> Record Payment
 
-                         </a>
+                             </a>
 
-                    </div>
+                        </div>
+                        @endif
                     @endif
 
                 </div>

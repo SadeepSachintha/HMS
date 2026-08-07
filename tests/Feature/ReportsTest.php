@@ -205,4 +205,58 @@ class ReportsTest extends TestCase
         $response->assertStatus(200);
         $response->assertHeader('content-type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
     }
+
+    /** @test */
+    public function guest_cannot_see_pay_or_record_payment_buttons()
+    {
+        $customer = Customer::create([
+            'name' => 'Jane Doe',
+            'email' => 'jane@mail.com',
+            'phone' => '+94763928335',
+            'nic_passport' => '987654321V',
+            'address' => 'Colombo',
+            'city' => 'Colombo',
+            'state' => 'Colombo',
+            'postal_code' => '00100',
+            'country' => 'Sri Lanka'
+        ]);
+        $invoice = Invoice::create([
+            'invoice_number' => 'INV-000002',
+            'customer_id' => $customer->id,
+            'invoice_date' => now()->toDateString(),
+            'due_date' => now()->addDays(7)->toDateString(),
+            'subtotal' => 1000.00,
+            'tax_rate' => 31.50,
+            'tax_amount' => 315.00,
+            'total_amount' => 1315.00,
+            'status' => 'sent',
+            'base_amount' => 1000.00,
+            'service_charge' => 100.00,
+            'sscl_amount' => 25.00,
+            'tdl_amount' => 10.00,
+            'vat_amount' => 180.00,
+            'grand_total' => 1315.00,
+        ]);
+
+        $adminUser = User::factory()->create(['role' => 'admin']);
+        $guestUser = User::factory()->create(['role' => 'guest']);
+
+        // Admin views invoice index
+        $response = $this->actingAs($adminUser)->get(route('invoices.index'));
+        $response->assertSee('payments/create');
+
+        // Admin views invoice show
+        $response = $this->actingAs($adminUser)->get(route('invoices.show', $invoice));
+        $response->assertSee('Record Payment');
+        $response->assertSee('payments/create');
+
+        // Guest views invoice index
+        $response = $this->actingAs($guestUser)->get(route('invoices.index'));
+        $response->assertDontSee('payments/create');
+
+        // Guest views invoice show
+        $response = $this->actingAs($guestUser)->get(route('invoices.show', $invoice));
+        $response->assertDontSee('Record Payment');
+        $response->assertDontSee('payments/create');
+    }
 }
