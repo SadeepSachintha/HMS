@@ -121,6 +121,73 @@
                 </tr>
             </tfoot>
         </table>
+    @elseif($title === 'Food & Beverage Sales Report')
+        <table>
+            <thead>
+                <tr>
+                    <th>Food Item Name</th>
+                    <th>Unit Price (LKR)</th>
+                    <th>Quantity Sold</th>
+                    <th>Total Sales (LKR)</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($data['rows'] as $row)
+                    <tr>
+                        <td>{{ $row['food_item_name'] }}</td>
+                        <td>{{ number_format($row['unit_price'], 2) }}</td>
+                        <td>{{ $row['quantity_sold'] }}</td>
+                        <td>{{ number_format($row['total_sales'], 2) }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th colspan="3" style="text-align:right">Total</th>
+                    <th>{{ number_format($data['total'], 2) }}</th>
+                </tr>
+            </tfoot>
+        </table>
+    @elseif($title === 'Tax & Financial Levies Audit Report')
+        <table>
+            <thead>
+                <tr>
+                    <th>Invoice Number</th>
+                    <th>Invoice Date</th>
+                    <th>Subtotal (LKR)</th>
+                    <th>Service Charge (LKR)</th>
+                    <th>SSCL (LKR)</th>
+                    <th>TDL (LKR)</th>
+                    <th>VAT (LKR)</th>
+                    <th>Grand Total (LKR)</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($data['rows'] as $row)
+                    <tr>
+                        <td>{{ $row['invoice_number'] }}</td>
+                        <td>{{ $row['invoice_date'] }}</td>
+                        <td>{{ number_format($row['base_amount'], 2) }}</td>
+                        <td>{{ number_format($row['service_charge'], 2) }}</td>
+                        <td>{{ number_format($row['sscl_amount'], 2) }}</td>
+                        <td>{{ number_format($row['tdl_amount'], 2) }}</td>
+                        <td>{{ number_format($row['vat_amount'], 2) }}</td>
+                        <td>{{ number_format($row['grand_total'], 2) }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th colspan="2" style="text-align:right">Total</th>
+                    <th>{{ number_format($data['totals']['base_amount'], 2) }}</th>
+                    <th>{{ number_format($data['totals']['service_charge'], 2) }}</th>
+                    <th>{{ number_format($data['totals']['sscl_amount'], 2) }}</th>
+                    <th>{{ number_format($data['totals']['tdl_amount'], 2) }}</th>
+                    <th>{{ number_format($data['totals']['vat_amount'], 2) }}</th>
+                    <th>{{ number_format($data['totals']['grand_total'], 2) }}</th>
+                </tr>
+            </tfoot>
+        </table>
     @else
         <table>
             <thead>

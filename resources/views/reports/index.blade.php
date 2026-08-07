@@ -18,6 +18,12 @@
                         <a href="#" class="list-group-item list-group-item-action mb-2 rounded-3 border-0 d-flex align-items-center" id="report-revenue">
                             <i class="fas fa-hand-holding-usd me-3"></i> Revenue Report
                         </a>
+                        <a href="#" class="list-group-item list-group-item-action mb-2 rounded-3 border-0 d-flex align-items-center" id="report-food_sales">
+                            <i class="fas fa-utensils me-3"></i> F&B Sales Report
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action mb-2 rounded-3 border-0 d-flex align-items-center" id="report-tax_levies">
+                            <i class="fas fa-file-invoice-dollar me-3"></i> Tax & Levies Audit
+                        </a>
                         <a href="#" class="list-group-item list-group-item-action mb-2 rounded-3 border-0 d-flex align-items-center" id="report-reservations">
                             <i class="fas fa-calendar-check me-3"></i> Reservations Report
                         </a>
@@ -142,7 +148,25 @@ function getTableColumns(type) {
             { title: 'Payment id', data: 'payment_id' },
             { title: 'Payment method', data: 'payment_method' },
             { title: 'Payment date', data: 'payment_date' },
-            { title: 'Total amount (LKR)', data: 'total_amount' }
+            { title: 'Total amount (LKR)', data: 'total_amount', render: function(d) { return parseFloat(d).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}); } }
+        ];
+    } else if (type === 'food_sales') {
+        return [
+            { title: 'Food Item Name', data: 'food_item_name' },
+            { title: 'Unit Price (LKR)', data: 'unit_price', render: function(d) { return parseFloat(d).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}); } },
+            { title: 'Quantity Sold', data: 'quantity_sold' },
+            { title: 'Total Sales (LKR)', data: 'total_sales', render: function(d) { return parseFloat(d).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}); } }
+        ];
+    } else if (type === 'tax_levies') {
+        return [
+            { title: 'Invoice Number', data: 'invoice_number' },
+            { title: 'Invoice Date', data: 'invoice_date' },
+            { title: 'Subtotal (LKR)', data: 'base_amount', render: function(d) { return parseFloat(d).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}); } },
+            { title: 'Service Charge (LKR)', data: 'service_charge', render: function(d) { return parseFloat(d).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}); } },
+            { title: 'SSCL (LKR)', data: 'sscl_amount', render: function(d) { return parseFloat(d).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}); } },
+            { title: 'TDL (LKR)', data: 'tdl_amount', render: function(d) { return parseFloat(d).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}); } },
+            { title: 'VAT (LKR)', data: 'vat_amount', render: function(d) { return parseFloat(d).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}); } },
+            { title: 'Grand Total (LKR)', data: 'grand_total', render: function(d) { return parseFloat(d).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}); } }
         ];
     } else {
         return [
@@ -170,7 +194,23 @@ function renderTable(type, data) {
     let table = $('#report-table').DataTable(dtOptions);
     if (type === 'revenue' && data.total !== undefined) {
         $(table.table().footer()).remove();
-        $('#report-table').append('<tfoot><tr><th colspan="3" style="text-align:right">Total</th><th>LKR ' + parseFloat(data.total).toLocaleString() + '</th></tr></tfoot>');
+        $('#report-table').append('<tfoot><tr><th colspan="3" style="text-align:right">Total</th><th>LKR ' + parseFloat(data.total).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + '</th></tr></tfoot>');
+    } else if (type === 'food_sales' && data.total !== undefined) {
+        $(table.table().footer()).remove();
+        $('#report-table').append('<tfoot><tr><th colspan="3" style="text-align:right">Total</th><th>LKR ' + parseFloat(data.total).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + '</th></tr></tfoot>');
+    } else if (type === 'tax_levies' && data.totals !== undefined) {
+        $(table.table().footer()).remove();
+        let t = data.totals;
+        let footerHtml = '<tfoot><tr>' +
+            '<th colspan="2" style="text-align:right">Total</th>' +
+            '<th>LKR ' + parseFloat(t.base_amount).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + '</th>' +
+            '<th>LKR ' + parseFloat(t.service_charge).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + '</th>' +
+            '<th>LKR ' + parseFloat(t.sscl_amount).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + '</th>' +
+            '<th>LKR ' + parseFloat(t.tdl_amount).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + '</th>' +
+            '<th>LKR ' + parseFloat(t.vat_amount).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + '</th>' +
+            '<th>LKR ' + parseFloat(t.grand_total).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + '</th>' +
+            '</tr></tfoot>';
+        $('#report-table').append(footerHtml);
     }
 
     // Show download buttons after table is rendered
@@ -179,20 +219,20 @@ function renderTable(type, data) {
 
 $(document).ready(function() {
     // Sidebar navigation logic
-    const reportTypes = ['occupancy', 'revenue', 'reservations'];
+    const reportTypes = ['occupancy', 'revenue', 'food_sales', 'tax_levies', 'reservations'];
     reportTypes.forEach(type => {
         $('#report-' + type).on('click', function(e) {
             e.preventDefault();
             reportTypes.forEach(t => $('#report-' + t).removeClass('active'));
             $(this).addClass('active');
-            $('#report-title').text($(this).text());
+            $('#report-title').text($(this).text().trim());
             currentReportType = type;
             $('#report-table-container').html(`
                 <div class="text-center py-5">
                     <div class="stat-icon-wrapper bg-soft-gold mx-auto mb-4">
                         <i class="fas fa-chart-line fa-2x"></i>
                     </div>
-                    <h5 class="text-muted fw-normal">Select a date range to begin the ${$(this).text()}</h5>
+                    <h5 class="text-muted fw-normal">Select a date range to begin the ${$(this).text().trim()}</h5>
                     <p class="text-muted small">Choose parameters above and click search to view insights</p>
                 </div>
             `);

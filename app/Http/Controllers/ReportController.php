@@ -11,6 +11,8 @@ use Illuminate\Http\Request;
 use App\Exports\OccupancyReportExport;
 use App\Exports\RevenueReportExport;
 use App\Exports\ReservationsReportExport;
+use App\Exports\FoodSalesReportExport;
+use App\Exports\TaxLeviesReportExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Log;
@@ -31,7 +33,7 @@ class ReportController extends Controller
     {
         try {
             $request->validate([
-                'report_type' => 'required|in:occupancy,revenue,reservations',
+                'report_type' => 'required|in:occupancy,revenue,reservations,food_sales,tax_levies',
                 'date_range' => 'required|in:today,yesterday,last_7_days,this_month,last_month,custom',
                 'start_date' => 'required_if:date_range,custom|date',
                 'end_date' => 'required_if:date_range,custom|date|after_or_equal:start_date',
@@ -56,6 +58,14 @@ class ReportController extends Controller
                     $data = $this->generateReservationsReport($startDate, $endDate);
                     $title = 'Reservations Report';
                     break;
+                case 'food_sales':
+                    $data = $this->getFoodSalesTableData($startDate, $endDate);
+                    $title = 'Food & Beverage Sales Report';
+                    break;
+                case 'tax_levies':
+                    $data = $this->getTaxLeviesTableData($startDate, $endDate);
+                    $title = 'Tax & Financial Levies Audit Report';
+                    break;
                 default:
                     throw new \Exception('Invalid report type');
             }
@@ -72,7 +82,7 @@ class ReportController extends Controller
     {
         try {
             $request->validate([
-                'report_type' => 'required|in:occupancy,revenue,reservations',
+                'report_type' => 'required|in:occupancy,revenue,reservations,food_sales,tax_levies',
                 'from_date' => 'required|date',
                 'to_date' => 'required|date|after_or_equal:from_date',
             ]);
@@ -87,6 +97,12 @@ class ReportController extends Controller
             } elseif ($type === 'revenue') {
                 $data = $this->getRevenueTableData($from, $to);
                 $title = 'Revenue Report';
+            } elseif ($type === 'food_sales') {
+                $data = $this->getFoodSalesTableData($from, $to);
+                $title = 'Food & Beverage Sales Report';
+            } elseif ($type === 'tax_levies') {
+                $data = $this->getTaxLeviesTableData($from, $to);
+                $title = 'Tax & Financial Levies Audit Report';
             } else {
                 $data = $this->getReservationsTableData($from, $to);
                 $title = 'Reservations Report';
@@ -103,7 +119,7 @@ class ReportController extends Controller
     {
         try {
             $request->validate([
-                'report_type' => 'required|in:occupancy,revenue,reservations',
+                'report_type' => 'required|in:occupancy,revenue,reservations,food_sales,tax_levies',
                 'from_date' => 'required|date',
                 'to_date' => 'required|date|after_or_equal:from_date',
             ]);
@@ -120,6 +136,14 @@ class ReportController extends Controller
                 $data = $this->getRevenueTableData($from, $to);
                 $export = new RevenueReportExport($data['rows']->toArray());
                 $fileName = 'Revenue_Report_' . $from->format('Ymd') . '_to_' . $to->format('Ymd') . '.xlsx';
+            } elseif ($type === 'food_sales') {
+                $data = $this->getFoodSalesTableData($from, $to);
+                $export = new FoodSalesReportExport($data['rows']->toArray());
+                $fileName = 'Food_Sales_Report_' . $from->format('Ymd') . '_to_' . $to->format('Ymd') . '.xlsx';
+            } elseif ($type === 'tax_levies') {
+                $data = $this->getTaxLeviesTableData($from, $to);
+                $export = new TaxLeviesReportExport($data['rows']->toArray());
+                $fileName = 'Tax_Levies_Report_' . $from->format('Ymd') . '_to_' . $to->format('Ymd') . '.xlsx';
             } else {
                 $data = $this->getReservationsTableData($from, $to);
                 $export = new ReservationsReportExport($data->toArray());
@@ -153,7 +177,7 @@ class ReportController extends Controller
     {
         try {
             $request->validate([
-                'report_type' => 'required|in:occupancy,revenue,reservations',
+                'report_type' => 'required|in:occupancy,revenue,reservations,food_sales,tax_levies',
                 'from_date' => 'required|date',
                 'to_date' => 'required|date|after_or_equal:from_date',
             ]);
@@ -166,6 +190,10 @@ class ReportController extends Controller
                 $data = $this->getOccupancyTableData($from, $to);
             } elseif ($type === 'revenue') {
                 $data = $this->getRevenueTableData($from, $to);
+            } elseif ($type === 'food_sales') {
+                $data = $this->getFoodSalesTableData($from, $to);
+            } elseif ($type === 'tax_levies') {
+                $data = $this->getTaxLeviesTableData($from, $to);
             } else {
                 $data = $this->getReservationsTableData($from, $to);
             }
@@ -393,5 +421,61 @@ class ReportController extends Controller
                 'status' => ucfirst($r->status),
             ];
         });
+    }
+
+    // Helper for Food Sales Report Table
+    private function getFoodSalesTableData($from, $to)
+    {
+        $foodNames = \App\Models\FoodItem::pluck('name')->toArray();
+        $items = \App\Models\InvoiceItem::whereIn('description', $foodNames)
+            ->whereHas('invoice', function($q) use ($from, $to) {
+                $q->whereBetween('invoice_date', [$from, $to]);
+            })
+            ->selectRaw('description as food_item_name, unit_price, sum(quantity) as quantity_sold, sum(quantity * unit_price) as total_sales')
+            ->groupBy('description', 'unit_price')
+            ->get();
+
+        $rows = $items->map(function($item) {
+            return [
+                'food_item_name' => $item->food_item_name,
+                'unit_price' => (float)$item->unit_price,
+                'quantity_sold' => (int)$item->quantity_sold,
+                'total_sales' => (float)$item->total_sales,
+            ];
+        });
+
+        $total = $rows->sum('total_sales');
+        return ['rows' => $rows, 'total' => $total];
+    }
+
+    // Helper for Tax Levies Report Table
+    private function getTaxLeviesTableData($from, $to)
+    {
+        $invoices = \App\Models\Invoice::whereBetween('invoice_date', [$from, $to])
+            ->get();
+
+        $rows = $invoices->map(function($inv) {
+            return [
+                'invoice_number' => $inv->invoice_number,
+                'invoice_date' => $inv->invoice_date ? $inv->invoice_date->format('Y-m-d') : '',
+                'base_amount' => $inv->base_amount,
+                'service_charge' => $inv->service_charge,
+                'sscl_amount' => $inv->sscl_amount,
+                'tdl_amount' => $inv->tdl_amount,
+                'vat_amount' => $inv->vat_amount,
+                'grand_total' => $inv->grand_total
+            ];
+        });
+
+        $totals = [
+            'base_amount' => $rows->sum('base_amount'),
+            'service_charge' => $rows->sum('service_charge'),
+            'sscl_amount' => $rows->sum('sscl_amount'),
+            'tdl_amount' => $rows->sum('tdl_amount'),
+            'vat_amount' => $rows->sum('vat_amount'),
+            'grand_total' => $rows->sum('grand_total')
+        ];
+
+        return ['rows' => $rows, 'totals' => $totals];
     }
 }
