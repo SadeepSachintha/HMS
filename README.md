@@ -163,6 +163,8 @@ A comprehensive, enterprise-grade Hotel Management System built on **Laravel 8**
 
 - **In-App Alerts** — Bell icon in the navbar with a live unread count badge.
 
+- **Real-time Booking Notifications** — Triggers database alerts automatically for all staff, manager, and admin users when a guest or staff registers a new reservation.
+
 - **Session Timeout Warning** — Inactivity modal warns 1 minute before automatic logout (14-minute idle threshold).
 
 - **Auto-Dismissing Flash Messages** — Success, error, warning, and info banners auto-dismiss after 3 seconds.

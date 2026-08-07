@@ -81,6 +81,7 @@ graph TD
 2. **Date Availability Checks**: The booking form uses AJAX calls to query the database and confirm whether a room is free for the selected date range.
 3. **Guest Identity Logs**: Staff must collect a National Identity Card (NIC) or Passport number (`nic_passport`) when registering or saving guest profiles.
 4. **Guest Profile Searches**: Customers can be retrieved instantly using the index page search bar by matching their Name, Email, Phone, or **NIC/Passport Number**.
+5. **Real-time Staff Notifications**: When a new reservation is created, the `ReservationObserver` automatically dispatches database alerts to all users with `admin`, `manager`, or `staff` roles. The notification bell in the navbar updates its red unread badge count instantly, letting staff know about guest self-service bookings immediately.
 
 ---
 

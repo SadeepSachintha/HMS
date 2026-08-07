@@ -332,4 +332,45 @@ Since online transactions are disabled, the Pay credit card button (invoice list
 1. **Blade logic**: Wrap them in `@if(!auth()->user()->isGuest()) ... @endif`.
 2. **Result**: Hides payment triggers completely for Guest roles while keeping them active for hotel Staff, Managers, and Admins.
 
+---
+
+## 18. Real-time Guest Booking Alerts & Layout Styling Fixes
+
+### How Booking Alerts work
+Alerts are generated in the `created` hook of [ReservationObserver.php](file:///D:/xampp/htdocs/HMS/app/Observers/ReservationObserver.php):
+```php
+private function notifyStaff(Reservation $reservation): void
+{
+    $creator = auth()->user();
+    $isGuestCreated = $creator && $creator->isGuest();
+    
+    $title = $isGuestCreated ? 'New Guest Booking' : 'New Booking Registered';
+    $customerName = $reservation->customer->name ?? 'Guest';
+    $roomNumber = $reservation->room->number ?? 'TBD';
+    
+    $message = $isGuestCreated 
+        ? "Guest {$customerName} has booked Room {$roomNumber}."
+        : "Staff member " . ($creator->name ?? 'System') . " registered a booking for {$customerName} in Room {$roomNumber}.";
+
+    $staffUsers = \App\Models\User::whereIn('role', ['admin', 'manager', 'staff'])->get();
+    foreach ($staffUsers as $user) {
+        \App\Models\Alert::create([
+            'user_id' => $user->id,
+            'title' => $title,
+            'message' => $message,
+            'type' => 'info',
+            'link' => route('reservations.show', $reservation),
+            'is_read' => false
+        ]);
+    }
+}
+```
+
+### Layout Styling Fixes
+To prevent dropdown menu clipping, overlay conflicts, and wrapping issues inside the navbar dropdown:
+1. **Z-Index**: Set `.navbar { z-index: 1050 !important; }` to overlay on top of cards and page content elements.
+2. **Alignment**: Set `.navbar .dropdown-menu-end { right: 0 !important; left: auto !important; }` to keep the menu aligned on screen.
+3. **Text Wrapping**: Set `.alerts-dropdown .dropdown-item { white-space: normal !important; }` to force long alert descriptions to wrap onto multiple lines.
+
+
 
