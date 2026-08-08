@@ -102,7 +102,7 @@
                                             </div>
                                             <div class="col-md-2">
                                                 <label class="form-label">Quantity</label>
-                                                <input type="number" class="form-control main-charge-quantity" name="main_charge[quantity]" value="1" min="1" readonly>
+                                                <input type="number" class="form-control main-charge-quantity" name="main_charge[quantity]" value="1" min="1">
                                             </div>
                                             <div class="col-md-3">
                                                 <label class="form-label">Unit Price (LKR)</label>
@@ -446,6 +446,15 @@
                 updateTotals();
             });
 
+            // Calculate main charge total
+            $(document).on('input', '.main-charge-quantity, .main-charge-unit-price', function() {
+                const quantity = parseFloat($('.main-charge-quantity').val()) || 0;
+                const unitPrice = parseFloat($('.main-charge-unit-price').val()) || 0;
+                const total = quantity * unitPrice;
+                $('.main-charge-total').val(total.toFixed(2));
+                updateTotals();
+            });
+
             // Update totals
             function updateTotals() {
                 let subtotal = 0;
