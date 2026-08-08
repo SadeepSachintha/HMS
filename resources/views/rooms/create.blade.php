@@ -9,7 +9,7 @@
                         <h2 class="mb-0">Create New Room</h2>
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('rooms.store') }}" method="POST">
+                        <form action="{{ route('rooms.store') }}" method="POST" novalidate>
                             @csrf
 
                             <div class="mb-3">

@@ -9,7 +9,7 @@
                     <h4 class="mb-0">Edit Payment</h4>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('payments.update', $payment) }}" method="POST">
+                    <form action="{{ route('payments.update', $payment) }}" method="POST" novalidate>
                         @csrf
                         @method('PUT')
 

@@ -9,7 +9,7 @@
                     <h4 class="mb-0">Edit Invoice #{{ $invoice->invoice_number }}</h4>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('invoices.update-status-notes', $invoice) }}" method="POST">
+                    <form action="{{ route('invoices.update-status-notes', $invoice) }}" method="POST" novalidate>
                         @csrf
                         @method('PUT')
 

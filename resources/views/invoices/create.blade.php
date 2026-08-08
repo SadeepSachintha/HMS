@@ -9,7 +9,7 @@
                         <h4 class="mb-0">Create New Invoice</h4>
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('invoices.store') }}" method="POST">
+                        <form action="{{ route('invoices.store') }}" method="POST" novalidate>
                             @csrf
 
                             <div class="mb-3">

@@ -9,7 +9,7 @@
                     <h4 class="mb-0">Record New Payment</h4>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('payments.store') }}" method="POST">
+                    <form action="{{ route('payments.store') }}" method="POST" novalidate>
                         @csrf
 
                         <div class="mb-3" id="invoice-summary-container" style="display: none;">

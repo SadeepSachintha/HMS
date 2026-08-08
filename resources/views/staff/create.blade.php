@@ -9,7 +9,7 @@
                     <h4 class="mb-0">Add New Staff Member</h4>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('staff.store') }}" method="POST">
+                    <form action="{{ route('staff.store') }}" method="POST" novalidate>
                         @csrf
 
                         <div class="mb-3">

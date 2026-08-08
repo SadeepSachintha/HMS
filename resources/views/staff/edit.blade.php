@@ -12,7 +12,7 @@
                     <h4 class="mb-0">Edit Staff Member</h4>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('staff.update', $staff) }}" method="POST">
+                    <form action="{{ route('staff.update', $staff) }}" method="POST" novalidate>
                         @csrf
                         @method('PUT')
 

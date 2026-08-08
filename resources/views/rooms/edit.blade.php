@@ -9,7 +9,7 @@
                     <h2 class="mb-0">Edit Room</h2>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('rooms.update', $room) }}" method="POST">
+                    <form action="{{ route('rooms.update', $room) }}" method="POST" novalidate>
                         @csrf
                         @method('PUT')
 

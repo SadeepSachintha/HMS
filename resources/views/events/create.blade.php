@@ -9,7 +9,7 @@
                     <h4 class="mb-0">Create New Event</h4>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('events.store') }}" method="POST">
+                    <form action="{{ route('events.store') }}" method="POST" novalidate>
                         @csrf
 
                         <div class="mb-3">

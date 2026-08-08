@@ -14,7 +14,7 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('food-items.update', $foodItem) }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('food-items.update', $foodItem) }}" method="POST" enctype="multipart/form-data" novalidate>
                         @csrf
                         @method('PUT')
 

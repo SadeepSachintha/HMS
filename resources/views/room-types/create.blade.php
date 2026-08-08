@@ -25,7 +25,7 @@
                         </div>
                     @endif
 
-                    <form action="{{ route('room-types.store') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('room-types.store') }}" method="POST" enctype="multipart/form-data" novalidate>
                         @csrf
                         <div class="mb-3">
                             <label for="name" class="form-label">Name <span class="text-danger">*</span></label>

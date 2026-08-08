@@ -9,7 +9,7 @@
                     <h4 class="mb-0"><i class="fas fa-cogs me-2 text-gold"></i>System Configurations & Taxes</h4>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('settings.update') }}" method="POST">
+                    <form action="{{ route('settings.update') }}" method="POST" novalidate>
                         @csrf
 
                         <h5 class="text-primary mb-3"><i class="fas fa-hotel me-2"></i>Hotel Information</h5>

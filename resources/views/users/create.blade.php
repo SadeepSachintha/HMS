@@ -12,7 +12,7 @@
                     <h2 class="mb-0">Add New User</h2>
                 </div>
                 <div class="card-body">
-                    <form method="POST" action="{{ route('users.store') }}">
+                    <form method="POST" action="{{ route('users.store') }}" novalidate>
                         @csrf
                         <div class="row mb-4">
                             <div class="col-12">

@@ -12,7 +12,7 @@
                         <h2 class="mb-0">Edit User</h2>
                     </div>
                     <div class="card-body">
-                        <form method="POST" action="{{ route('users.update', $user) }}">
+                        <form method="POST" action="{{ route('users.update', $user) }}" novalidate>
                             @csrf
                             @method('PUT')
                             <div class="row mb-4">

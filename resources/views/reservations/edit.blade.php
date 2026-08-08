@@ -4,7 +4,7 @@
 <div class="container">
     <h1>Edit Reservation</h1>
     <a href="{{ route('reservations.index') }}" class="btn btn-secondary mb-3">Back to List</a>
-    <form action="{{ route('reservations.update', $reservation) }}" method="POST">
+    <form action="{{ route('reservations.update', $reservation) }}" method="POST" novalidate>
         @csrf
         @method('PUT')
         <div class="row mb-3">

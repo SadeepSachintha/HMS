@@ -9,7 +9,7 @@
                     <h4 class="mb-0">Edit Event</h4>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('events.update', $event) }}" method="POST">
+                    <form action="{{ route('events.update', $event) }}" method="POST" novalidate>
                         @csrf
                         @method('PUT')
 

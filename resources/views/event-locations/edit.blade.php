@@ -10,7 +10,7 @@
                 </div>
 
                 <div class="card-body">
-                    <form action="{{ route('event-locations.update', $eventLocation) }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('event-locations.update', $eventLocation) }}" method="POST" enctype="multipart/form-data" novalidate>
                         @csrf
                         @method('PUT')
 

@@ -21,7 +21,7 @@
                         </div>
                     @endif
 
-                    <form action="{{ route('reservations.store') }}" method="POST">
+                    <form action="{{ route('reservations.store') }}" method="POST" novalidate>
                         @csrf
 
                         <div class="row mb-3">
