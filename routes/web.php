@@ -208,6 +208,44 @@ Route::middleware(['auth', 'role:admin,manager,staff'])->group(function () {
 
     
 
+    // =========================================================================
+
+    // Admin & Manager Only Operational Actions (Creations & Edits)
+
+    // Registered first to prevent wildcard conflicts (e.g. rooms/create matching rooms/{room})
+
+    // =========================================================================
+
+    Route::middleware(['role:admin,manager'])->group(function () {
+
+        // Edit & Update for common creations
+
+        Route::resource('reservations', ReservationController::class)->only(['edit', 'update']);
+
+        Route::resource('customers', CustomerController::class)->only(['edit', 'update']);
+
+        Route::put('invoices/{invoice}/update-status-notes', [InvoiceController::class, 'updateStatusNotes'])->name('invoices.update-status-notes');
+
+        // Full CRUD (excluding index/show and destroy) for restricted items
+
+        Route::resource('rooms', RoomController::class)->except(['index', 'show', 'destroy']);
+
+        Route::resource('room-types', RoomTypeController::class)->except(['index', 'show', 'destroy']);
+
+        Route::resource('food-items', FoodItemController::class)->except(['index', 'show', 'destroy']);
+
+        Route::resource('event-locations', EventLocationController::class)->except(['index', 'show', 'destroy']);
+
+        Route::resource('events', EventController::class)->except(['index', 'show', 'destroy']);
+
+        Route::post('/events/{event}/staff/assign', [EventController::class, 'assignStaff'])->name('events.staff.assign');
+
+        Route::delete('/events/{event}/staff/{staff}/remove', [EventController::class, 'removeStaff'])->name('events.staff.remove');
+
+    });
+
+    
+
     // Inventory & Facility Management (Read-only for staff)
 
     Route::resource('customers', CustomerController::class)->only(['index', 'show', 'create', 'store']);
@@ -241,40 +279,6 @@ Route::middleware(['auth', 'role:admin,manager,staff'])->group(function () {
     // Staff Directory (View Only)
 
     Route::get('staff', [StaffController::class, 'index'])->name('staff.index');
-
-    // =========================================================================
-
-    // Admin & Manager Only Operational Actions (Creations & Edits)
-
-    // =========================================================================
-
-    Route::middleware(['role:admin,manager'])->group(function () {
-
-        // Edit & Update for common creations
-
-        Route::resource('reservations', ReservationController::class)->only(['edit', 'update']);
-
-        Route::resource('customers', CustomerController::class)->only(['edit', 'update']);
-
-        Route::put('invoices/{invoice}/update-status-notes', [InvoiceController::class, 'updateStatusNotes'])->name('invoices.update-status-notes');
-
-        // Full CRUD (excluding index/show and destroy) for restricted items
-
-        Route::resource('rooms', RoomController::class)->except(['index', 'show', 'destroy']);
-
-        Route::resource('room-types', RoomTypeController::class)->except(['index', 'show', 'destroy']);
-
-        Route::resource('food-items', FoodItemController::class)->except(['index', 'show', 'destroy']);
-
-        Route::resource('event-locations', EventLocationController::class)->except(['index', 'show', 'destroy']);
-
-        Route::resource('events', EventController::class)->except(['index', 'show', 'destroy']);
-
-        Route::post('/events/{event}/staff/assign', [EventController::class, 'assignStaff'])->name('events.staff.assign');
-
-        Route::delete('/events/{event}/staff/{staff}/remove', [EventController::class, 'removeStaff'])->name('events.staff.remove');
-
-    });
 
     // Invoice Creation for staff
 

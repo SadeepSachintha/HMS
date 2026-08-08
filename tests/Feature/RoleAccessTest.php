@@ -62,6 +62,16 @@ class RoleAccessTest extends TestCase
 
             ['settings.index', ['admin']],
 
+            ['rooms.create', ['admin', 'manager']],
+
+            ['events.create', ['admin', 'manager']],
+
+            ['room-types.create', ['admin', 'manager']],
+
+            ['food-items.create', ['admin', 'manager']],
+
+            ['event-locations.create', ['admin', 'manager']],
+
         ];
 
     }
