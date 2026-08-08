@@ -84,6 +84,11 @@ class InvoiceController extends Controller
 
         }
 
+        // Apply status filter if present
+        if ($request->has('status') && !empty($request->status)) {
+            $query->where('status', $request->status);
+        }
+
         $query->orderBy($sortBy, $sortOrder);
 
         $invoices = $query->paginate(10);
@@ -94,6 +99,9 @@ class InvoiceController extends Controller
 
             $invoices->appends(['search' => $request->search]);
 
+        }
+        if ($request->has('status')) {
+            $invoices->appends(['status' => $request->status]);
         }
 
         if ($request->has('sort')) {

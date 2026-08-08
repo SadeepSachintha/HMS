@@ -13,29 +13,24 @@
         <div class="d-flex align-items-center">
 
             <form method="GET" action="{{ route('invoices.index') }}" class="d-flex me-3">
-
                 <input type="text" name="search" class="form-control form-control-sm me-2"
-
                        placeholder="Search by invoice #, customer, or status..."
-
                        value="{{ request('search') }}">
-
+                <select name="status" class="form-select form-select-sm me-2" style="width: auto;">
+                    <option value="">All Status</option>
+                    <option value="sent" {{ request('status') == 'sent' ? 'selected' : '' }}>Sent</option>
+                    <option value="paid" {{ request('status') == 'paid' ? 'selected' : '' }}>Paid</option>
+                    <option value="cancelled" {{ request('status') == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+                    <option value="refunded" {{ request('status') == 'refunded' ? 'selected' : '' }}>Refunded</option>
+                </select>
                 <button type="submit" class="btn btn-sm btn-outline-primary">
-
                     <i class="fas fa-search"></i>
-
                 </button>
-
-                @if(request('search'))
-
+                @if(request('search') || request('status'))
                     <a href="{{ route('invoices.index') }}" class="btn btn-sm btn-outline-secondary ms-2">
-
                         <i class="fas fa-times"></i>
-
                     </a>
-
                 @endif
-
             </form>
 
             @if(!auth()->user()->isGuest())
@@ -54,16 +49,18 @@
 
 
 
-    @if(request('search'))
-
+        @if(request('search') || request('status'))
         <div class="alert alert-info">
-
-            <i class="fas fa-search"></i> Search results for: <strong>"{{ request('search') }}"</strong>
-
-            <a href="{{ route('invoices.index') }}" class="float-end">Clear search</a>
-
+            <i class="fas fa-search"></i>
+            @if(request('search') && request('status'))
+                Search results for: <strong>"{{ request('search') }}"</strong> with status: <strong>"{{ ucfirst(request('status')) }}"</strong>
+            @elseif(request('search'))
+                Search results for: <strong>"{{ request('search') }}"</strong>
+            @elseif(request('status'))
+                Filtered by status: <strong>"{{ ucfirst(request('status')) }}"</strong>
+            @endif
+            <a href="{{ route('invoices.index') }}" class="float-end">Clear filters</a>
         </div>
-
     @endif
 
 
@@ -300,3 +297,11 @@
 
 @endsection
 
+@section('scripts')
+<script>
+$(document).ready(function() {
+    $('select[name="status"]').on('change', function() {
+        $(this).closest('form').submit();
+    });
+});
+</script>

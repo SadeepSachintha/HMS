@@ -13,10 +13,17 @@
                 <input type="text" name="search" class="form-control form-control-sm me-2"
                        placeholder="Search by name, location, or description..."
                        value="{{ request('search') }}">
+                <select name="status" class="form-select form-select-sm me-2" style="width: auto;">
+                    <option value="">All Status</option>
+                    <option value="scheduled" {{ request('status') == 'scheduled' ? 'selected' : '' }}>Scheduled</option>
+                    <option value="in_progress" {{ request('status') == 'in_progress' ? 'selected' : '' }}>In Progress</option>
+                    <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Completed</option>
+                    <option value="cancelled" {{ request('status') == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+                </select>
                 <button type="submit" class="btn btn-sm btn-outline-primary">
                     <i class="fas fa-search"></i>
                 </button>
-                @if(request('search'))
+                @if(request('search') || request('status'))
                     <a href="{{ route('events.index') }}" class="btn btn-sm btn-outline-secondary ms-2">
                         <i class="fas fa-times"></i>
                     </a>
@@ -30,10 +37,17 @@
         </div>
     </div>
 
-    @if(request('search'))
+        @if(request('search') || request('status'))
         <div class="alert alert-info">
-            <i class="fas fa-search"></i> Search results for: <strong>"{{ request('search') }}"</strong>
-            <a href="{{ route('events.index') }}" class="float-end">Clear search</a>
+            <i class="fas fa-search"></i>
+            @if(request('search') && request('status'))
+                Search results for: <strong>"{{ request('search') }}"</strong> with status: <strong>"{{ ucfirst(str_replace('_', ' ', request('status'))) }}"</strong>
+            @elseif(request('search'))
+                Search results for: <strong>"{{ request('search') }}"</strong>
+            @elseif(request('status'))
+                Filtered by status: <strong>"{{ ucfirst(str_replace('_', ' ', request('status'))) }}"</strong>
+            @endif
+            <a href="{{ route('events.index') }}" class="float-end">Clear filters</a>
         </div>
     @endif
 
@@ -168,7 +182,11 @@
 <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js'></script>
 <script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js'></script>
 <script>
-    $(document).ready(function() {
+    $(document).ready(function
+        $('select[name="status"]').on('change', function() {
+            $(this).closest('form').submit();
+        });
+() {
         $('#calendar').fullCalendar({
             header: {
                 left: 'prev,next today',

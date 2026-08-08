@@ -53,6 +53,11 @@ class RoomController extends Controller
             $sortOrder = 'desc';
         }
 
+        // Apply status filter if present
+        if ($request->has('status') && !empty($request->status)) {
+            $query->where('status', $request->status);
+        }
+
         $query->orderBy($sortBy, $sortOrder);
 
         $rooms = $query->paginate(10);
@@ -60,6 +65,9 @@ class RoomController extends Controller
         // Preserve search and sort parameters in pagination links
         if ($request->has('search')) {
             $rooms->appends(['search' => $request->search]);
+        }
+        if ($request->has('status')) {
+            $rooms->appends(['status' => $request->status]);
         }
         if ($request->has('sort')) {
             $rooms->appends(['sort' => $request->sort]);

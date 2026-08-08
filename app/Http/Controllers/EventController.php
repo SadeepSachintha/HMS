@@ -28,6 +28,11 @@ class EventController extends Controller
             });
         }
 
+        // Apply status filter if present
+        if ($request->has('status') && !empty($request->status)) {
+            $query->where('status', $request->status);
+        }
+
         // Sorting functionality
         $sortBy = $request->get('sort', 'id');
         $sortOrder = $request->get('order', 'desc');
@@ -50,6 +55,9 @@ class EventController extends Controller
         // Preserve search and sort parameters in pagination
         if ($request->has('search')) {
             $events->appends(['search' => $request->search]);
+        }
+        if ($request->has('status')) {
+            $events->appends(['status' => $request->status]);
         }
         if ($request->has('sort')) {
             $events->appends(['sort' => $request->sort]);

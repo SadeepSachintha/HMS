@@ -63,6 +63,11 @@ class ReservationController extends Controller
             $sortOrder = 'desc';
         }
 
+        // Apply status filter if present
+        if ($request->has('status') && !empty($request->status)) {
+            $query->where('status', $request->status);
+        }
+
         $query->orderBy($sortBy, $sortOrder);
 
         $reservations = $query->paginate(10);
@@ -70,6 +75,9 @@ class ReservationController extends Controller
         // Preserve search and sort parameters in pagination links
         if ($request->has('search')) {
             $reservations->appends(['search' => $request->search]);
+        }
+        if ($request->has('status')) {
+            $reservations->appends(['status' => $request->status]);
         }
         if ($request->has('sort')) {
             $reservations->appends(['sort' => $request->sort]);

@@ -5,18 +5,24 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="page-title mb-0">Rooms</h2>
         <div class="d-flex align-items-center">
-            <form method="GET" action="{{ route('rooms.index') }}" class="d-flex me-3">
-                <input type="text" name="search" class="form-control form-control-sm me-2"
-                       placeholder="Search by number, type, or floor..."
-                       value="{{ request('search') }}">
-                <button type="submit" class="btn btn-sm btn-outline-primary">
-                    <i class="fas fa-search"></i>
-                </button>
-                @if(request('search'))
-                    <a href="{{ route('rooms.index') }}" class="btn btn-sm btn-outline-secondary ms-2">
-                        <i class="fas fa-times"></i>
-                    </a>
-                @endif
+            <form method="GET" action="{{ route('rooms.index') }}" class="d-flex me-3">
+                <input type="text" name="search" class="form-control form-control-sm me-2"
+                       placeholder="Search by number, type, or floor..."
+                       value="{{ request('search') }}">
+                <select name="status" class="form-select form-select-sm me-2" style="width: auto;">
+                    <option value="">All Status</option>
+                    <option value="available" {{ request('status') == 'available' ? 'selected' : '' }}>Available</option>
+                    <option value="occupied" {{ request('status') == 'occupied' ? 'selected' : '' }}>Occupied</option>
+                    <option value="maintenance" {{ request('status') == 'maintenance' ? 'selected' : '' }}>Maintenance</option>
+                </select>
+                <button type="submit" class="btn btn-sm btn-outline-primary">
+                    <i class="fas fa-search"></i>
+                </button>
+                @if(request('search') || request('status'))
+                    <a href="{{ route('rooms.index') }}" class="btn btn-sm btn-outline-secondary ms-2">
+                        <i class="fas fa-times"></i>
+                    </a>
+                @endif
             </form>
             @if(auth()->user()->isAdmin() || auth()->user()->isManager())
             <a href="{{ route('rooms.create') }}" class="btn btn-primary">
@@ -32,11 +38,18 @@
 
                 <div class="card-body">
 
-                    @if(request('search'))
-                        <div class="alert alert-info">
-                            <i class="fas fa-search"></i> Search results for: <strong>"{{ request('search') }}"</strong>
-                            <a href="{{ route('rooms.index') }}" class="float-end">Clear search</a>
-                        </div>
+                                        @if(request('search') || request('status'))
+                        <div class="alert alert-info">
+                            <i class="fas fa-search"></i>
+                            @if(request('search') && request('status'))
+                                Search results for: <strong>"{{ request('search') }}"</strong> with status: <strong>"{{ ucfirst(request('status')) }}"</strong>
+                            @elseif(request('search'))
+                                Search results for: <strong>"{{ request('search') }}"</strong>
+                            @elseif(request('status'))
+                                Filtered by status: <strong>"{{ ucfirst(request('status')) }}"</strong>
+                            @endif
+                            <a href="{{ route('rooms.index') }}" class="float-end">Clear filters</a>
+                        </div>
                     @endif
 
                     <div class="table-responsive">
