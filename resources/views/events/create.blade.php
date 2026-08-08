@@ -32,7 +32,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="start_time" class="form-label">Start Time</label>
-                                    <input type="datetime-local" class="form-control @error('start_time') is-invalid @enderror" id="start_time" name="start_time" value="{{ old('start_time') }}" required>
+                                    <input type="datetime-local" class="form-control @error('start_time') is-invalid @enderror" id="start_time" name="start_time" value="{{ old('start_time') }}" min="{{ date('Y-m-d\TH:i') }}" required>
                                     @error('start_time')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror

@@ -74,7 +74,7 @@ class EventController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'start_time' => 'required|date',
+            'start_time' => 'required|date|after_or_equal:today',
             'end_time' => 'required|date|after:start_time',
             'location' => 'nullable|string|max:255',
             'location_id' => 'required|exists:event_locations,id',
