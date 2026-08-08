@@ -58,7 +58,9 @@ class EventServiceProvider extends ServiceProvider
 
         \App\Models\Reservation::observe(\App\Observers\ReservationObserver::class);
 
-        \App\Models\Payment::observe(\App\Observers\PaymentObserver::class);
+        \App\Models\Payment::observe(\App\Observers\PaymentObserver::class);
+
+        \App\Models\Event::observe(\App\Observers\EventObserver::class);
 
 
 

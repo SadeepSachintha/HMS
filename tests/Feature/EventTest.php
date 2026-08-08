@@ -65,6 +65,25 @@ class EventTest extends TestCase
             'name' => 'Wedding Gala',
             'location_id' => $this->location->id
         ]);
+
+        $event = Event::where('name', 'Wedding Gala')->first();
+        $this->assertNotNull($event);
+
+        $this->assertDatabaseHas('invoices', [
+            'event_id' => $event->id,
+            'customer_id' => $this->customer->id,
+            'subtotal' => 5000.00
+        ]);
+
+        $invoice = $event->invoice;
+        $this->assertNotNull($invoice);
+
+        $this->assertDatabaseHas('invoice_items', [
+            'invoice_id' => $invoice->id,
+            'description' => 'Event Venue Booking: Wedding Gala',
+            'unit_price' => 5000.00,
+            'quantity' => 1
+        ]);
     }
 
     /**
