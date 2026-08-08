@@ -750,6 +750,80 @@
 
     @yield('scripts')
 
+    <!-- Global Client-Side Form Validation -->
+    <script>
+        $(document).ready(function() {
+            $(document).on('submit', 'form[novalidate]', function(e) {
+                let isValid = true;
+                const $form = $(this);
+                
+                // Clear any previous dynamic feedbacks
+                $form.find('.dynamic-feedback').remove();
+                $form.find('.is-invalid').removeClass('is-invalid');
+
+                // Find all required inputs/selects/textareas
+                $form.find('input[required], select[required], textarea[required]').each(function() {
+                    let $el = $(this);
+                    
+                    // Skip disabled or hidden inputs
+                    if ($el.prop('disabled') || !$el.is(':visible')) {
+                        return;
+                    }
+                    
+                    let val = $el.val();
+                    if (val === null || val === undefined || String(val).trim() === '') {
+                        isValid = false;
+                        $el.addClass('is-invalid');
+                        
+                        let $parent = $el.parent();
+                        let feedbackText = 'This field is required.';
+                        
+                        if ($el.attr('type') === 'email' && val !== '') {
+                            feedbackText = 'Please enter a valid email address.';
+                        }
+                        
+                        let $feedback = $parent.find('.invalid-feedback');
+                        if ($feedback.length === 0) {
+                            $feedback = $('<div class="invalid-feedback dynamic-feedback"></div>');
+                            if ($el.hasClass('form-control') || $el.hasClass('form-select') || $el.hasClass('form-check-input')) {
+                                $el.after($feedback);
+                            } else if ($parent.hasClass('input-group')) {
+                                $parent.after($feedback);
+                            } else {
+                                $parent.append($feedback);
+                            }
+                        }
+                        $feedback.text(feedbackText).show();
+                    }
+                });
+
+                if (!isValid) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const firstInvalid = $form.find('.is-invalid').first();
+                    if (firstInvalid.length > 0) {
+                        $('html, body').animate({
+                            scrollTop: firstInvalid.offset().top - 100
+                        }, 200);
+                        firstInvalid.focus();
+                    }
+                }
+            });
+
+            // Real-time error clearing
+            $(document).on('input change', 'form[novalidate] .is-invalid', function() {
+                let $el = $(this);
+                let val = $el.val();
+                if (val !== null && val !== undefined && String(val).trim() !== '') {
+                    $el.removeClass('is-invalid');
+                    let $parent = $el.parent();
+                    $parent.find('.dynamic-feedback').remove();
+                }
+            });
+        });
+    </script>
+
     <!-- Inactivity Warning Modal -->
 
     <div class="modal fade" id="inactivityModal" tabindex="-1" aria-labelledby="inactivityModalLabel" aria-hidden="true">
