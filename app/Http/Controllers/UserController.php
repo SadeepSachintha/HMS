@@ -114,12 +114,24 @@ class UserController extends Controller
             'role' => 'required|in:admin,manager,staff,guest',
         ]);
 
+        $userStatus = $request->has('status');
+
         $user->update([
             'name' => $request->name,
             'email' => $request->email,
             'role' => $request->role,
-            'status' => $request->has('status'),
+            'status' => $userStatus,
         ]);
+
+        // Synchronize linked staff status
+        if ($user->staff) {
+            if ($userStatus && $user->staff->status === 'inactive') {
+                $user->staff->update(['status' => 'active']);
+            } elseif (!$userStatus) {
+                $user->staff->update(['status' => 'inactive']);
+            }
+        }
+
         return redirect()->route('users.index')->with('success', 'User updated successfully.');
     }
 
@@ -161,6 +173,16 @@ class UserController extends Controller
     {
         $user->status = !$user->status;
         $user->save();
+
+        // Synchronize linked staff status
+        if ($user->staff) {
+            if ($user->status && $user->staff->status === 'inactive') {
+                $user->staff->update(['status' => 'active']);
+            } elseif (!$user->status) {
+                $user->staff->update(['status' => 'inactive']);
+            }
+        }
+
         return redirect()->route('users.index')->with('success', 'User status updated.');
     }
 }

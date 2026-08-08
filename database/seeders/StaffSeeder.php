@@ -94,6 +94,19 @@ class StaffSeeder extends Seeder
         ];
 
         foreach ($staffData as $data) {
+            // Find or create User with the staff member's email
+            $staffUser = User::firstOrCreate(
+                ['email' => $data['email']],
+                [
+                    'name' => $data['name'],
+                    'role' => 'staff',
+                    'password' => \Illuminate\Support\Facades\Hash::make('password'),
+                    'status' => true,
+                ]
+            );
+
+            $data['user_id'] = $staffUser->id;
+
             Staff::firstOrCreate(
                 ['email' => $data['email']],
                 $data

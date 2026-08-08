@@ -64,6 +64,16 @@ class StaffManagementTest extends TestCase
             'email' => 'john.doe@hotel.com',
             'position' => 'Front Desk Manager',
         ]);
+
+        $this->assertDatabaseHas('users', [
+            'name' => 'John Doe',
+            'email' => 'john.doe@hotel.com',
+            'role' => 'staff',
+        ]);
+
+        $staff = Staff::where('email', 'john.doe@hotel.com')->first();
+        $user = User::where('email', 'john.doe@hotel.com')->first();
+        $this->assertEquals($user->id, $staff->user_id);
     }
 
     public function test_can_update_staff_member()
@@ -199,4 +209,66 @@ class StaffManagementTest extends TestCase
 
         $response->assertSessionHasErrors(['email']);
     }
-}
+
+    public function test_staff_status_syncs_to_user_status()
+    {
+        $staff = Staff::create([
+            'user_id' => $this->user->id,
+            'name' => 'Sync Test',
+            'email' => 'sync.test@hotel.com',
+            'phone' => '+1-555-9999',
+            'position' => 'Clerk',
+            'department' => 'Front Office',
+            'address' => '789 Road',
+            'hire_date' => '2023-01-15',
+            'status' => 'active',
+        ]);
+
+        $user = $staff->user;
+        $this->assertTrue($user->status);
+
+        // Update staff status to inactive
+        $this->actingAs($this->user)->put("/staff/{$staff->id}", [
+            'name' => 'Sync Test',
+            'email' => 'sync.test@hotel.com',
+            'phone' => '+1-555-9999',
+            'position' => 'Clerk',
+            'department' => 'Front Office',
+            'address' => '789 Road',
+            'hire_date' => '2023-01-15',
+            'status' => 'inactive',
+        ]);
+
+        $user->refresh();
+        $this->assertFalse($user->status);
+    }
+
+    public function test_user_status_syncs_to_staff_status()
+    {
+        $staff = Staff::create([
+            'user_id' => $this->user->id,
+            'name' => 'Sync Test 2',
+            'email' => 'sync.test2@hotel.com',
+            'phone' => '+1-555-9998',
+            'position' => 'Clerk',
+            'department' => 'Front Office',
+            'address' => '789 Road',
+            'hire_date' => '2023-01-15',
+            'status' => 'active',
+        ]);
+
+        $user = $staff->user;
+
+        // Toggle user status to inactive
+        $this->actingAs($this->user)->post("/users/{$user->id}/toggle-status");
+
+        $staff->refresh();
+        $this->assertEquals('inactive', $staff->status);
+
+        // Toggle back to active
+        $this->actingAs($this->user)->post("/users/{$user->id}/toggle-status");
+
+        $staff->refresh();
+        $this->assertEquals('active', $staff->status);
+    }
+}

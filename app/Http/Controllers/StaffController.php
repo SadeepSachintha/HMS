@@ -92,14 +92,25 @@ class StaffController extends Controller
 
         // Only allow role assignment if current user is manager or admin
         if (auth()->user() && in_array(auth()->user()->role, ['admin', 'manager'])) {
-            $validated['role'] = $request->validate([
+            $role = $request->validate([
                 'role' => 'required|in:admin,manager,staff',
             ])['role'];
         } else {
-            $validated['role'] = 'staff';
+            $role = 'staff';
         }
 
-        $validated['user_id'] = auth()->id();
+        // Find or create User with the staff member's email
+        $user = \App\Models\User::firstOrCreate(
+            ['email' => $validated['email']],
+            [
+                'name' => $validated['name'],
+                'role' => $role,
+                'password' => \Illuminate\Support\Facades\Hash::make('password'),
+                'status' => ($validated['status'] !== 'inactive'),
+            ]
+        );
+
+        $validated['user_id'] = $user->id;
 
         Staff::create($validated);
 
@@ -134,13 +145,27 @@ class StaffController extends Controller
         ]);
 
         // Only allow role assignment if current user is manager or admin
-        if (auth()->user() && in_array(auth()->user()->role, ['admin', 'manager'])) {
-            $validated['role'] = $request->validate([
+        $role = null;
+        if (auth()->user() && in_array(auth()->user()->role, ['admin', 'manager']) && $request->has('role')) {
+            $role = $request->validate([
                 'role' => 'required|in:admin,manager,staff',
             ])['role'];
         }
 
         $staff->update($validated);
+
+        // Also update the linked user
+        if ($staff->user) {
+            $userUpdate = [
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'status' => ($validated['status'] !== 'inactive'),
+            ];
+            if ($role) {
+                $userUpdate['role'] = $role;
+            }
+            $staff->user->update($userUpdate);
+        }
 
         return redirect()->route('staff.index')
             ->with('success', 'Staff member updated successfully.');
