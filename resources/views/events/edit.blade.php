@@ -182,10 +182,27 @@
 @section('scripts')
 <script>
 $(document).ready(function() {
-    // Set minimum end time based on start time
-    $('#start_time').change(function() {
-        $('#end_time').attr('min', $(this).val());
+    function validateDates() {
+        const startVal = $('#start_time').val();
+        if (startVal) {
+            $('#end_time').attr('min', startVal);
+            const endVal = $('#end_time').val();
+            if (endVal && endVal < startVal) {
+                $('#end_time').val(startVal);
+            }
+        }
+    }
+
+    $('#start_time').on('change input', validateDates);
+    $('#end_time').on('change input', function() {
+        const startVal = $('#start_time').val();
+        const endVal = $(this).val();
+        if (startVal && endVal && endVal < startVal) {
+            $(this).val(startVal);
+        }
     });
+
+    validateDates();
 });
 </script>
 @endsection
