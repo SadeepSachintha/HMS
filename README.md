@@ -98,6 +98,17 @@ A comprehensive, enterprise-grade Hotel Management System built on **Laravel 8**
 
 
 
+### 👥 Staff & User Management Refactoring
+
+- **Industry-Standard Staff-User Linkage** — Refactored the `Staff` model to link its `user_id` directly to the staff member's own personal login `User` credentials record. Creating or updating an employee's staff record automatically creates/updates their login credentials (name, email, role).
+
+- **Bi-Directional Status Synchronization** — Real-time synchronization between the login account access `status` (boolean) and the operational employee `status` (active/inactive/on_leave). Disabling a user account deactivates the staff profile, and marking a staff profile inactive disables their login account.
+
+- **User Status Filtering** — Added a standard status filter dropdown (`All Status`, `Active`, `Inactive`) next to the search input in the User Management dashboard, featuring automatic AJAX-friendly submission and pagination parameter preservation.
+
+- **Sri Lankan NIC Validation** — Enforces correct formatting checks on NIC fields during staff profile creation and guest self-registration.
+
+
 ### 📜 System Activity Logging
 
 - **Trait-based Model Auditing** — Core models utilize a shared `LogsActivity` trait to automatically hook Eloquent actions (`created`, `updated`, `deleted`) and log them (including a listing of specifically modified field names).
