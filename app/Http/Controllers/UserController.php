@@ -27,17 +27,37 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $query = User::query();
-        if ($request->has('search')) {
+        
+        // Search filter
+        if ($request->has('search') && !empty($request->search)) {
             $search = $request->input('search');
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%$search%")
                   ->orWhere('email', 'like', "%$search%")
                   ->orWhere('role', 'like', "%$search%")
-                  ->orWhere('id', 'like', "%$search%")
-                  ;
+                  ->orWhere('id', 'like', "%$search%");
             });
         }
+
+        // Status filter
+        if ($request->has('status') && $request->status !== '') {
+            if ($request->status === 'active') {
+                $query->where('status', true);
+            } elseif ($request->status === 'inactive') {
+                $query->where('status', false);
+            }
+        }
+
         $users = $query->paginate(10);
+
+        // Preserve filters in pagination
+        if ($request->has('search')) {
+            $users->appends(['search' => $request->search]);
+        }
+        if ($request->has('status')) {
+            $users->appends(['status' => $request->status]);
+        }
+
         return view('users.index', compact('users'));
     }
 

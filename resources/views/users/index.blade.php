@@ -9,10 +9,15 @@
                 <input type="text" name="search" class="form-control form-control-sm me-2"
                        placeholder="Search by name, email, role..."
                        value="{{ request('search') }}">
+                <select name="status" class="form-select form-select-sm me-2" style="width: auto;">
+                    <option value="">All Status</option>
+                    <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Active</option>
+                    <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>Inactive</option>
+                </select>
                 <button type="submit" class="btn btn-sm btn-outline-primary">
                     <i class="fas fa-search"></i>
                 </button>
-                @if(request('search'))
+                @if(request('search') || request('status'))
                     <a href="{{ route('users.index') }}" class="btn btn-sm btn-outline-secondary ms-2">
                         <i class="fas fa-times"></i>
                     </a>
@@ -107,4 +112,14 @@
         </div>
     </div>
 </div>
+@endsection
+
+@section('scripts')
+<script>
+$(document).ready(function() {
+    $('select[name="status"]').on('change', function() {
+        $(this).closest('form').submit();
+    });
+});
+</script>
 @endsection
