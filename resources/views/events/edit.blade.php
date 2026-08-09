@@ -15,7 +15,7 @@
 
                         <div class="mb-3">
                             <label for="name" class="form-label">Event Name</label>
-                            <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name', $event->name) }}" required>
+                            <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name', $event->name) }}" required {{ $event->invoice ? 'disabled' : '' }}>
                             @error('name')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -23,7 +23,7 @@
 
                         <div class="mb-3">
                             <label for="description" class="form-label">Description</label>
-                            <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description" rows="3">{{ old('description', $event->description) }}</textarea>
+                            <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description" rows="3" {{ $event->invoice ? 'disabled' : '' }}>{{ old('description', $event->description) }}</textarea>
                             @error('description')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -33,7 +33,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="start_time" class="form-label">Start Time</label>
-                                    <input type="datetime-local" class="form-control @error('start_time') is-invalid @enderror" id="start_time" name="start_time" value="{{ old('start_time', $event->start_time->format('Y-m-d\TH:i')) }}" required>
+                                    <input type="datetime-local" class="form-control @error('start_time') is-invalid @enderror" id="start_time" name="start_time" value="{{ old('start_time', $event->start_time->format('Y-m-d\TH:i')) }}" required {{ $event->invoice ? 'disabled' : '' }}>
                                     @error('start_time')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -42,7 +42,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="end_time" class="form-label">End Time</label>
-                                    <input type="datetime-local" class="form-control @error('end_time') is-invalid @enderror" id="end_time" name="end_time" value="{{ old('end_time', $event->end_time->format('Y-m-d\TH:i')) }}" required>
+                                    <input type="datetime-local" class="form-control @error('end_time') is-invalid @enderror" id="end_time" name="end_time" value="{{ old('end_time', $event->end_time->format('Y-m-d\TH:i')) }}" required {{ $event->invoice ? 'disabled' : '' }}>
                                     @error('end_time')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -52,7 +52,7 @@
 
                         <div class="mb-3">
                             <label for="location_id" class="form-label">Location</label>
-                            <select class="form-select @error('location_id') is-invalid @enderror" id="location_id" name="location_id" required>
+                            <select class="form-select @error('location_id') is-invalid @enderror" id="location_id" name="location_id" required {{ $event->invoice ? 'disabled' : '' }}>
                                 <option value="">Select Location</option>
                                 @foreach($locations as $location)
                                     <option value="{{ $location->id }}" {{ old('location_id', $event->location_id) == $location->id ? 'selected' : '' }}>
@@ -69,7 +69,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="max_attendees" class="form-label">Maximum Attendees</label>
-                                    <input type="number" class="form-control @error('max_attendees') is-invalid @enderror" id="max_attendees" name="max_attendees" value="{{ old('max_attendees', $event->max_attendees) }}" min="1">
+                                    <input type="number" class="form-control @error('max_attendees') is-invalid @enderror" id="max_attendees" name="max_attendees" value="{{ old('max_attendees', $event->max_attendees) }}" min="1" {{ $event->invoice ? 'disabled' : '' }}>
                                     @error('max_attendees')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -80,7 +80,7 @@
                                     <label for="price" class="form-label">Price</label>
                                     <div class="input-group">
                                         <span class="input-group-text">LKR</span>
-                                        <input type="number" class="form-control @error('price') is-invalid @enderror" id="price" name="price" value="{{ old('price', $event->price) }}" min="0" step="0.01">
+                                        <input type="number" class="form-control @error('price') is-invalid @enderror" id="price" name="price" value="{{ old('price', $event->price) }}" min="0" step="0.01" {{ $event->invoice ? 'disabled' : '' }}>
                                     </div>
                                     @error('price')
                                         <div class="invalid-feedback">{{ $message }}</div>
@@ -91,7 +91,7 @@
 
                         <div class="mb-3">
                             <label for="customer_id" class="form-label">Customer</label>
-                            <select class="form-select @error('customer_id') is-invalid @enderror" id="customer_id" name="customer_id" required>
+                            <select class="form-select @error('customer_id') is-invalid @enderror" id="customer_id" name="customer_id" required {{ $event->invoice ? 'disabled' : '' }}>
                                 <option value="">Select Customer</option>
                                 @foreach($customers as $customer)
                                     <option value="{{ $customer->id }}" {{ old('customer_id', $event->customer_id) == $customer->id ? 'selected' : '' }}>

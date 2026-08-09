@@ -135,26 +135,34 @@ class EventController extends Controller
 
     public function update(Request $request, Event $event)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'start_time' => 'required|date',
-            'end_time' => 'required|date|after:start_time',
-            'location' => 'nullable|string|max:255',
-            'location_id' => 'required|exists:event_locations,id',
-            'max_attendees' => 'nullable|integer|min:1',
-            'price' => 'nullable|numeric|min:0',
-            'customer_id' => 'required|exists:customers,id',
-            'status' => 'required|in:scheduled,in_progress,completed,cancelled',
-            'notes' => 'nullable|string'
-        ]);
+        if ($event->invoice) {
+            $validated = $request->validate([
+                'status' => 'required|in:scheduled,in_progress,completed,cancelled',
+                'notes' => 'nullable|string'
+            ]);
+            $event->update($validated);
+        } else {
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'description' => 'nullable|string',
+                'start_time' => 'required|date',
+                'end_time' => 'required|date|after:start_time',
+                'location' => 'nullable|string|max:255',
+                'location_id' => 'required|exists:event_locations,id',
+                'max_attendees' => 'nullable|integer|min:1',
+                'price' => 'nullable|numeric|min:0',
+                'customer_id' => 'required|exists:customers,id',
+                'status' => 'required|in:scheduled,in_progress,completed,cancelled',
+                'notes' => 'nullable|string'
+            ]);
 
-        if ($request->location_id) {
-            $loc = EventLocation::find($request->location_id);
-            $validated['location'] = $loc->name;
+            if ($request->location_id) {
+                $loc = EventLocation::find($request->location_id);
+                $validated['location'] = $loc->name;
+            }
+
+            $event->update($validated);
         }
-
-        $event->update($validated);
 
         return redirect()->route('events.index')
             ->with('success', 'Event updated successfully.');

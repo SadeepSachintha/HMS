@@ -154,7 +154,7 @@ class EventTest extends TestCase
         $startTime = now()->addDays(5)->format('Y-m-d H:i:s');
         $endTime = now()->addDays(5)->addHours(3)->format('Y-m-d H:i:s');
 
-        // Create an event with price 1000
+        // Create an event with price 0 (no invoice generated yet)
         $response = $this->actingAs($this->adminUser)
             ->post('/events', [
                 'name' => 'Wedding Gala',
@@ -163,20 +163,17 @@ class EventTest extends TestCase
                 'end_time' => $endTime,
                 'location_id' => $this->location->id,
                 'max_attendees' => 150,
-                'price' => 1000.00,
+                'price' => 0.00,
                 'customer_id' => $this->customer->id,
                 'status' => 'scheduled'
             ]);
 
         $event = Event::where('name', 'Wedding Gala')->first();
         $this->assertNotNull($event);
-        $this->assertEquals(1000.00, $event->price);
+        $this->assertEquals(0.00, $event->price);
+        $this->assertNull($event->invoice);
 
-        $invoice = $event->invoice;
-        $this->assertNotNull($invoice);
-        $this->assertEquals(1000.00, $invoice->subtotal);
-
-        // Update the event's price to 2500
+        // Update the event's price to 2500 (this triggers invoice generation because event is unlocked)
         $response = $this->actingAs($this->adminUser)
             ->put("/events/{$event->id}", [
                 'name' => 'Wedding Gala Updated',
@@ -184,9 +181,8 @@ class EventTest extends TestCase
                 'start_time' => $startTime,
                 'end_time' => $endTime,
                 'location_id' => $this->location->id,
-                'max_attendees' => 150,
-                'price' => 2500.00,
                 'customer_id' => $this->customer->id,
+                'price' => 2500.00,
                 'status' => 'scheduled'
             ]);
 
@@ -197,8 +193,9 @@ class EventTest extends TestCase
         $this->assertEquals(2500.00, $event->price);
         $this->assertEquals('Wedding Gala Updated', $event->name);
 
-        // Assert price synced to associated invoice
-        $invoice->refresh();
+        // Assert invoice is generated
+        $invoice = $event->invoice;
+        $this->assertNotNull($invoice);
         $this->assertEquals(2500.00, $invoice->subtotal);
 
         // Assert invoice items updated
@@ -232,5 +229,51 @@ class EventTest extends TestCase
             ]);
         $invoice->refresh();
         $this->assertEquals('paid', $invoice->status);
+    }
+
+    /**
+     * Test that if an invoice is already generated, core event details (price, name, etc.) are locked.
+     */
+    public function test_event_fields_are_locked_when_invoice_exists()
+    {
+        $startTime = now()->addDays(5)->format('Y-m-d H:i:s');
+        $endTime = now()->addDays(5)->addHours(3)->format('Y-m-d H:i:s');
+
+        // 1. Create an event (which triggers invoice generation since price is > 0)
+        $event = Event::create([
+            'name' => 'Locked Event',
+            'description' => 'Original description',
+            'start_time' => now()->addDays(2),
+            'end_time' => now()->addDays(2)->addHours(2),
+            'location_id' => $this->location->id,
+            'location' => $this->location->name,
+            'max_attendees' => 10,
+            'price' => 500.00,
+            'customer_id' => $this->customer->id,
+            'status' => 'scheduled'
+        ]);
+
+        $event->refresh();
+        $this->assertNotNull($event->invoice);
+
+        // 2. Attempt to update name and price (should be ignored) but change notes and status (should be allowed)
+        $response = $this->actingAs($this->adminUser)
+            ->put("/events/{$event->id}", [
+                'name' => 'Should Be Ignored',
+                'price' => 9999.00,
+                'notes' => 'New allowed notes',
+                'status' => 'cancelled'
+            ]);
+
+        $response->assertRedirect('/events');
+        $event->refresh();
+
+        // Core fields should remain original
+        $this->assertEquals('Locked Event', $event->name);
+        $this->assertEquals(500.00, $event->price);
+
+        // Mutable fields should be updated
+        $this->assertEquals('New allowed notes', $event->notes);
+        $this->assertEquals('cancelled', $event->status);
     }
 }
