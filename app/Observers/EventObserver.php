@@ -74,7 +74,7 @@ class EventObserver
             } else {
                 $invoice = $event->invoice;
                 if ($invoice->status !== 'paid') {
-                    $invoice->update([
+                    $invoiceData = [
                         'subtotal' => $subtotal,
                         'tax_amount' => $serviceCharge + $sscl + $tdl + $vat,
                         'total_amount' => $grandTotal,
@@ -84,7 +84,17 @@ class EventObserver
                         'tdl_amount' => $tdl,
                         'vat_amount' => $vat,
                         'grand_total' => $grandTotal,
-                    ]);
+                    ];
+
+                    if ($event->status === 'completed') {
+                        $invoiceData['status'] = 'paid';
+                    } elseif ($event->status === 'cancelled') {
+                        $invoiceData['status'] = 'cancelled';
+                    } elseif ($invoice->status === 'cancelled' && ($event->status === 'scheduled' || $event->status === 'in_progress')) {
+                        $invoiceData['status'] = 'sent';
+                    }
+
+                    $invoice->update($invoiceData);
 
                     // Update the line item
                     $item = $invoice->items()->where('description', 'LIKE', 'Event Venue Booking:%')->first();

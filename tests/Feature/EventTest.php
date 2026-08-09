@@ -206,5 +206,31 @@ class EventTest extends TestCase
         $this->assertNotNull($item);
         $this->assertEquals(2500.00, $item->unit_price);
         $this->assertEquals('Event Venue Booking: Wedding Gala Updated', $item->description);
+
+        // Cancel the event and verify the invoice status is updated to cancelled
+        $response = $this->actingAs($this->adminUser)
+            ->put("/events/{$event->id}", [
+                'name' => 'Wedding Gala Updated',
+                'start_time' => $startTime,
+                'end_time' => $endTime,
+                'location_id' => $this->location->id,
+                'customer_id' => $this->customer->id,
+                'status' => 'cancelled'
+            ]);
+        $invoice->refresh();
+        $this->assertEquals('cancelled', $invoice->status);
+
+        // Complete the event and verify the invoice status is updated to paid
+        $response = $this->actingAs($this->adminUser)
+            ->put("/events/{$event->id}", [
+                'name' => 'Wedding Gala Updated',
+                'start_time' => $startTime,
+                'end_time' => $endTime,
+                'location_id' => $this->location->id,
+                'customer_id' => $this->customer->id,
+                'status' => 'completed'
+            ]);
+        $invoice->refresh();
+        $this->assertEquals('paid', $invoice->status);
     }
 }
