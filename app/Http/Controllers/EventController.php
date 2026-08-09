@@ -143,7 +143,10 @@ class EventController extends Controller
             'location' => 'nullable|string|max:255',
             'location_id' => 'required|exists:event_locations,id',
             'max_attendees' => 'nullable|integer|min:1',
-            'status' => 'required|in:scheduled,in_progress,completed,cancelled'
+            'price' => 'nullable|numeric|min:0',
+            'customer_id' => 'required|exists:customers,id',
+            'status' => 'required|in:scheduled,in_progress,completed,cancelled',
+            'notes' => 'nullable|string'
         ]);
 
         if ($request->location_id) {

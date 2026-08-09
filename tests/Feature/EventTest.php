@@ -135,6 +135,7 @@ class EventTest extends TestCase
                 'start_time' => $event->start_time->format('Y-m-d H:i:s'),
                 'end_time' => $event->end_time->format('Y-m-d H:i:s'),
                 'location_id' => $this->location->id,
+                'customer_id' => $this->customer->id,
                 'status' => 'completed'
             ]);
 
@@ -143,5 +144,67 @@ class EventTest extends TestCase
             'id' => $event->id,
             'name' => 'Updated Seeded Event'
         ]);
+    }
+
+    /**
+     * Test that updating an event's price saves successfully and updates its invoice.
+     */
+    public function test_updating_event_price_succeeds_and_syncs_invoice()
+    {
+        $startTime = now()->addDays(5)->format('Y-m-d H:i:s');
+        $endTime = now()->addDays(5)->addHours(3)->format('Y-m-d H:i:s');
+
+        // Create an event with price 1000
+        $response = $this->actingAs($this->adminUser)
+            ->post('/events', [
+                'name' => 'Wedding Gala',
+                'description' => 'A grand wedding celebration',
+                'start_time' => $startTime,
+                'end_time' => $endTime,
+                'location_id' => $this->location->id,
+                'max_attendees' => 150,
+                'price' => 1000.00,
+                'customer_id' => $this->customer->id,
+                'status' => 'scheduled'
+            ]);
+
+        $event = Event::where('name', 'Wedding Gala')->first();
+        $this->assertNotNull($event);
+        $this->assertEquals(1000.00, $event->price);
+
+        $invoice = $event->invoice;
+        $this->assertNotNull($invoice);
+        $this->assertEquals(1000.00, $invoice->subtotal);
+
+        // Update the event's price to 2500
+        $response = $this->actingAs($this->adminUser)
+            ->put("/events/{$event->id}", [
+                'name' => 'Wedding Gala Updated',
+                'description' => 'A grand wedding celebration',
+                'start_time' => $startTime,
+                'end_time' => $endTime,
+                'location_id' => $this->location->id,
+                'max_attendees' => 150,
+                'price' => 2500.00,
+                'customer_id' => $this->customer->id,
+                'status' => 'scheduled'
+            ]);
+
+        $response->assertRedirect('/events');
+        $event->refresh();
+
+        // Assert price saved successfully in event
+        $this->assertEquals(2500.00, $event->price);
+        $this->assertEquals('Wedding Gala Updated', $event->name);
+
+        // Assert price synced to associated invoice
+        $invoice->refresh();
+        $this->assertEquals(2500.00, $invoice->subtotal);
+
+        // Assert invoice items updated
+        $item = $invoice->items()->where('description', 'LIKE', 'Event Venue Booking:%')->first();
+        $this->assertNotNull($item);
+        $this->assertEquals(2500.00, $item->unit_price);
+        $this->assertEquals('Event Venue Booking: Wedding Gala Updated', $item->description);
     }
 }
