@@ -89,6 +89,16 @@
                                             <th>Notes:</th>
                                             <td>{{ $event->notes ?? 'No notes' }}</td>
                                         </tr>
+                                        @if($event->invoice)
+                                        <tr>
+                                            <th>Invoice:</th>
+                                            <td>
+                                                <a href="{{ route('invoices.show', $event->invoice) }}" class="btn btn-sm btn-outline-info text-info">
+                                                    <i class="fas fa-file-invoice me-1"></i> {{ $event->invoice->invoice_number }}
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        @endif
                                     </tbody>
                                 </table>
                             </div>
