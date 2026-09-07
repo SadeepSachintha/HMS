@@ -40,10 +40,12 @@ class LoginController extends Controller
 
     protected function authenticated(\Illuminate\Http\Request $request, $user)
     {
+        $message = "Welcome Back, {$user->name}! Successfully logged in.";
+
         if ($user->isGuest()) {
-            return redirect()->route('reservations.index');
+            return redirect()->route('reservations.index')->with('success', $message);
         }
 
-        return redirect()->intended($this->redirectTo);
+        return redirect()->intended(route('dashboard'))->with('success', $message);
     }
 }

@@ -23,6 +23,8 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return redirect()->route('dashboard')->with('success', 'You are logged in!');
+        $user = auth()->user();
+        $name = $user ? $user->name : 'Admin';
+        return redirect()->route('dashboard')->with('success', "Welcome Back, {$name}! Successfully logged in.");
     }
 }

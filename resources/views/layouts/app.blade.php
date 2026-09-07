@@ -561,15 +561,14 @@
             <div class="container mt-3">
 
                 @if(session('success'))
-
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-
-                        {{ session('success') }}
-
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-
+                    <div class="alert alert-success alert-dismissible fade show d-flex align-items-center shadow-sm" role="alert" style="background-color: rgba(25, 135, 84, 0.2); border: 1px solid rgba(25, 135, 84, 0.4); color: #75b798; border-radius: 8px; padding: 14px 18px; margin-bottom: 20px;">
+                        <i class="fas fa-check-circle fs-4 me-3 text-success flex-shrink-0"></i>
+                        <div class="flex-grow-1">
+                            <span class="d-block text-white fw-bold mb-1" style="font-size: 1rem;">Successfully logged in</span>
+                            <span>{{ session('success') }}</span>
+                        </div>
+                        <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
-
                 @endif
 
                 @if(session('error'))
